@@ -7,12 +7,11 @@ contains
 module procedure nc_read_scalar
 integer :: varid
 
+
 ierr = nf90_inq_varid(self%ncid, dname, varid)
 if (self%check_error(ierr, dname)) return
 
 select type (value)
-type is (character(*))
-  ierr = nf90_get_var(self%ncid, varid, value)
 type is (real(real64))
   ierr = nf90_get_var(self%ncid, varid, value)
 type is (real(real32))

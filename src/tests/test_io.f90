@@ -4,9 +4,6 @@ use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
 use netcdf_interface, only : netcdf_file, NF90_MAX_NAME, NC_MAXDIM
 implicit none
 
-integer :: i1(4), ierr
-real(real32)    :: nan, r1(4), r2(4,4)
-
 character(:), allocatable :: path
 character(256) :: argv
 integer :: i,l
@@ -21,22 +18,18 @@ path = trim(argv)
 
 print *, 'test path: ', path
 
-nan = ieee_value(1.0, ieee_quiet_nan)
-
-do i = 1,size(i1)
-  i1(i) = i
-enddo
-
-r1 = i1
-
-call test_write(path)
+call test_real_int(path)
+print *, 'OK:, real32/64, int32/64'
 
 contains
 
-subroutine test_write(path)
+subroutine test_real_int(path)
 
 character(*), intent(in) :: path
 type(netcdf_file) :: ncf
+
+integer :: i1(4), ierr
+real(real32)    :: nan, r1(4), r2(4,4)
 integer(int32), dimension(4,4) :: i2, i2t
 integer(int64), dimension(4,4) :: i2t64
 real(real32), allocatable :: rr2(:,:)
@@ -44,6 +37,14 @@ real(real32)  ::  nant
 
 integer, allocatable :: dims(:)
 character(NF90_MAX_NAME), allocatable :: dimnames(:)
+
+nan = ieee_value(1.0, ieee_quiet_nan)
+
+do i = 1,size(i1)
+  i1(i) = i
+enddo
+
+r1 = i1
 
 i2(1,:) = i1
 do i = 1,size(i2,2)
@@ -93,6 +94,7 @@ if (.not.all(r2 == rr2)) error stop 'real 2-D: read does not match write'
 call ncf%finalize(ierr)
 if (ierr /= 0) error stop 'read finalize'
 
-end subroutine test_write
+end subroutine test_real_int
+
 
 end program

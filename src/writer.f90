@@ -8,10 +8,6 @@ module procedure nc_write_scalar
 integer :: varid
 
 select type (value)
-type is (character(*))
-  ierr = nf90_def_var(self%ncid, dname, NF90_CHAR, varid=varid)
-  if (self%check_error(ierr, dname)) return
-  ierr = nf90_put_var(self%ncid, varid, value)
 type is (real(real64))
   ierr = nf90_def_var(self%ncid, dname, NF90_DOUBLE, varid=varid)
   if (self%check_error(ierr, dname)) return

@@ -107,12 +107,12 @@ if (ierr/=NF90_NOERR) error stop 'test_nonexist_variable: finalizing'
 
 call ncf%initialize(filename, ierr, status='old', action='read')
 if(ierr/=NF90_NOERR) error stop 'test_wrong_type: opening file'
-call ncf%read('real32', x, ierr)
+call ncf%read('real32', u, ierr)
 if(ierr/=NF90_NOERR) then
-  write(stderr,*) 'read value real32: ', x
+  write(stderr,*) 'read value real32: ', u
   error stop 'test_wrong_type: read mismatched variable type'
 endif
-if (x /= 42) then
+if (u /= 42) then
   write(stderr,*) 'test_wrong_type: did not coerce real to integer',x
   error stop
 endif
