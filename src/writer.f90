@@ -40,7 +40,7 @@ end procedure nc_write_scalar
 module procedure nc_write_1d
 integer :: varid, dimids(rank(value))
 
-call self%def_dims(dname, dimname, shape(value), dimids, ierr)
+call self%def_dims(dname, dimnames, shape(value), dimids, ierr)
 if (ierr/=NF90_NOERR) return
 
 select type (value)
@@ -72,7 +72,7 @@ end procedure nc_write_1d
 module procedure nc_write_2d
 integer :: varid, dimids(rank(value))
 
-call self%def_dims(dname, dimname, shape(value), dimids, ierr)
+call self%def_dims(dname, dimnames, shape(value), dimids, ierr)
 if (ierr/=NF90_NOERR) return
 
 select type (value)
@@ -104,7 +104,7 @@ end procedure nc_write_2d
 module procedure nc_write_3d
 integer :: varid, dimids(rank(value))
 
-call self%def_dims(dname, dimname, shape(value), dimids, ierr)
+call self%def_dims(dname, dimnames, shape(value), dimids, ierr)
 if (ierr/=NF90_NOERR) return
 
 select type (value)
@@ -136,7 +136,7 @@ end procedure nc_write_3d
 module procedure nc_write_4d
 integer :: varid, dimids(rank(value))
 
-call self%def_dims(dname, dimname, shape(value), dimids, ierr)
+call self%def_dims(dname, dimnames, shape(value), dimids, ierr)
 if (ierr/=NF90_NOERR) return
 
 select type (value)
@@ -168,7 +168,7 @@ end procedure nc_write_4d
 module procedure nc_write_5d
 integer :: varid, dimids(rank(value))
 
-call self%def_dims(dname, dimname, shape(value), dimids, ierr)
+call self%def_dims(dname, dimnames, shape(value), dimids, ierr)
 if (ierr/=NF90_NOERR) return
 
 select type (value)
@@ -200,7 +200,7 @@ end procedure nc_write_5d
 module procedure nc_write_6d
 integer :: varid, dimids(rank(value))
 
-call self%def_dims(dname, dimname, shape(value), dimids, ierr)
+call self%def_dims(dname, dimnames, shape(value), dimids, ierr)
 if (ierr/=NF90_NOERR) return
 
 select type (value)
@@ -232,7 +232,7 @@ end procedure nc_write_6d
 module procedure nc_write_7d
 integer :: varid, dimids(rank(value))
 
-call self%def_dims(dname, dimname, shape(value), dimids, ierr)
+call self%def_dims(dname, dimnames, shape(value), dimids, ierr)
 if (ierr/=NF90_NOERR) return
 
 select type (value)
