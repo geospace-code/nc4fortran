@@ -20,4 +20,16 @@ end do
 end procedure def_dims
 
 
+module procedure write_attribute
+integer :: varid
+
+ierr = nf90_inq_varid(self%ncid, dname, varid)
+if (self%check_error(ierr, dname)) return
+
+ierr = nf90_put_att(self%ncid, varid, attrname, value)
+if (self%check_error(ierr, dname)) return
+
+end procedure write_attribute
+
+
 end submodule write

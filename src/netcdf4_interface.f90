@@ -22,8 +22,7 @@ contains
 
 !> initialize NetCDF file
 procedure, public :: initialize => nc_initialize, finalize => nc_finalize, &
-  check_error, shape => nc_get_shape
-  !, writeattr, &
+  check_error, shape => nc_get_shape, write_attribute
 !  open => nc_open_group, close => nc_close_group
 
 !> write group or dataset integer/real
@@ -143,6 +142,13 @@ character(*), intent(in) :: dname, dimnames(:)
 integer, intent(in) :: dims(:)
 integer, intent(out) :: dimids(size(dims)), ierr
 end subroutine def_dims
+
+
+module subroutine write_attribute(self, dname, attrname, value, ierr)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname, attrname, value
+integer, intent(out) :: ierr
+end subroutine write_attribute
 
 end interface
 
