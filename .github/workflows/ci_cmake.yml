@@ -16,7 +16,7 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v1
-    - run: brew install gcc netcdf
+    - run: brew install gcc netcdf pkg-config
     - run: cmake -B build
       env:
         FC: gfortran-9
