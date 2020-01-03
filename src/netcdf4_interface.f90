@@ -236,14 +236,24 @@ case (NF90_EBADNAME)
   write(stderr,'(/,A)') 'ERROR: ' // dname // ' is the name of another existing variable'
 case (NF90_EBADTYPE)
   write(stderr,'(/,A)') 'ERROR: ' // dname // ' specified type is not a valid netCDF type'
+case (NF90_EBADDIM)
+  write(stderr,'(/,A)') 'ERROR: ' // dname // ' invalid dimension ID or Name'
 case (NF90_EBADGRPID)
   write(stderr,'(/,A)') 'ERROR: ' // dname // ' bad group ID in ncid'
 case (NF90_EBADID)
   write(stderr,'(/,A)') 'ERROR: ' // dname // ' type ID not found'
 case (NF90_ENOTVAR)
   write(stderr,'(/,A)') 'ERROR: ' // dname // ' variable not found'
+case (NF90_ENOTNC)
+  write(stderr,'(/,A)') 'ERROR: ' // dname // ' not a NetCDF file'
 case (NF90_ENAMEINUSE)
   write(stderr,'(/,A)') 'ERROR: ' // dname // ' string match to name in use'
+case (NF90_ECHAR)
+  write(stderr,'(/,A)') 'ERROR: ' // dname // ' attempt to convert between text & numbers'
+case (NF90_EEDGE)
+  write(stderr,'(/,A)') 'ERROR: ' // dname // ' edge + start exceeds dimension bound'
+case (NF90_ESTRIDE)
+  write(stderr,'(/,A)') 'ERROR: ' // dname // ' illegal stride'
 case (NF90_EINDEFINE)
   write(stderr,'(/,A)') 'ERROR: ' // dname // ' operation not allowed in define mode'
 case default

@@ -47,6 +47,7 @@ jobs:
     - run: meson setup build
       env:
         FC: gfortran
+        CC: gcc
     - run: ninja -C build
     - run: meson test -C build -v
     - uses: actions/upload-artifact@v1
