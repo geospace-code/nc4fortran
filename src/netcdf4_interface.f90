@@ -2,10 +2,7 @@ module netcdf_interface
 !! NetCDF4 object-oriented polymorphic interface
 use, intrinsic :: iso_c_binding, only : c_ptr, c_loc
 use, intrinsic :: iso_fortran_env, only : real32, real64, int32, int64, stderr=>error_unit
-use netcdf, only : NF90_NOCLOBBER, NF90_CLOBBER, NF90_NOERR, NF90_NOWRITE, NF90_EBADTYPE, &
-  NF90_EBADNAME, NF90_NETCDF4, NF90_EBADGRPID, NF90_EBADID, &
-  NF90_CHAR, NF90_DOUBLE, NF90_FLOAT, NF90_INT, NF90_INT64, &
-  nf90_open, nf90_close, nf90_create
+use netcdf
 use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
 implicit none
@@ -16,6 +13,8 @@ type :: netcdf_file
 character(:), allocatable  :: filename
 integer :: ncid   !< location identifier
 
+integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
+
 contains
 
 !> initialize NetCDF file
@@ -24,12 +23,14 @@ procedure, public :: initialize => nc_initialize, finalize => nc_finalize, &
 !  open => nc_open_group, close => nc_close_group, shape => nc_get_shape
 
 !> write group or dataset integer/real
-generic, public :: write => nc_write_scalar !, nc_write_1d, nc_write_2d, nc_write_3d, &
-!nc_write_4d, nc_write_5d, nc_write_6d, nc_write_7d, nc_write_group
+generic, public :: write => nc_write_scalar, nc_write_1d, nc_write_2d, nc_write_3d, &
+  nc_write_4d, nc_write_5d, nc_write_6d, nc_write_7d!, nc_write_group
 
 generic, public :: read => nc_read_scalar
 
-procedure, private :: nc_write_scalar, nc_read_scalar
+procedure, private :: nc_write_scalar, nc_write_1d, nc_write_2d, nc_write_3d, nc_write_4d, nc_write_5d, nc_write_6d, nc_write_7d, &
+  nc_read_scalar, &
+  def_dims
 
 end type netcdf_file
 
@@ -37,11 +38,67 @@ end type netcdf_file
 
 interface
 module subroutine nc_write_scalar(self, dname, value, ierr)
-class(netcdf_file), intent(inout) :: self
+class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value
 integer, intent(out) :: ierr
 end subroutine nc_write_scalar
+
+module subroutine nc_write_1d(self, dname, value, dimname, ierr)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+class(*), intent(in) :: value(:)
+character(*), intent(in) :: dimname(:)
+integer, intent(out) :: ierr
+end subroutine nc_write_1d
+
+module subroutine nc_write_2d(self, dname, value, dimname, ierr)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+class(*), intent(in) :: value(:,:)
+character(*), intent(in) :: dimname(:)
+integer, intent(out) :: ierr
+end subroutine nc_write_2d
+
+module subroutine nc_write_3d(self, dname, value, dimname, ierr)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+class(*), intent(in) :: value(:,:,:)
+character(*), intent(in) :: dimname(:)
+integer, intent(out) :: ierr
+end subroutine nc_write_3d
+
+module subroutine nc_write_4d(self, dname, value, dimname, ierr)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+class(*), intent(in) :: value(:,:,:,:)
+character(*), intent(in) :: dimname(:)
+integer, intent(out) :: ierr
+end subroutine nc_write_4d
+
+module subroutine nc_write_5d(self, dname, value, dimname, ierr)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+class(*), intent(in) :: value(:,:,:,:,:)
+character(*), intent(in) :: dimname(:)
+integer, intent(out) :: ierr
+end subroutine nc_write_5d
+
+module subroutine nc_write_6d(self, dname, value, dimname, ierr)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+class(*), intent(in) :: value(:,:,:,:,:,:)
+character(*), intent(in) :: dimname(:)
+integer, intent(out) :: ierr
+end subroutine nc_write_6d
+
+module subroutine nc_write_7d(self, dname, value, dimname, ierr)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+class(*), intent(in) :: value(:,:,:,:,:,:,:)
+character(*), intent(in) :: dimname(:)
+integer, intent(out) :: ierr
+end subroutine nc_write_7d
 
 
 module subroutine nc_read_scalar(self, dname, value, ierr)
@@ -50,13 +107,22 @@ character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value
 integer, intent(out) :: ierr
 end subroutine nc_read_scalar
+
+
+module subroutine def_dims(self, dname, dimnames, dims, dimids, ierr)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname, dimnames(:)
+integer, intent(in) :: dims(:)
+integer, intent(out) :: dimids(size(dims)), ierr
+end subroutine def_dims
+
 end interface
 
 integer, parameter :: ENOENT = 2, EIO = 5
 
 contains
 
-subroutine nc_initialize(self,filename,ierr, status,action)
+subroutine nc_initialize(self,filename,ierr, status,action,comp_lvl)
 !! Opens NetCDF file
 
 class(netcdf_file), intent(inout)  :: self
@@ -64,11 +130,14 @@ character(*), intent(in)           :: filename
 integer, intent(out)               :: ierr
 character(*), intent(in), optional :: status
 character(*), intent(in), optional :: action
+integer, intent(in), optional      :: comp_lvl
 
 character(:), allocatable :: lstatus, laction
 logical :: exists
 
 self%filename = filename
+
+if (present(comp_lvl)) self%comp_lvl = comp_lvl
 
 lstatus = 'old'
 if(present(status)) lstatus = toLower(status)
@@ -143,8 +212,12 @@ case (NF90_EBADGRPID)
   write(stderr,*) dname, ' bad group ID in ncid'
 case (NF90_EBADID)
   write(stderr,*) dname, ' type ID not found'
+case (NF90_ENAMEINUSE)
+  write(stderr,*) dname, ' string match to name in use'
+case (NF90_EINDEFINE)
+  write(stderr,*) dname, ' operation not allowed in define mode'
 case default
-  write(stderr,*) dname, ' unknown error'
+  write(stderr,*) dname, ' unknown error',code
 end select
 end function check_error
 

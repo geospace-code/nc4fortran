@@ -4,15 +4,14 @@ project('NetCDF4Fortran', 'fortran',
 fc = meson.get_compiler('fortran')
 
 # when using CMake, need to capitalize module name like in CMake
-netcdf = dependency('netcdf', language: 'fortran', required : false, disabler: true,
-  cmake_module_path : meson.source_root() / 'cmake/Modules')
+netcdf = dependency('netcdf', language: 'fortran', required : false, disabler: true, cmake_module_path : 'cmake/Modules')
 
 if not fc.links('use netcdf; end', name: 'NetCDF', dependencies : netcdf)
   netcdf = disabler()
 endif
 
-# --- code
-netcdf_rw = executable('netcdf_rw', 'simple_xy_wr.f90', dependencies : netcdf)
-test('NetCDF', netcdf_rw,
-  suite: 'netcdf',
-  timeout: 20)
+if not meson.is_subproject()
+  assert(netcdf.found(), 'NetCDF Fortran is required')
+endif
+
+subdir('src')
