@@ -1,6 +1,6 @@
 program test_errors
 use, intrinsic:: iso_fortran_env, only: int64, int32, real32, real64, stderr=>error_unit
-use netcdf_interface, only: netcdf_file, NF90_NOERR
+use nc4fortran, only: netcdf_file, NF90_NOERR
 
 implicit none
 

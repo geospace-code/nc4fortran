@@ -1,4 +1,4 @@
-submodule (netcdf_interface) read
+submodule (nc4fortran) read
 use netcdf, only : nf90_inq_varid, nf90_get_var
 
 implicit none

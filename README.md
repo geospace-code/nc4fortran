@@ -130,7 +130,7 @@ target_include_directories(myio PRIVATE ${nc4fortran_BINARY_DIR})
 All examples assume:
 
 ```fortran
-use netcdf_interface, only: netcdf_file
+use nc4fortran, only: netcdf_file
 type(netcdf_file) :: ncf
 ```
 

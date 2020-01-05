@@ -1,4 +1,4 @@
-submodule (netcdf_interface:read) reader
+submodule (nc4fortran:read) reader
 
 implicit none
 
@@ -9,7 +9,7 @@ integer :: varid
 
 
 ierr = nf90_inq_varid(self%ncid, dname, varid)
-if (self%check_error(ierr, dname)) return
+if (check_error(ierr, dname)) return
 
 select type (value)
 type is (real(real64))
@@ -25,7 +25,7 @@ class default
   ierr = NF90_EBADTYPE
 end select
 
-if (self%check_error(ierr, dname)) return
+if (check_error(ierr, dname)) return
 end procedure nc_read_scalar
 
 
@@ -33,7 +33,7 @@ module procedure nc_read_1d
 integer :: varid
 
 ierr = nf90_inq_varid(self%ncid, dname, varid)
-if (self%check_error(ierr, dname)) return
+if (check_error(ierr, dname)) return
 
 select type (value)
 type is (real(real64))
@@ -49,7 +49,7 @@ class default
   ierr = NF90_EBADTYPE
 end select
 
-if (self%check_error(ierr, dname)) return
+if (check_error(ierr, dname)) return
 end procedure nc_read_1d
 
 
@@ -57,7 +57,7 @@ module procedure nc_read_2d
   integer :: varid
 
   ierr = nf90_inq_varid(self%ncid, dname, varid)
-  if (self%check_error(ierr, dname)) return
+  if (check_error(ierr, dname)) return
 
   select type (value)
   type is (real(real64))
@@ -73,7 +73,7 @@ module procedure nc_read_2d
     ierr = NF90_EBADTYPE
   end select
 
-  if (self%check_error(ierr, dname)) return
+  if (check_error(ierr, dname)) return
   end procedure nc_read_2d
 
 end submodule reader

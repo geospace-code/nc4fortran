@@ -1,7 +1,7 @@
 program test_netcdf
 use, intrinsic:: iso_fortran_env, only: int64, int32, real32, real64, stderr=>error_unit
 use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
-use netcdf_interface, only : netcdf_file, NF90_MAX_NAME, NC_MAXDIM
+use nc4fortran, only : netcdf_file, NF90_MAX_NAME
 implicit none
 
 character(:), allocatable :: path

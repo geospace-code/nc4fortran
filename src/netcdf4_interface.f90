@@ -1,4 +1,4 @@
-module netcdf_interface
+module nc4fortran
 !! NetCDF4 object-oriented polymorphic interface
 use, intrinsic :: iso_c_binding, only : c_ptr, c_loc
 use, intrinsic :: iso_fortran_env, only : real32, real64, int32, int64, stderr=>error_unit
@@ -22,7 +22,7 @@ contains
 
 !> initialize NetCDF file
 procedure, public :: initialize => nc_initialize, finalize => nc_finalize, &
-  check_error, shape => nc_get_shape, write_attribute
+  shape => nc_get_shape, write_attribute
 !  open => nc_open_group, close => nc_close_group
 
 !> write group or dataset integer/real
@@ -228,8 +228,7 @@ if (ierr /= 0) write(stderr,*) 'ERROR: file close: ' // self%filename
 end subroutine nc_finalize
 
 
-logical function check_error(self, code, dname)
-class(netcdf_file), intent(in) :: self
+logical function check_error(code, dname)
 integer, intent(in) :: code
 character(*), intent(in) :: dname
 
@@ -268,4 +267,4 @@ end select
 end function check_error
 
 
-end module netcdf_interface
+end module nc4fortran
