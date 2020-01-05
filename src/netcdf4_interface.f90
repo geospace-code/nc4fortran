@@ -48,59 +48,59 @@ class(*), intent(in) :: value
 integer, intent(out) :: ierr
 end subroutine nc_write_scalar
 
-module subroutine nc_write_1d(self, dname, value, dimnames, ierr)
+module subroutine nc_write_1d(self, dname, value, ierr, dimnames)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:)
-character(*), intent(in) :: dimnames(:)
+character(*), intent(in), optional :: dimnames(:)
 integer, intent(out) :: ierr
 end subroutine nc_write_1d
 
-module subroutine nc_write_2d(self, dname, value, dimnames, ierr)
+module subroutine nc_write_2d(self, dname, value, ierr, dimnames)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:)
-character(*), intent(in) :: dimnames(:)
+character(*), intent(in), optional :: dimnames(:)
 integer, intent(out) :: ierr
 end subroutine nc_write_2d
 
-module subroutine nc_write_3d(self, dname, value, dimnames, ierr)
+module subroutine nc_write_3d(self, dname, value, ierr, dimnames)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:)
-character(*), intent(in) :: dimnames(:)
+character(*), intent(in), optional :: dimnames(:)
 integer, intent(out) :: ierr
 end subroutine nc_write_3d
 
-module subroutine nc_write_4d(self, dname, value, dimnames, ierr)
+module subroutine nc_write_4d(self, dname, value, ierr, dimnames)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:)
-character(*), intent(in) :: dimnames(:)
+character(*), intent(in), optional :: dimnames(:)
 integer, intent(out) :: ierr
 end subroutine nc_write_4d
 
-module subroutine nc_write_5d(self, dname, value, dimnames, ierr)
+module subroutine nc_write_5d(self, dname, value, ierr, dimnames)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:)
-character(*), intent(in) :: dimnames(:)
+character(*), intent(in), optional :: dimnames(:)
 integer, intent(out) :: ierr
 end subroutine nc_write_5d
 
-module subroutine nc_write_6d(self, dname, value, dimnames, ierr)
+module subroutine nc_write_6d(self, dname, value, ierr, dimnames)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:)
-character(*), intent(in) :: dimnames(:)
+character(*), intent(in), optional :: dimnames(:)
 integer, intent(out) :: ierr
 end subroutine nc_write_6d
 
-module subroutine nc_write_7d(self, dname, value, dimnames, ierr)
+module subroutine nc_write_7d(self, dname, value, ierr, dimnames)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:,:)
-character(*), intent(in) :: dimnames(:)
+character(*), intent(in), optional :: dimnames(:)
 integer, intent(out) :: ierr
 end subroutine nc_write_7d
 
@@ -173,7 +173,8 @@ end subroutine nc_read_7d
 
 module subroutine def_dims(self, dname, dimnames, dims, dimids, ierr)
 class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname, dimnames(:)
+character(*), intent(in) :: dname
+character(*), intent(in), optional :: dimnames(:)
 integer, intent(in) :: dims(:)
 integer, intent(out) :: dimids(size(dims)), ierr
 end subroutine def_dims

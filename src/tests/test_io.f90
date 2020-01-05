@@ -59,16 +59,16 @@ if(ierr/=0) error stop 'initialize'
 call ncf%write('nan', nan, ierr)
 if(ierr/=0) error stop 'write 0-D: real32 NaN'
 
-call ncf%write('real32-2d', r2, ['x', 'y'], ierr)
+call ncf%write('real32-2d', r2, ierr, ['x', 'y'])
 if(ierr/=0) error stop 'write 2-D: real32'
 
-call ncf%write('real64-2d', real(r2, real64), ['x', 'y'], ierr)
+call ncf%write('real64-2d', real(r2, real64), ierr)
 if(ierr/=0) error stop 'write 2-D: real64'
 
-call ncf%write('int32-2d', i2, ['x', 'y'], ierr)
+call ncf%write('int32-2d', i2, ierr, ['x', 'y'])
 if(ierr/=0) error stop 'write 2-D: int32'
 
-call ncf%write('int64-2d', int(i2, int64), ['x', 'y'], ierr)
+call ncf%write('int64-2d', int(i2, int64), ierr)
 if(ierr/=0) error stop 'write 2-D: int64'
 
 call ncf%finalize(ierr)
