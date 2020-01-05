@@ -135,6 +135,41 @@ class(*), intent(out)      :: value(:,:)
 integer, intent(out) :: ierr
 end subroutine nc_read_2d
 
+module subroutine nc_read_3d(self, dname, value, ierr)
+class(netcdf_file), intent(in)     :: self
+character(*), intent(in)         :: dname
+class(*), intent(out)      :: value(:,:)
+integer, intent(out) :: ierr
+end subroutine nc_read_3d
+
+module subroutine nc_read_4d(self, dname, value, ierr)
+class(netcdf_file), intent(in)     :: self
+character(*), intent(in)         :: dname
+class(*), intent(out)      :: value(:,:)
+integer, intent(out) :: ierr
+end subroutine nc_read_4d
+
+module subroutine nc_read_5d(self, dname, value, ierr)
+class(netcdf_file), intent(in)     :: self
+character(*), intent(in)         :: dname
+class(*), intent(out)      :: value(:,:)
+integer, intent(out) :: ierr
+end subroutine nc_read_5d
+
+module subroutine nc_read_6d(self, dname, value, ierr)
+class(netcdf_file), intent(in)     :: self
+character(*), intent(in)         :: dname
+class(*), intent(out)      :: value(:,:)
+integer, intent(out) :: ierr
+end subroutine nc_read_6d
+
+module subroutine nc_read_7d(self, dname, value, ierr)
+class(netcdf_file), intent(in)     :: self
+character(*), intent(in)         :: dname
+class(*), intent(out)      :: value(:,:)
+integer, intent(out) :: ierr
+end subroutine nc_read_7d
+
 
 module subroutine def_dims(self, dname, dimnames, dims, dimids, ierr)
 class(netcdf_file), intent(in) :: self
