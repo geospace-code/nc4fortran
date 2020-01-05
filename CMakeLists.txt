@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.3)
-project(nc4Fortran Fortran)
+project(nc4fortran Fortran)
 enable_testing()
 
 if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
