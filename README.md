@@ -1,5 +1,7 @@
 # NetCDF
 
+[![DOI](https://zenodo.org/badge/229812591.svg)](https://zenodo.org/badge/latestdoi/229812591)
+
 [![Actions Status](https://github.com/scivision/nc4fortran/workflows/ci_linux/badge.svg)](https://github.com/scivision/nc4fortran/actions)
 [![Actions Status](https://github.com/scivision/nc4fortran/workflows/ci_mac/badge.svg)](https://github.com/scivision/nc4fortran/actions)
 
