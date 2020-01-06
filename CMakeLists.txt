@@ -15,8 +15,6 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/netcdf.cmake)
 
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR})
 
-add_subdirectory(src)
-
 # --- install
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -29,7 +27,6 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX "${HOME}/.local/nc4fortran" CACHE PATH "..." FORCE)
 endif()
 
-install(TARGETS nc4fortran
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX})
-install(FILES ${CMAKE_BINARY_DIR}/nc4fortran.mod DESTINATION ${CMAKE_INSTALL_PREFIX})
+# --- build
+
+add_subdirectory(src)

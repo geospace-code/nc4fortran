@@ -19,3 +19,12 @@ if not meson.is_subproject()
 endif
 
 subdir('src')
+
+netcdf_interface = library('netcdf_interface',
+  sources: nc4_src,
+  dependencies: netcdf,
+  install: true)
+
+if not meson.is_subproject()
+  subdir('src/tests')
+endif
