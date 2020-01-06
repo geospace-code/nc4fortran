@@ -1,7 +1,7 @@
 # NetCDF
 
-[![Actions Status](https://github.com/scivision/nc4fortran/workflows/ci_cmake/badge.svg)](https://github.com/scivision/nc4fortran/actions)
-[![Actions Status](https://github.com/scivision/nc4fortran/workflows/ci_meson/badge.svg)](https://github.com/scivision/nc4fortran/actions)
+[![Actions Status](https://github.com/scivision/nc4fortran/workflows/ci_linux/badge.svg)](https://github.com/scivision/nc4fortran/actions)
+[![Actions Status](https://github.com/scivision/nc4fortran/workflows/ci_mac/badge.svg)](https://github.com/scivision/nc4fortran/actions)
 
 Straightforward single-module access to NetCDF4.
 Designed for easy use as a Meson "subproject" or CMake "ExternalProject" using **static** or **shared** linking.
