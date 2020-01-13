@@ -6,6 +6,8 @@ use netcdf
 use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
 implicit none
+private
+public :: unlink, netcdf_file, NF90_MAX_NAME, NF90_NOERR, check_error
 
 !! at this time, we assume up to 7 dimension NetCDF variable.
 integer, parameter :: NC_MAXDIM = 7
@@ -239,8 +241,7 @@ case ('old', 'unknown')
       return
     endselect
 case('new','replace')
-  inquire(file=filename, exist=exists)
-  if (exists) call unlink(filename)
+  ierr = unlink(filename)
   ierr = nf90_create(self%filename, NF90_NETCDF4, self%ncid)
   if (ierr /= NF90_NOERR) then
     write(stderr,*) 'ERROR: ' // filename // ' could not be created'
@@ -267,6 +268,7 @@ end subroutine nc_finalize
 logical function check_error(code, dname)
 integer, intent(in) :: code
 character(*), intent(in) :: dname
+character(:), allocatable :: m
 
 check_error = .true.
 
@@ -274,33 +276,56 @@ select case (code)
 case (NF90_NOERR)
   check_error = .false.
 case (NF90_EBADNAME)
-  write(stderr,'(/,A)') 'ERROR: ' // dname // ' is the name of another existing variable'
+  m = 'ERROR: ' // dname // ' is the name of another existing variable'
 case (NF90_EBADTYPE)
-  write(stderr,'(/,A)') 'ERROR: ' // dname // ' specified type is not a valid netCDF type'
+  m = 'ERROR: ' // dname // ' specified type is not a valid netCDF type'
 case (NF90_EBADDIM)
-  write(stderr,'(/,A)') 'ERROR: ' // dname // ' invalid dimension ID or Name'
+  m = 'ERROR: ' // dname // ' invalid dimension ID or Name'
 case (NF90_EBADGRPID)
-  write(stderr,'(/,A)') 'ERROR: ' // dname // ' bad group ID in ncid'
+  m = 'ERROR: ' // dname // ' bad group ID in ncid'
 case (NF90_EBADID)
-  write(stderr,'(/,A)') 'ERROR: ' // dname // ' type ID not found'
+  m = 'ERROR: ' // dname // ' type ID not found'
 case (NF90_ENOTVAR)
-  write(stderr,'(/,A)') 'ERROR: ' // dname // ' variable not found'
+  m = 'ERROR: ' // dname // ' variable not found'
 case (NF90_ENOTNC)
-  write(stderr,'(/,A)') 'ERROR: ' // dname // ' not a NetCDF file'
+  m = 'ERROR: ' // dname // ' not a NetCDF file'
 case (NF90_ENAMEINUSE)
-  write(stderr,'(/,A)') 'ERROR: ' // dname // ' string match to name in use'
+  m = 'ERROR: ' // dname // ' string match to name in use'
 case (NF90_ECHAR)
-  write(stderr,'(/,A)') 'ERROR: ' // dname // ' attempt to convert between text & numbers'
+  m = 'ERROR: ' // dname // ' attempt to convert between text & numbers'
 case (NF90_EEDGE)
-  write(stderr,'(/,A)') 'ERROR: ' // dname // ' edge + start exceeds dimension bound'
+  m = 'ERROR: ' // dname // ' edge + start exceeds dimension bound'
 case (NF90_ESTRIDE)
-  write(stderr,'(/,A)') 'ERROR: ' // dname // ' illegal stride'
+  m = 'ERROR: ' // dname // ' illegal stride'
 case (NF90_EINDEFINE)
-  write(stderr,'(/,A)') 'ERROR: ' // dname // ' operation not allowed in define mode'
+  m = 'ERROR: ' // dname // ' operation not allowed in define mode'
 case default
-  write(stderr,'(/,A)') 'ERROR: ' // dname // ' unknown error',code
+  write(stderr,'(/,A,I8)') 'ERROR: ' // dname // ' unknown error',code
+  m = ''
 end select
+
+if(check_error) write(stderr,'(/,A)') m
+
 end function check_error
+
+
+integer function unlink(path) result (ierr)
+!! the non-standard unlink present in some compilers can be unstable
+!! in particular ifort can hang, but not with this standard method
+character(*), intent(in) :: path
+logical :: exists
+integer :: u
+
+ierr = 0
+
+inquire(file=path, exist=exists)
+if(.not.exists) return
+
+open(newunit=u, file=path, status='old', iostat=ierr)
+if(ierr/=0) return
+close(u, status='delete', iostat=ierr)
+
+end function unlink
 
 
 end module nc4fortran
