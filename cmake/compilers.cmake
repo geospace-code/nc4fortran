@@ -11,7 +11,7 @@ if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
     set(CMAKE_Fortran_FLAGS "-stand f18 -traceback -warn -heap-arrays ")
   endif()
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
-  string(APPEND CMAKE_Fortran_FLAGS "-march=native -fimplicit-none -Wno-intrinsic-shadow")
+  string(APPEND CMAKE_Fortran_FLAGS "-march=native -fimplicit-none ")
 
   if(CMAKE_BUILD_TYPE STREQUAL Debug)
     string(APPEND CMAKE_Fortran_FLAGS "-fcheck=all ")
