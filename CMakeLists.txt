@@ -1,19 +1,20 @@
 cmake_minimum_required(VERSION 3.12)  # 3.12 for Fortran submodule
-project(nc4fortran Fortran)
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug or Release")
+endif()
+project(netcdf4fortran_interface
+  LANGUAGES Fortran
+  VERSION 0.1.0
+  HOMEPAGE_URL https://github.com/scivision/nc4fortran)
 enable_testing()
 
-if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
-  add_compile_options(-fimplicit-none)
-elseif(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
-  add_compile_options(-warn declarations)
-elseif(CMAKE_Fortran_COMPILER_ID STREQUAL PGI)
-  add_compile_options(-Mdclchk)
-endif()
+set(CTEST_TEST_TIMEOUT 10)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/netcdf.cmake)
 
-set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # --- install
 

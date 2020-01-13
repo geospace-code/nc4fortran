@@ -1,4 +1,5 @@
 project('nc4fortran', 'fortran',
+  version: '0.1.0',
   default_options : ['default_library=static', 'buildtype=release', 'warning_level=3'])
 
 fc = meson.get_compiler('fortran')
