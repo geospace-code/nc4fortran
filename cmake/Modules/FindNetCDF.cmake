@@ -66,8 +66,6 @@ set(NetCDF_LIBRARY ${NetCDF_LIBRARY} ${NetCDF_Fortran_LIBRARY} PARENT_SCOPE)
 endfunction(netcdf_fortran)
 
 #============================================================
-cmake_policy(VERSION 3.3)
-
 find_package(PkgConfig)
 
 netcdf_c()
