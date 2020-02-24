@@ -5,12 +5,14 @@ on:
     paths:
       - "**.build"
       - "**.txt"
+      - "**.cmake"
       - "**.f90"
       - ".github/workflows/ci_linux.yml"
   pull_request:
     paths:
       - "**.build"
       - "**.txt"
+      - "**.cmake"
       - "**.f90"
       - ".github/workflows/ci_linux.yml"
 
@@ -19,23 +21,23 @@ jobs:
   meson:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - uses: actions/setup-python@v1
       with:
         python-version: '3.x'
 
-    - run: pip install meson ninja
-    - name: Install packages
-      run: |
+    - run: pip install -r requirements.txt
+    - run: |
         sudo apt update -yq
-        sudo apt install -yq --no-install-recommends gfortran libnetcdff-dev
+        sudo apt install -yq --no-install-recommends ninja-build gfortran libnetcdff-dev
 
     - run: meson setup build
       env:
         FC: gfortran
+
     - run: ninja -C build
 
-      # this catches configuration and build log
+    # this catches configuration and build log
     - uses: actions/upload-artifact@v1
       if: failure()
       with:
@@ -52,31 +54,29 @@ jobs:
   cmake:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.x'
 
-    - name: Install packages
-      run: |
+    - run: |
+        pip install cmake
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends gfortran libnetcdff-dev
 
     - name: CMake configure
-      run: |
-        mkdir build
-        cd build
-        cmake ..
+      run: cmake -B build
       env:
         FC: gfortran
     - run: cmake --build build --parallel
-
     - uses: actions/upload-artifact@v1
       if: failure()
       with:
         name: Linux_CMake_Buildlog
         path: build/CMakeFiles/CMakeError.log
 
-    - run: ctest --parallel
+    - run: ctest -V
       working-directory: build
-
     - uses: actions/upload-artifact@v1
       if: failure()
       with:

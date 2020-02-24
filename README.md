@@ -1,15 +1,16 @@
-# NetCDF
+# Object-oriented Fortran 2008 NetCDF4 interface
 
 [![DOI](https://zenodo.org/badge/229812591.svg)](https://zenodo.org/badge/latestdoi/229812591)
 
-[![Actions Status](https://github.com/scivision/nc4fortran/workflows/ci_linux/badge.svg)](https://github.com/scivision/nc4fortran/actions)
-[![Actions Status](https://github.com/scivision/nc4fortran/workflows/ci_mac/badge.svg)](https://github.com/scivision/nc4fortran/actions)
+![ci_linux](https://github.com/scivision/nc4fortran/workflows/ci_linux/badge.svg)
+![ci_mac](https://github.com/scivision/nc4fortran/workflows/ci_mac/badge.svg)
 
-Straightforward single-module access to NetCDF4.
+Simple, robust, thin HDF5 polymorphic read/write interface.
 For HDF5 see [h5fortran](https://github.com/scivision/h5fortran).
 Designed for easy use as a Meson "subproject" or CMake "ExternalProject" using **static** or **shared** linking.
 Uses Fortran 2008 `submodule` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of NetCDF4 so that you can read/write various types/ranks of data with a single command.
+In distinction from other high-level NetCDF4 interfaces, nc4fortran works to deduplicate code, using polymorphism wherever feasible and extensive test suite.
 
 Polymorphic API with read/write for types int32, int64, real32, real64 with rank:
 
@@ -17,7 +18,7 @@ Polymorphic API with read/write for types int32, int64, real32, real64 with rank
 * 1-D .. 7-D
 
 Mismatched datatypes are coerced as per standard Fortran rules.
-For example, reading a float NetCDF variable into an integer Fortran variable:  42.3 => 42
+For example, reading a float NetCDF4 variable into an integer Fortran variable:  42.3 => 42
 
 Tested on systems with NetCDF4 including:
 
@@ -26,14 +27,6 @@ Tested on systems with NetCDF4 including:
 * Windows Subsystem for Linux
 
 Currently, Cygwin and MSYS2 do not have *Fortran* NetCDF4 libraries.
-
-## Not yet handled
-
-It's possible to do these things, if there is user need.
-
-* character variables
-* arrays of rank > 7
-* complex64 / complex128
 
 ## Build
 
@@ -53,9 +46,11 @@ Platforms that currently do **not** have Fortran NetCDF4 libraries, and thus wil
 * MSYS2
 
 Build this NetCDF OO Fortran interface with Meson or CMake.
-The library `libnetcdf_interface.a` is built, link it into your program as usual.
+The library `libnc4fortran.a` is built, link it into your program as usual.
 
 ### Meson
+
+To build nc4fortran as a standalone project
 
 ```sh
 meson build
@@ -109,23 +104,19 @@ or set environment variable `NetCDF_ROOT=/path/to/netcdff`
 To use nc4fortran as a CMake ExternalProject do like:
 
 ```cmake
-include(ExternalProject)
+include(FetchContent)
 
-ExternalProject_Add(nc4fortran
-  GIT_REPOSITORY https://github.com/scivision/nc4fortran.git
-  GIT_TAG master  # it's better to use a specific Git tag for reproducibility
-  INSTALL_COMMAND ""  # disables the install step for the external project
+FetchContent_Declare(nc4fortran_proj
+  GIT_REPOSITORY https://github.com/scivision/h5fortran.git
+  GIT_TAG master  # whatever desired version is
 )
 
-ExternalProject_Get_Property(nc4fortran BINARY_DIR)
-set(nc4fortran_BINARY_DIR BINARY_DIR)  # just to avoid accidentally reusing the variable name.
+FetchContent_MakeAvailable(nc4fortran_proj)
 
-# your code "myio"
-add_executable(myio myio.f90)
-add_dependencies(myio nc4fortran)
-target_link_directories(myio PRIVATE ${nc4fortran_BINARY_DIR})
-target_link_libraries(myio PRIVATE nc4fortran)
-target_include_directories(myio PRIVATE ${nc4fortran_BINARY_DIR})
+# ------------------------------------------------------
+# whatever your program is
+add_executable(myProj main.f90)
+target_link_libraries(myProj nc4fortran::nc4fortran)
 ```
 
 ## Usage
@@ -134,7 +125,7 @@ All examples assume:
 
 ```fortran
 use nc4fortran, only: netcdf_file
-type(netcdf_file) :: ncf
+type(netcdf_file) :: hf
 ```
 
 * gzip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value betwen 1 and 9.
@@ -151,11 +142,11 @@ have exception handling.
 ### Create new NetCDF file, with variable "value1"
 
 ```fortran
-call ncf%initialize('test.h5', ierr, status='new',action='w')
+call hf%initialize('test.h5', ierr, status='new',action='w')
 
-call ncf%write('value1', 123., ierr)
+call hf%write('value1', 123., ierr)
 
-call ncf%finalize(ierr)
+call hf%finalize(ierr)
 ```
 
 ### Add/append variable "value1" to existing NetCDF file "test.h5"
@@ -164,11 +155,11 @@ call ncf%finalize(ierr)
 * if file `test.h5` does not exist, create it and add a variable to it.
 
 ```fortran
-call ncf%initialize('test.h5', ierr, status='unknown', action='rw')
+call hf%initialize('test.h5', ierr, status='unknown',action='rw')
 
-call ncf%write('value1', 123., ierr)
+call hf%write('value1', 123., ierr)
 
-call ncf%finalize(ierr)
+call hf%finalize(ierr)
 ```
 
 ### Read scalar, 3-D array of unknown size

@@ -190,8 +190,6 @@ end subroutine write_attribute
 
 end interface
 
-integer, parameter :: ENOENT = 2, EIO = 5
-
 contains
 
 subroutine nc_initialize(self,filename,ierr, status,action,comp_lvl)
@@ -224,7 +222,7 @@ case ('old', 'unknown')
       inquire(file=filename, exist=exists)
       if (.not.exists) then
         write(stderr,*) 'ERROR: ' // filename // ' does not exist.'
-        ierr = ENOENT
+        ierr = -1
         return
       endif
       ierr = nf90_open(self%filename, NF90_NOWRITE, self%ncid)
@@ -232,27 +230,25 @@ case ('old', 'unknown')
       ierr = nf90_open(self%filename, NF90_NETCDF4, self%ncid)
       if (ierr /= NF90_NOERR) then
         write(stderr,*) 'ERROR: ' // filename // ' could not be opened'
-        ierr = EIO
-        return
+        ierr = -1
       endif
     case default
       write(stderr,*) 'Unsupported action -> ' // laction
       ierr = 128
-      return
     endselect
 case('new','replace')
   ierr = unlink(filename)
   ierr = nf90_create(self%filename, NF90_NETCDF4, self%ncid)
   if (ierr /= NF90_NOERR) then
     write(stderr,*) 'ERROR: ' // filename // ' could not be created'
-    ierr = EIO
+    ierr = -1
     return
   endif
 case default
   write(stderr,*) 'Unsupported status -> '// lstatus
   ierr = 128
-  return
 endselect
+
 end subroutine nc_initialize
 
 

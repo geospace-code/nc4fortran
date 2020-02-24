@@ -1,3 +1,5 @@
+set(tmpdir ${CMAKE_CURRENT_BINARY_DIR})
+
 add_executable(test_io test_io.f90)
 target_link_libraries(test_io PRIVATE nc4fortran::nc4fortran)
 if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)

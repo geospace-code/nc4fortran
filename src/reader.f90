@@ -1,8 +1,9 @@
 submodule (nc4fortran:read) reader
+!! This submodule is for reading 0-D..7-D data
 
 implicit none
-
 contains
+
 
 module procedure nc_read_scalar
 integer :: varid
