@@ -59,13 +59,13 @@ meson test -C build
 ```
 
 Meson &ge; 0.53.0 has enhanced NetCDF dependency finding and is recommended.
-To include nc4fotran as a Meson subproject, in the master project meson.build (that uses nc4fortran) have like:
+To include nc4fortran as a Meson subproject, in the master project meson.build (that uses nc4fortran) have like:
 
 ```meson
 nc4_proj = subproject('nc4fortran')
 nc4_interface = nc4_proj.get_variable('nc4_interface')
 
-my_exe = exectuable('myexe', 'main.f90', dependencies: nc4_interface)
+my_exe = executable('myexe', 'main.f90', dependencies: nc4_interface)
 ```
 
 and have a file in the master project `subprojects/nc4fortran.wrap` containing:
@@ -128,12 +128,12 @@ use nc4fortran, only: netcdf_file
 type(netcdf_file) :: hf
 ```
 
-* gzip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value betwen 1 and 9.
+* gzip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value between 1 and 9.
   Shuffle filter is automatically applied for better compression
 * string attributes may be applied to any variable at time of writing or later.
 * `chunk_size` option may be set for better compression
 
-`integer, intent(out) :: ierr` is opttional.
+`integer, intent(out) :: ierr` is optional.
 It will be non-zero if error detected.
 This value should be checked, particularly for write operations to avoid missing error conditions.
 If `ierr` is omitted, nc4fortran will `error stop` on error.
