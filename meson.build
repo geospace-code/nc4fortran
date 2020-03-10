@@ -1,6 +1,6 @@
 project('nc4fortran', 'fortran',
   meson_version : '>=0.52.0',
-  version: '0.2.0',
+  version: '0.3.0',
   default_options : ['default_library=static', 'buildtype=release', 'warning_level=3'])
 
 subdir('meson')

@@ -23,7 +23,7 @@ do i=1,size(dims)
   else
     write(name,'(A,I1)') "dim",i
     ierr = nf90_def_dim(self%ncid, trim(name), dims(i), dimids(i))
-    print*,trim(name)
+    ! print *,trim(name)
   endif
   if (check_error(ierr, dname)) return
 end do
@@ -32,13 +32,17 @@ end procedure def_dims
 
 
 module procedure write_attribute
-integer :: varid
+integer :: varid, ier
 
-ierr = nf90_inq_varid(self%ncid, dname, varid)
-if (check_error(ierr, dname)) return
+ier = nf90_inq_varid(self%ncid, dname, varid)
 
-ierr = nf90_put_att(self%ncid, varid, attrname, value)
-if (check_error(ierr, dname)) return
+if(ierr == nf90_noerr) ier = nf90_put_att(self%ncid, varid, attrname, value)
+
+if (present(ierr)) ierr = ier
+if (check_error(ierr, dname)) then
+  if (present(ierr)) return
+  error stop
+endif
 
 end procedure write_attribute
 

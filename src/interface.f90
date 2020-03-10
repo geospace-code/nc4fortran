@@ -47,72 +47,71 @@ module subroutine nc_write_scalar(self, dname, value, ierr)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine nc_write_scalar
 
-module subroutine nc_write_1d(self, dname, value, ierr, dimnames)
+module subroutine nc_write_1d(self, dname, value, dimnames, ierr)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:)
 character(*), intent(in), optional :: dimnames(:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine nc_write_1d
 
-module subroutine nc_write_2d(self, dname, value, ierr, dimnames)
+module subroutine nc_write_2d(self, dname, value, dimnames, ierr)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:)
 character(*), intent(in), optional :: dimnames(:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine nc_write_2d
 
-module subroutine nc_write_3d(self, dname, value, ierr, dimnames)
+module subroutine nc_write_3d(self, dname, value, dimnames, ierr)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:)
 character(*), intent(in), optional :: dimnames(:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine nc_write_3d
 
-module subroutine nc_write_4d(self, dname, value, ierr, dimnames)
+module subroutine nc_write_4d(self, dname, value, dimnames, ierr)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:)
 character(*), intent(in), optional :: dimnames(:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine nc_write_4d
 
-module subroutine nc_write_5d(self, dname, value, ierr, dimnames)
+module subroutine nc_write_5d(self, dname, value, dimnames, ierr)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:)
 character(*), intent(in), optional :: dimnames(:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine nc_write_5d
 
-module subroutine nc_write_6d(self, dname, value, ierr, dimnames)
+module subroutine nc_write_6d(self, dname, value, dimnames, ierr)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:)
 character(*), intent(in), optional :: dimnames(:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine nc_write_6d
 
-module subroutine nc_write_7d(self, dname, value, ierr, dimnames)
+module subroutine nc_write_7d(self, dname, value, dimnames, ierr)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:,:)
 character(*), intent(in), optional :: dimnames(:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine nc_write_7d
 
 
-module subroutine nc_get_shape(self, dname, dimnames, dims, ierr)
+module subroutine nc_get_shape(self, dname, dimnames, dims)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 character(NF90_MAX_NAME), allocatable :: dimnames(:)
 integer, intent(out), allocatable :: dims(:)
-integer, intent(out) :: ierr
 end subroutine nc_get_shape
 
 
@@ -120,56 +119,56 @@ module subroutine nc_read_scalar(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine nc_read_scalar
 
 module subroutine nc_read_1d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out)      :: value(:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine nc_read_1d
 
 module subroutine nc_read_2d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out)      :: value(:,:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine nc_read_2d
 
 module subroutine nc_read_3d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out)      :: value(:,:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine nc_read_3d
 
 module subroutine nc_read_4d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out)      :: value(:,:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine nc_read_4d
 
 module subroutine nc_read_5d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out)      :: value(:,:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine nc_read_5d
 
 module subroutine nc_read_6d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out)      :: value(:,:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine nc_read_6d
 
 module subroutine nc_read_7d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out)      :: value(:,:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine nc_read_7d
 
 
@@ -185,7 +184,7 @@ end subroutine def_dims
 module subroutine write_attribute(self, dname, attrname, value, ierr)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname, attrname, value
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine write_attribute
 
 end interface
@@ -195,15 +194,15 @@ contains
 subroutine nc_initialize(self,filename,ierr, status,action,comp_lvl)
 !! Opens NetCDF file
 
-class(netcdf_file), intent(inout)  :: self
-character(*), intent(in)           :: filename
-integer, intent(out)               :: ierr
+class(netcdf_file), intent(inout) :: self
+character(*), intent(in) :: filename
+integer, intent(out), optional :: ierr
 character(*), intent(in), optional :: status
 character(*), intent(in), optional :: action
-integer, intent(in), optional      :: comp_lvl
+integer, intent(in), optional :: comp_lvl
 
 character(:), allocatable :: lstatus, laction
-logical :: exists
+integer :: ier
 
 self%filename = filename
 
@@ -219,45 +218,44 @@ select case(lstatus)
 case ('old', 'unknown')
   select case(laction)
     case('read','r')  !< Open an existing file.
-      inquire(file=filename, exist=exists)
-      if (.not.exists) then
-        write(stderr,*) 'ERROR: ' // filename // ' does not exist.'
-        ierr = -1
-        return
-      endif
-      ierr = nf90_open(self%filename, NF90_NOWRITE, self%ncid)
+      ier = nf90_open(self%filename, NF90_NOWRITE, self%ncid)
     case('write','readwrite','w','rw', 'r+', 'append', 'a')
-      ierr = nf90_open(self%filename, NF90_NETCDF4, self%ncid)
-      if (ierr /= NF90_NOERR) then
-        write(stderr,*) 'ERROR: ' // filename // ' could not be opened'
-        ierr = -1
-      endif
+      ier = nf90_open(self%filename, NF90_NETCDF4, self%ncid)
     case default
-      write(stderr,*) 'Unsupported action -> ' // laction
-      ierr = 128
-    endselect
+      write(stderr,*) 'ERROR:initialize: Unsupported action -> ' // laction
+      ier = 128
+    end select
 case('new','replace')
-  ierr = unlink(filename)
-  ierr = nf90_create(self%filename, NF90_NETCDF4, self%ncid)
-  if (ierr /= NF90_NOERR) then
-    write(stderr,*) 'ERROR: ' // filename // ' could not be created'
-    ierr = -1
-    return
-  endif
+  ier = unlink(filename)
+  ier = nf90_create(self%filename, NF90_NETCDF4, self%ncid)
 case default
-  write(stderr,*) 'Unsupported status -> '// lstatus
-  ierr = 128
-endselect
+  write(stderr,*) 'ERROR:initialize: Unsupported status -> '// lstatus
+  ier = 128
+end select
+
+if (present(ierr)) ierr = ier
+if (ier /= NF90_NOERR) then
+  write(stderr,*) 'ERROR:initialize ' // filename // ' could not be created'
+  if (present(ierr)) return
+  error stop
+endif
 
 end subroutine nc_initialize
 
 
 subroutine nc_finalize(self, ierr)
 class(netcdf_file), intent(in) :: self
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 
-ierr = nf90_close(self%ncid)
-if (ierr /= 0) write(stderr,*) 'ERROR: file close: ' // self%filename
+integer :: ier
+
+ier = nf90_close(self%ncid)
+if (present(ierr)) ierr = ier
+if (ier /= NF90_NOERR) then
+  write(stderr,*) 'ERROR:finalize: ' // self%filename
+  if (present(ierr)) return
+  error stop
+endif
 end subroutine nc_finalize
 
 

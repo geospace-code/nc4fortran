@@ -4,7 +4,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 project(nc4fortran
   LANGUAGES Fortran
-  VERSION 0.2.0
+  VERSION 0.3.0
   DESCRIPTION "thin, light, easy NetCDF4 Fortran interface"
   HOMEPAGE_URL https://github.com/scivision/nc4fortran)
 enable_testing()
@@ -15,15 +15,18 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/netcdf.cmake)
 
 if(NOT NCDFOK)
-  message(STATUS "NetCDF4 not linking with ${CMAKE_Fortran_COMPILER_ID} ${CMAKE_Fortran_COMPILER_VERSION}")
-  message(STATUS "nc4fortran disabled")
-  unset(nc4fortran)
-  unset(nc4fortran::nc4fortran)
+
+  message(STATUS "NetCDF4 not working with ${CMAKE_Fortran_COMPILER_ID} ${CMAKE_Fortran_COMPILER_VERSION}")
+
   if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     message(FATAL_ERROR)
-  else()
-    return()
   endif()
+
+  unset(nc4fortran)
+  unset(nc4fortran::nc4fortran)
+  message(STATUS "nc4fortran disabled")
+  return()
+
 endif(NOT NCDFOK)
 
 set(CTEST_TEST_TIMEOUT 15)
@@ -33,10 +36,11 @@ set(CTEST_TEST_TIMEOUT 15)
 add_library(nc4fortran)
 target_include_directories(nc4fortran
   PRIVATE ${NetCDF_INCLUDE_DIRS}
+  PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/include  # for IBM XL
   INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-target_link_libraries(nc4fortran PRIVATE ${NetCDF_LIBRARIES})
+target_link_libraries(nc4fortran PUBLIC ${NetCDF_LIBRARIES})
 set_target_properties(nc4fortran PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
 add_library(nc4fortran::nc4fortran ALIAS nc4fortran)
 

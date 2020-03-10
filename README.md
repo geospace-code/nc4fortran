@@ -133,20 +133,19 @@ type(netcdf_file) :: hf
 * string attributes may be applied to any variable at time of writing or later.
 * `chunk_size` option may be set for better compression
 
-`integer, intent(out) :: ierr` is a mandatory parameter. It will be non-zero if error detected.
+`integer, intent(out) :: ierr` is opttional.
+It will be non-zero if error detected.
 This value should be checked, particularly for write operations to avoid missing error conditions.
-The design choice to keep `error stop` out of nc4fortran was in line with the NetCDF library itself.
-Major Fortran libraries like MPI also make this design choice, perhaps since Fortran doesn't currently
-have exception handling.
+If `ierr` is omitted, nc4fortran will `error stop` on error.
 
 ### Create new NetCDF file, with variable "value1"
 
 ```fortran
-call hf%initialize('test.h5', ierr, status='new',action='w')
+call hf%initialize('test.h5', status='new',action='w')
 
-call hf%write('value1', 123., ierr)
+call hf%write('value1', 123.)
 
-call hf%finalize(ierr)
+call hf%finalize()
 ```
 
 ### Add/append variable "value1" to existing NetCDF file "test.h5"
@@ -155,27 +154,27 @@ call hf%finalize(ierr)
 * if file `test.h5` does not exist, create it and add a variable to it.
 
 ```fortran
-call hf%initialize('test.h5', ierr, status='unknown',action='rw')
+call hf%initialize('test.h5', status='unknown',action='rw')
 
-call hf%write('value1', 123., ierr)
+call hf%write('value1', 123.)
 
-call hf%finalize(ierr)
+call hf%finalize()
 ```
 
 ### Read scalar, 3-D array of unknown size
 
 ```fortran
-call ncf%initialize('test.h5', ierr, status='old',action='r')
+call ncf%initialize('test.h5', status='old',action='r')
 
 integer, allocatable :: dims(:)
 character(256), allocatable :: dimnames
 real, allocatable :: A(:,:,:)
 
-call ncf%shape('foo', dims, dimnames, ierr)
+call ncf%shape('foo', dims, dimnames)
 allocate(A(dims(1), dims(2), dims(3)))
 call ncf%read('foo', A)
 
-call ncf%finalize(ierr)
+call ncf%finalize()
 ```
 
 ## Permissive syntax

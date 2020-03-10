@@ -1,3 +1,5 @@
+set(CMAKE_CONFIGURATION_TYPES "Release;Debug" CACHE STRING "Build type selections" FORCE)
+
 if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
   if(WIN32)
     string(APPEND CMAKE_Fortran_FLAGS " /stand:f18 /traceback /warn /heap-arrays")
@@ -6,8 +8,9 @@ if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
   endif()
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   string(APPEND CMAKE_Fortran_FLAGS " -Wall -Wextra -fimplicit-none")
-  string(APPEND CMAKE_Fortran_FLAGS_DEBUG " -fcheck=all")
-  add_compile_options(-march=native)
+  string(APPEND CMAKE_Fortran_FLAGS_DEBUG " -fcheck=all -Werror=array-bounds")
+  # -march=native is not for all CPU arches with GCC.
+  add_compile_options(-mtune=native)
 
   if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 8)
     string(APPEND CMAKE_Fortran_FLAGS " -std=f2018")

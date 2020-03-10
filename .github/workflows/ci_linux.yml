@@ -9,12 +9,7 @@ on:
       - "**.f90"
       - ".github/workflows/ci_linux.yml"
   pull_request:
-    paths:
-      - "**.build"
-      - "**.txt"
-      - "**.cmake"
-      - "**.f90"
-      - ".github/workflows/ci_linux.yml"
+  release:
 
 jobs:
 
