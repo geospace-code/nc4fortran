@@ -9,19 +9,21 @@ module procedure nc_read_scalar
 integer :: varid, ier
 ier = nf90_inq_varid(self%ncid, dname, varid)
 
+if(ier == NF90_NOERR) then
 select type (value)
 type is (real(real64))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (real(real32))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (integer(int64))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (integer(int32))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by nc4fortran.'
   ier = NF90_EBADTYPE
 end select
+endif
 
 if (present(ierr)) ierr = ier
 if (check_error(ier, dname)) then
@@ -36,19 +38,21 @@ module procedure nc_read_1d
 integer :: varid, ier
 ier = nf90_inq_varid(self%ncid, dname, varid)
 
+if(ier == NF90_NOERR) then
 select type (value)
 type is (real(real64))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (real(real32))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (integer(int64))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (integer(int32))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by nc4fortran.'
   ier = NF90_EBADTYPE
 end select
+endif
 
 if (present(ierr)) ierr = ier
 if (check_error(ier, dname)) then
@@ -63,19 +67,21 @@ module procedure nc_read_2d
 integer :: varid, ier
 ier = nf90_inq_varid(self%ncid, dname, varid)
 
+if(ier == NF90_NOERR) then
 select type (value)
 type is (real(real64))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (real(real32))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (integer(int64))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (integer(int32))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by nc4fortran.'
   ier = NF90_EBADTYPE
 end select
+endif
 
 if (present(ierr)) ierr = ier
 if (check_error(ier, dname)) then
@@ -89,19 +95,21 @@ module procedure nc_read_3d
 integer :: varid, ier
 ier = nf90_inq_varid(self%ncid, dname, varid)
 
+if(ier == NF90_NOERR) then
 select type (value)
 type is (real(real64))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (real(real32))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (integer(int64))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (integer(int32))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by nc4fortran.'
   ier = NF90_EBADTYPE
 end select
+endif
 
 if (present(ierr)) ierr = ier
 if (check_error(ier, dname)) then
@@ -115,19 +123,21 @@ module procedure nc_read_4d
 integer :: varid, ier
 ier = nf90_inq_varid(self%ncid, dname, varid)
 
+if(ier == NF90_NOERR) then
 select type (value)
 type is (real(real64))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (real(real32))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (integer(int64))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (integer(int32))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by nc4fortran.'
   ier = NF90_EBADTYPE
 end select
+endif
 
 if (present(ierr)) ierr = ier
 if (check_error(ier, dname)) then
@@ -141,19 +151,21 @@ module procedure nc_read_5d
 integer :: varid, ier
 ier = nf90_inq_varid(self%ncid, dname, varid)
 
+if(ier == NF90_NOERR) then
 select type (value)
 type is (real(real64))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (real(real32))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (integer(int64))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (integer(int32))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by nc4fortran.'
   ier = NF90_EBADTYPE
 end select
+endif
 
 if (present(ierr)) ierr = ier
 if (check_error(ier, dname)) then
@@ -167,19 +179,21 @@ module procedure nc_read_6d
 integer :: varid, ier
 ier = nf90_inq_varid(self%ncid, dname, varid)
 
+if(ier == NF90_NOERR) then
 select type (value)
 type is (real(real64))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (real(real32))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (integer(int64))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (integer(int32))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by nc4fortran.'
   ier = NF90_EBADTYPE
 end select
+endif
 
 if (present(ierr)) ierr = ier
 if (check_error(ier, dname)) then
@@ -193,19 +207,21 @@ module procedure nc_read_7d
 integer :: varid, ier
 ier = nf90_inq_varid(self%ncid, dname, varid)
 
+if(ier == NF90_NOERR) then
 select type (value)
 type is (real(real64))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (real(real32))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (integer(int64))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 type is (integer(int32))
-  if(ier == NF90_NOERR) ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%ncid, varid, value)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by nc4fortran.'
   ier = NF90_EBADTYPE
 end select
+endif
 
 if (present(ierr)) ierr = ier
 if (check_error(ier, dname)) then
