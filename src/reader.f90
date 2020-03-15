@@ -4,7 +4,6 @@ submodule (nc4fortran:read) reader
 implicit none
 contains
 
-
 module procedure nc_read_scalar
 integer :: varid, ier
 ier = nf90_inq_varid(self%ncid, dname, varid)

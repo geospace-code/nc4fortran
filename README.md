@@ -148,6 +148,16 @@ call hf%write('value1', 123.)
 call hf%finalize()
 ```
 
+### Check if variable exists
+
+This will not raise error stop, even if the file isn't initialized, but it will print a message to stderr.
+
+```fortran
+logical :: exists
+
+exists = hf%exist('fooname')
+```
+
 ### Add/append variable "value1" to existing NetCDF file "test.h5"
 
 * if file `test.h5` exists, add a variable to it

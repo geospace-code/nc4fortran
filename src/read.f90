@@ -27,4 +27,22 @@ dimnames = tempnames(:N)
 end procedure nc_get_shape
 
 
+module procedure nc_check_exist
+integer :: varid, ierr
+ierr = nf90_inq_varid(self%ncid, dname, varid)
+
+exists = .false.
+select case (ierr)
+case (NF90_NOERR)
+  exists = .true.
+case (NF90_EBADID)
+  write(stderr,*) 'check_exist: ERROR: is file initialized?  ', self%filename
+case (NF90_ENOTVAR)
+  if (self%verbose) write(stderr,*) dname, ' does not exist in ', self%filename
+case default
+  write(stderr,*) 'check_exist: ERROR unknown problem ', self%filename
+end select
+
+end procedure nc_check_exist
+
 end submodule read

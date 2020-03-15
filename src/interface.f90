@@ -19,23 +19,24 @@ character(:), allocatable  :: filename
 integer :: ncid   !< location identifier
 
 integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
+logical :: verbose = .false.
+logical :: debug = .false.
 
 contains
 
 !> initialize NetCDF file
 procedure, public :: initialize => nc_initialize, finalize => nc_finalize, &
-  shape => nc_get_shape, write_attribute
-!  open => nc_open_group, close => nc_close_group
+  shape => nc_get_shape, write_attribute, &
+  exist=>nc_check_exist, exists=>nc_check_exist
 
 !> write group or dataset integer/real
 generic, public :: write => nc_write_scalar, nc_write_1d, nc_write_2d, nc_write_3d, &
   nc_write_4d, nc_write_5d, nc_write_6d, nc_write_7d
-  !, nc_write_group
 
-generic, public :: read => nc_read_scalar, nc_read_1d, nc_read_2d
+generic, public :: read => nc_read_scalar, nc_read_1d, nc_read_2d, nc_read_3d, nc_read_4d, nc_read_5d, nc_read_6d, nc_read_7d
 
 procedure, private :: nc_write_scalar, nc_write_1d, nc_write_2d, nc_write_3d, nc_write_4d, nc_write_5d, nc_write_6d, nc_write_7d, &
-  nc_read_scalar, nc_read_1d, nc_read_2d, &
+  nc_read_scalar, nc_read_1d, nc_read_2d, nc_read_3d, nc_read_4d, nc_read_5d, nc_read_6d, nc_read_7d, &
   def_dims
 
 end type netcdf_file
@@ -108,11 +109,16 @@ end subroutine nc_write_7d
 
 
 module subroutine nc_get_shape(self, dname, dimnames, dims)
-class(netcdf_file), intent(in)     :: self
+class(netcdf_file), intent(in)  :: self
 character(*), intent(in)         :: dname
 character(NF90_MAX_NAME), allocatable :: dimnames(:)
 integer, intent(out), allocatable :: dims(:)
 end subroutine nc_get_shape
+
+module logical function nc_check_exist(self, dname) result(exists)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+end function nc_check_exist
 
 
 module subroutine nc_read_scalar(self, dname, value, ierr)
@@ -139,35 +145,35 @@ end subroutine nc_read_2d
 module subroutine nc_read_3d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out)      :: value(:,:)
+class(*), intent(out)      :: value(:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine nc_read_3d
 
 module subroutine nc_read_4d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out)      :: value(:,:)
+class(*), intent(out)      :: value(:,:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine nc_read_4d
 
 module subroutine nc_read_5d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out)      :: value(:,:)
+class(*), intent(out)      :: value(:,:,:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine nc_read_5d
 
 module subroutine nc_read_6d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out)      :: value(:,:)
+class(*), intent(out)      :: value(:,:,:,:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine nc_read_6d
 
 module subroutine nc_read_7d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out)      :: value(:,:)
+class(*), intent(out)      :: value(:,:,:,:,:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine nc_read_7d
 
@@ -191,7 +197,7 @@ end interface
 
 contains
 
-subroutine nc_initialize(self,filename,ierr, status,action,comp_lvl)
+subroutine nc_initialize(self,filename,ierr, status,action,comp_lvl,verbose,debug)
 !! Opens NetCDF file
 
 class(netcdf_file), intent(inout) :: self
@@ -200,6 +206,7 @@ integer, intent(out), optional :: ierr
 character(*), intent(in), optional :: status
 character(*), intent(in), optional :: action
 integer, intent(in), optional :: comp_lvl
+logical, intent(in), optional      :: verbose, debug
 
 character(:), allocatable :: lstatus, laction
 integer :: ier
@@ -207,6 +214,8 @@ integer :: ier
 self%filename = filename
 
 if (present(comp_lvl)) self%comp_lvl = comp_lvl
+if (present(verbose)) self%verbose = verbose
+if (present(debug)) self%debug = debug
 
 lstatus = 'old'
 if(present(status)) lstatus = toLower(status)

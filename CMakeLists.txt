@@ -4,7 +4,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 project(nc4fortran
   LANGUAGES Fortran
-  VERSION 0.3.0
+  VERSION 0.4.0
   DESCRIPTION "thin, light, easy NetCDF4 Fortran interface"
   HOMEPAGE_URL https://github.com/scivision/nc4fortran)
 enable_testing()

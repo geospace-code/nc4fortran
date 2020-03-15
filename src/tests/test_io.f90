@@ -18,6 +18,9 @@ path = trim(argv)
 
 print *, 'test path: ', path
 
+call test_exist(path)
+print *, 'OK: exist check'
+
 call test_scalar(path)
 print *, 'OK: scalar'
 
@@ -25,6 +28,21 @@ call test_array(path)
 print *,'OK: array'
 
 contains
+
+
+subroutine test_exist(path)
+character(*), intent(in) :: path
+type(netcdf_file) :: hf
+
+if (hf%exist('foovar')) error stop 'variable and file not exists and not opened'
+
+call hf%initialize(path // '/scalar.nc', status='replace', action='w')
+call hf%write('here', 12)
+if(.not. hf%exist('here')) error stop 'variable exists'
+if(hf%exist('nothere')) error stop 'variable does not actually exist'
+
+end subroutine test_exist
+
 
 subroutine test_scalar(path)
 
