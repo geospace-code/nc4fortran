@@ -88,7 +88,7 @@ integer, allocatable :: dims(:)
 character(NF90_MAX_NAME), allocatable :: dimnames(:)
 
 integer :: i1(4)
-real(real32)    :: r1(4), r2(4,4), B(6,6)
+real(real32)    :: r1(4), r2(4,4), B(6,6), r4(1,2,3,4)
 integer(int32), dimension(4,4) :: i2, i2t
 integer(int64), dimension(4,4) :: i2t64
 real(real32), allocatable :: rr2(:,:)
@@ -118,6 +118,8 @@ call hf%write('real64-2d', real(r2, real64))
 call hf%write('int32-2d', i2, ['x', 'y'])
 
 call hf%write('int64-2d', int(i2, int64))
+
+call hf%write('real32-4d', r4, ['a','b','c','d'])
 
 call hf%finalize()
 print *, 'array: wrote all values'
