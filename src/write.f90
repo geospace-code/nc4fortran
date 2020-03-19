@@ -1,7 +1,5 @@
 submodule (nc4fortran) write
 !! This submodule is for writing NetCDF data via child submodules
-use netcdf, only : nf90_def_dim, nf90_def_var, nf90_enddef, nf90_put_var, nf90_sync
-
 implicit none
 contains
 

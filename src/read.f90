@@ -1,7 +1,5 @@
 submodule (nc4fortran) read
 !! This submodule is for reading NetCDF via submodules
-use netcdf, only : nf90_inq_varid, nf90_get_var
-
 implicit none
 
 contains
