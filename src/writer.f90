@@ -38,7 +38,7 @@ end procedure nc_write_scalar
 module procedure nc_write_1d
 integer :: varid, dimids(rank(value)),ier
 
-call self%def_dims(dname, dimnames, shape(value), dimids, ier)
+call self%def_dims(dname, dims, shape(value), dimids, ier)
 
 select type (value)
 type is (real(real64))
@@ -70,7 +70,7 @@ end procedure nc_write_1d
 module procedure nc_write_2d
 integer :: varid, dimids(rank(value)), ier
 
-call self%def_dims(dname, dimnames, shape(value), dimids, ier)
+call self%def_dims(dname, dims, shape(value), dimids, ier)
 
 select type (value)
 type is (real(real64))
@@ -102,7 +102,7 @@ end procedure nc_write_2d
 module procedure nc_write_3d
 integer :: varid, dimids(rank(value)), ier
 
-call self%def_dims(dname, dimnames, shape(value), dimids, ier)
+call self%def_dims(dname, dims, shape(value), dimids, ier)
 
 select type (value)
 type is (real(real64))
@@ -134,7 +134,7 @@ end procedure nc_write_3d
 module procedure nc_write_4d
 integer :: varid, dimids(rank(value)), ier
 
-call self%def_dims(dname, dimnames, shape(value), dimids, ier)
+call self%def_dims(dname, dims, shape(value), dimids, ier)
 
 select type (value)
 type is (real(real64))
@@ -166,7 +166,7 @@ end procedure nc_write_4d
 module procedure nc_write_5d
 integer :: varid, dimids(rank(value)), ier
 
-call self%def_dims(dname, dimnames, shape(value), dimids, ier)
+call self%def_dims(dname, dims, shape(value), dimids, ier)
 
 select type (value)
 type is (real(real64))
@@ -198,7 +198,7 @@ end procedure nc_write_5d
 module procedure nc_write_6d
 integer :: varid, dimids(rank(value)), ier
 
-call self%def_dims(dname, dimnames, shape(value), dimids, ier)
+call self%def_dims(dname, dims, shape(value), dimids, ier)
 
 select type (value)
 type is (real(real64))
@@ -230,7 +230,7 @@ end procedure nc_write_6d
 module procedure nc_write_7d
 integer :: varid, dimids(rank(value)), ier
 
-call self%def_dims(dname, dimnames, shape(value), dimids, ier)
+call self%def_dims(dname, dims, shape(value), dimids, ier)
 
 select type (value)
 type is (real(real64))
