@@ -278,8 +278,10 @@ check_error = .true.
 select case (code)
 case (NF90_NOERR)
   check_error = .false.
+case (NF90_EHDFERR)
+  m = 'ERROR: ' // dname // ' an error was reported by the HDF5 layer.'
 case (NF90_EBADNAME)
-  m = 'ERROR: ' // dname // ' is the name of another existing variable'
+  m = 'ERROR: ' // dname // ' Name contains illegal characters.'
 case (NF90_EBADTYPE)
   m = 'ERROR: ' // dname // ' specified type is not a valid netCDF type'
 case (NF90_EBADDIM)
@@ -287,13 +289,13 @@ case (NF90_EBADDIM)
 case (NF90_EBADGRPID)
   m = 'ERROR: ' // dname // ' bad group ID in ncid'
 case (NF90_EBADID)
-  m = 'ERROR: ' // dname // ' type ID not found'
+  m = 'ERROR: ' // dname // ' Bad group id or ncid invalid'
 case (NF90_ENOTVAR)
   m = 'ERROR: ' // dname // ' variable not found'
 case (NF90_ENOTNC)
   m = 'ERROR: ' // dname // ' not a NetCDF file'
 case (NF90_ENAMEINUSE)
-  m = 'ERROR: ' // dname // ' string match to name in use'
+  m = 'ERROR: ' // dname // ' That name is in use. Compound type names must be unique in the data file.'
 case (NF90_ECHAR)
   m = 'ERROR: ' // dname // ' attempt to convert between text & numbers'
 case (NF90_EEDGE)

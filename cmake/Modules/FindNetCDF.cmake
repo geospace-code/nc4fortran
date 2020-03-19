@@ -3,7 +3,7 @@
 
 function(netcdf_c)
 
-pkg_check_modules(NC netcdf)  # C / CXX
+pkg_check_modules(NC netcdf QUIET)  # C / CXX
 
 find_path(NetCDF_INCLUDE_DIR
   NAMES netcdf.h
@@ -36,9 +36,9 @@ if(NOT CMAKE_Fortran_COMPILER)
   return()
 endif()
 
-pkg_check_modules(NC netcdf-fortran)
+pkg_check_modules(NC netcdf-fortran QUIET)
 if(NOT NC_FOUND) # homebrew
-  pkg_check_modules(NC netcdf)
+  pkg_check_modules(NC netcdf QUIET)
 endif()
 
 find_path(NetCDF_Fortran_INCLUDE_DIR
