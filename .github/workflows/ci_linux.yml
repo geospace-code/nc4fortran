@@ -13,6 +13,22 @@ on:
 
 jobs:
 
+  cmake:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.x'
+
+    - run: |
+        sudo apt update -yq
+        sudo apt install -yq --no-install-recommends gfortran libnetcdff-dev
+
+    - run: ctest -S setup.cmake -V
+      env:
+        FC: gfortran-7
+
   meson:
     runs-on: ubuntu-latest
     steps:
@@ -21,14 +37,14 @@ jobs:
       with:
         python-version: '3.x'
 
-    - run: pip install -r requirements.txt
+    - run: pip install meson
     - run: |
         sudo apt update -yq
-        sudo apt install -yq --no-install-recommends ninja-build gfortran libnetcdff-dev
+        sudo apt install -yq --no-install-recommends gfortran ninja-build libnetcdff-dev
 
     - run: meson setup build
       env:
-        FC: gfortran
+        FC: gfortran-7
 
     - run: ninja -C build
 
@@ -45,35 +61,3 @@ jobs:
       with:
         name: Linux_Meson_Testlog
         path: build/meson-logs/testlog.txt
-
-  cmake:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v1
-      with:
-        python-version: '3.x'
-
-    - run: |
-        pip install cmake
-        sudo apt update -yq
-        sudo apt install -yq --no-install-recommends gfortran libnetcdff-dev
-
-    - name: CMake configure
-      run: cmake -B build
-      env:
-        FC: gfortran
-    - run: cmake --build build --parallel
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Linux_CMake_Buildlog
-        path: build/CMakeFiles/CMakeError.log
-
-    - run: ctest -V
-      working-directory: build
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Linux_CMake_Testlog
-        path: build/Testing/Temporary/LastTest.log
