@@ -1,6 +1,8 @@
 submodule (nc4fortran) write
 !! This submodule is for writing NetCDF data via child submodules
-implicit none
+
+implicit none (external)
+
 contains
 
 module procedure def_dims
