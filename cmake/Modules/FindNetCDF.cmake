@@ -3,11 +3,11 @@
 
 function(netcdf_c)
 
-pkg_check_modules(NC netcdf QUIET)  # C / CXX
+pkg_check_modules(pc_nc netcdf QUIET)  # C / CXX
 
 find_path(NetCDF_INCLUDE_DIR
   NAMES netcdf.h
-  HINTS ${NC_INCLUDE_DIRS}
+  HINTS ${pc_nc_INCLUDE_DIRS}
   DOC "NetCDF include directories")
 
 if(NOT NetCDF_INCLUDE_DIR)
@@ -16,7 +16,7 @@ endif()
 
 find_library(NetCDF_C_LIBRARY
   NAMES netcdf
-  HINTS ${NC_LIBRARY_DIRS} ${NC_LIBDIR}
+  HINTS ${pc_nc_LIBRARY_DIRS} ${pc_nc_LIBDIR}
   DOC "NetCDF C library")
 
 if(NOT NetCDF_C_LIBRARY)
@@ -36,14 +36,14 @@ if(NOT CMAKE_Fortran_COMPILER)
   return()
 endif()
 
-pkg_check_modules(NC netcdf-fortran QUIET)
-if(NOT NC_FOUND) # homebrew
-  pkg_check_modules(NC netcdf QUIET)
+pkg_check_modules(pc_nc netcdf-fortran QUIET)
+if(NOT pc_nc_FOUND) # homebrew
+  pkg_check_modules(pc_nc netcdf QUIET)
 endif()
 
 find_path(NetCDF_Fortran_INCLUDE_DIR
   names netcdf.mod
-  HINTS ${NC_INCLUDE_DIRS}
+  HINTS ${pc_nc_INCLUDE_DIRS}
   DOC "NetCDF Fortran Include")
 
 if(NOT NetCDF_Fortran_INCLUDE_DIR)
@@ -52,7 +52,7 @@ endif()
 
 find_library(NetCDF_Fortran_LIBRARY
   NAMES netcdff
-  HINTS ${NC_LIBRARY_DIRS} ${NC_LIBDIR}
+  HINTS ${pc_nc_LIBRARY_DIRS} ${pc_nc_LIBDIR}
   DOC "NetCDF Fortran library")
 
 if(NOT NetCDF_Fortran_LIBRARY)
