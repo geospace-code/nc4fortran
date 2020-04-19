@@ -5,7 +5,7 @@ use, intrinsic :: iso_fortran_env, only : real32, real64, int32, int64, stderr=>
 use netcdf
 use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
-implicit none (external)
+implicit none (type, external)
 private
 public :: netcdf_file, NF90_MAX_NAME, NF90_NOERR, check_error
 

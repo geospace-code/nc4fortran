@@ -1,7 +1,7 @@
 submodule (nc4fortran) write
 !! This submodule is for writing NetCDF data via child submodules
 
-implicit none (external)
+implicit none (type, external)
 
 contains
 

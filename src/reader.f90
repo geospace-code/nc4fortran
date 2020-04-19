@@ -1,7 +1,7 @@
 submodule (nc4fortran:read) reader
 !! This submodule is for reading 0-D..7-D data
 
-implicit none (external)
+implicit none (type, external)
 
 contains
 

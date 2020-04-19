@@ -8,7 +8,7 @@ on:
       - "**.f90"
       - ".github/workflows/ci_mac.yml"
   pull_request:
-  release:
+
 
 jobs:
 

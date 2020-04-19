@@ -2,7 +2,7 @@ program test_errors
 use, intrinsic:: iso_fortran_env, only: int64, int32, real32, real64, stderr=>error_unit
 use nc4fortran, only: netcdf_file, NF90_NOERR
 
-implicit none (external)
+implicit none (type, external)
 
 character(:), allocatable :: path
 character(256) :: argv

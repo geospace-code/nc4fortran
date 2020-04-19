@@ -26,4 +26,4 @@ jobs:
     - run: cmake --warn-uninitialized -B build
     - run: ctest -S setup.cmake -V
       env:
-        FC: gfortran-7
+        FC: gfortran

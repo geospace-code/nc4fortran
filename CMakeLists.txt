@@ -4,30 +4,26 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 project(nc4fortran
   LANGUAGES Fortran
-  VERSION 0.4.2
+  VERSION 0.4.3
   DESCRIPTION "thin, light, easy NetCDF4 Fortran interface"
   HOMEPAGE_URL https://github.com/scivision/nc4fortran)
-enable_testing()
 
+enable_testing()
+include(CTest)
+include(FeatureSummary)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
+
+set_package_properties(NetCDF PROPERTIES URL "https://www.unidata.ucar.edu/software/netcdf/" DESCRIPTION "fast, versatile file I/O format")
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/netcdf.cmake)
 
 if(NOT NCDFOK)
-
-  message(STATUS "NetCDF4 not working with ${CMAKE_Fortran_COMPILER_ID} ${CMAKE_Fortran_COMPILER_VERSION}")
-
-  if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-    message(FATAL_ERROR)
+  message(STATUS "nc4fortran: NetCDF4 not working")
+  if(NOT PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    return()
   endif()
-
-  unset(nc4fortran)
-  unset(nc4fortran::nc4fortran)
-  message(STATUS "nc4fortran disabled")
-  return()
-
-endif(NOT NCDFOK)
+endif()
 
 set(CTEST_TEST_TIMEOUT 15)
 
@@ -48,9 +44,8 @@ add_subdirectory(src)
 
 if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   add_subdirectory(src/tests)
-endif()
 
-# --- install
-if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/install.cmake)
+
+  feature_summary(WHAT ALL)
 endif()

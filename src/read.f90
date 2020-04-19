@@ -1,7 +1,7 @@
 submodule (nc4fortran) read
 !! This submodule is for reading NetCDF via submodules
 
-implicit none (external)
+implicit none (type, external)
 
 contains
 
