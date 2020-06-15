@@ -13,6 +13,9 @@ include(CTest)
 include(FeatureSummary)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
+# this helps linters e.g. Visual Studio Intellicode work properly
+set(CMAKE_EXPORT_COMPILE_COMMANDS on)
+
 set_package_properties(NetCDF PROPERTIES URL "https://www.unidata.ucar.edu/software/netcdf/" DESCRIPTION "fast, versatile file I/O format")
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
