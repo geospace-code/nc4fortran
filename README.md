@@ -23,11 +23,10 @@ For example, reading a float NetCDF4 variable into an integer Fortran variable: 
 
 Tested on systems with NetCDF4 including:
 
-* MacOS (homebrew)
+* MacOS
 * Ubuntu 16.04 / 18.04 (gfortran 6 or newer)
 * Windows Subsystem for Linux
-
-Currently, Cygwin and MSYS2 do not have *Fortran* NetCDF4 libraries.
+* Windows Cygwin
 
 ## Build
 
@@ -38,6 +37,7 @@ Requirements:
   * Mac / Homebrew: `brew install gcc netcdf`
   * Linux: `apt install gfortran libnetcdf-dev libnetcdff-dev`
   * Windows Subsystem for Linux: `apt install gfortran libnetcdf-dev libnetcdff-dev`
+  * Windows Cygwin `libnetcdf-fortran-devel`
 
 Note that some precompiled NetCDF4 libraries include C / C++ without Fortran.
 Platforms that currently do **not** have Fortran NetCDF4 libraries, and thus will **not** work with nc4fortran unless you compile NetCDF library for Fortran include:
