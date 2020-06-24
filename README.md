@@ -3,11 +3,11 @@
 [![DOI](https://zenodo.org/badge/229812591.svg)](https://zenodo.org/badge/latestdoi/229812591)
 [![CDash](./archive/cdash.png)](https://my.cdash.org/index.php?project=nc4fortran)
 
-![ci_linux](https://github.com/scivision/nc4fortran/workflows/ci_linux/badge.svg)
-![ci_mac](https://github.com/scivision/nc4fortran/workflows/ci_mac/badge.svg)
+![ci_linux](https://github.com/geospace-code/nc4fortran/workflows/ci_linux/badge.svg)
+![ci_mac](https://github.com/geospace-code/nc4fortran/workflows/ci_mac/badge.svg)
 
 Simple, robust, thin HDF5 polymorphic read/write interface.
-For HDF5 see [h5fortran](https://github.com/scivision/h5fortran).
+For HDF5 see [h5fortran](https://github.com/geospace-code/h5fortran).
 Designed for easy use as a Meson "subproject" or CMake "ExternalProject" using **static** or **shared** linking.
 Uses Fortran 2008 `submodule` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of NetCDF4 so that you can read/write various types/ranks of data with a single command.
@@ -74,7 +74,7 @@ and have a file in the master project `subprojects/nc4fortran.wrap` containing:
 ```ini
 [wrap-git]
 directory = nc4fortran
-url = https://github.com/scivision/nc4fortran.git
+url = https://github.com/geospace-code/nc4fortran.git
 revision = head
 ```
 
@@ -108,7 +108,7 @@ To use nc4fortran as a CMake ExternalProject do like:
 include(FetchContent)
 
 FetchContent_Declare(nc4fortran_proj
-  GIT_REPOSITORY https://github.com/scivision/h5fortran.git
+  GIT_REPOSITORY https://github.com/geospace-code/h5fortran.git
   GIT_TAG master  # whatever desired version is
 )
 

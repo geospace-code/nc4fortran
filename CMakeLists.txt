@@ -6,7 +6,7 @@ project(nc4fortran
   LANGUAGES Fortran
   VERSION 0.4.4
   DESCRIPTION "thin, light, easy NetCDF4 Fortran interface"
-  HOMEPAGE_URL https://github.com/scivision/nc4fortran)
+  HOMEPAGE_URL https://github.com/geospace-code/nc4fortran)
 
 enable_testing()
 include(CTest)
