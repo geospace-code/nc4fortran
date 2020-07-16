@@ -3,8 +3,9 @@ name: ci_linux_meson
 on:
   push:
     paths:
-      - "**.build"
+      - "**/meson.build"
       - ".github/workflows/ci_linux_meson.yml"
+
 
 jobs:
 
@@ -22,10 +23,7 @@ jobs:
         sudo apt install -yq --no-install-recommends gfortran ninja-build libnetcdff-dev
 
     - run: meson setup build
-
-    - run: ninja -C build
-
-    # this catches configuration and build log
+    - run: meson compile -C build
     - uses: actions/upload-artifact@v1
       if: failure()
       with:

@@ -3,9 +3,8 @@ name: ci_mac
 on:
   push:
     paths:
-      - "**.txt"
+      - "**/CMakeLists.txt"
       - "**.cmake"
-      - "**.f90"
       - ".github/workflows/ci_mac.yml"
 
 jobs:

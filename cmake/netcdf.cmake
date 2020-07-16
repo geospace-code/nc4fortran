@@ -6,8 +6,9 @@ else()
   find_package(NetCDF COMPONENTS Fortran)
 endif()
 
-set(CMAKE_REQUIRED_INCLUDES ${NetCDF_INCLUDE_DIRS})
-set(CMAKE_REQUIRED_LIBRARIES ${NetCDF_LIBRARIES})
+set(CMAKE_REQUIRED_FLAGS)
+set(CMAKE_REQUIRED_INCLUDES)
+set(CMAKE_REQUIRED_LIBRARIES NetCDF::NetCDF_Fortran)
 
 include(CheckFortranSourceCompiles)
 check_fortran_source_compiles("use netcdf; end" NCDFOK SRC_EXT f90)

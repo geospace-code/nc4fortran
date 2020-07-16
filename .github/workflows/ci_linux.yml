@@ -3,7 +3,7 @@ name: ci_linux
 on:
   push:
     paths:
-      - "**.txt"
+      - "**/CMakeLists.txt"
       - "**.cmake"
       - "**.f90"
       - ".github/workflows/ci_linux.yml"
@@ -14,15 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
 
     - run: |
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends gfortran libnetcdff-dev
 
-    - run: cmake --warn-uninitialized -B build
-    - run: ctest -S setup.cmake -V
-      env:
-        FC: gfortran
+    - run: ctest -S setup.cmake -VV
