@@ -29,6 +29,7 @@ integer :: ncid   !< location identifier
 integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
 logical :: verbose = .false.
 logical :: debug = .false.
+logical :: is_open = .false.
 logical :: is_scratch = .false.
 !! will be auto-deleted on close
 character(80) :: libversion
@@ -222,6 +223,11 @@ logical, intent(in), optional      :: verbose, debug
 character(:), allocatable :: lstatus, laction
 integer :: ier
 
+if (self%is_open) then
+  write(stderr,*) 'WARNING:nc4fortran: file handle already open to: '// filename
+  return
+endif
+
 self%filename = filename
 
 if (present(comp_lvl)) self%comp_lvl = comp_lvl
@@ -270,11 +276,13 @@ if (ier /= NF90_NOERR) then
   error stop
 endif
 
+self%is_open = .true.
+
 end subroutine nc_initialize
 
 
 subroutine nc_finalize(self, ierr)
-class(netcdf_file), intent(in) :: self
+class(netcdf_file), intent(inout) :: self
 integer, intent(out), optional :: ierr
 
 integer :: ier
@@ -290,6 +298,8 @@ endif
 if(self%is_scratch) then
   if (unlink(self%filename)) write(stderr,*) 'WARNING: could not delete scratch file: ' // self%filename
 endif
+
+self%is_open = .false.
 
 end subroutine nc_finalize
 
