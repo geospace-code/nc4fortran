@@ -38,10 +38,11 @@ type(netcdf_file) :: hf
 
 if (hf%exist('foovar')) error stop 'variable and file not exists and not opened'
 
-call hf%initialize(path // '/scalar.nc', status='replace', action='w')
+call hf%initialize(path // '/scalar.nc', status='replace')
 call hf%write('here', 12)
 if(.not. hf%exist('here')) error stop 'variable exists'
 if(hf%exist('nothere')) error stop 'variable does not actually exist'
+call hf%finalize()
 
 end subroutine test_exist
 
@@ -58,7 +59,7 @@ nan = ieee_value(1.0, ieee_quiet_nan)
 
 !! write
 
-call hf%initialize(path // '/scalar.nc', status='replace', action='rw')
+call hf%initialize(path // '/scalar.nc', status='replace')
 call hf%write('nan', nan)
 call hf%write('scalar_real', 42.)
 call hf%write('scalar_int', 42)

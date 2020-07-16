@@ -2,7 +2,14 @@ module nc4fortran
 !! NetCDF4 object-oriented polymorphic interface
 use, intrinsic :: iso_c_binding, only : c_ptr, c_loc
 use, intrinsic :: iso_fortran_env, only : real32, real64, int32, int64, stderr=>error_unit
-use netcdf
+
+use netcdf, only : nf90_create, nf90_open, NF90_CLOBBER, NF90_NETCDF4, NF90_MAX_NAME, &
+  NF90_NOERR, NF90_EHDFERR, NF90_EBADNAME, NF90_EBADDIM, NF90_EBADTYPE, NF90_EBADGRPID, NF90_ENOTNC, NF90_ENOTVAR, &
+  NF90_ECHAR, NF90_EEDGE, NF90_ENAMEINUSE, NF90_EBADID, NF90_EINDEFINE, NF90_NOWRITE, &
+  nf90_open, nf90_close, nf90_estride, nf90_inq_varid, nf90_inq_dimid, nf90_inquire_dimension, &
+  nf90_def_dim, nf90_put_att, nf90_def_var, nf90_get_var, nf90_put_var, nf90_float, nf90_double, nf90_int, nf90_int64, &
+  nf90_inq_libvers
+
 use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
 implicit none (type, external)
@@ -21,6 +28,7 @@ integer :: ncid   !< location identifier
 integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
 logical :: verbose = .false.
 logical :: debug = .false.
+character(80) :: libversion
 
 contains
 
@@ -217,6 +225,9 @@ if (present(comp_lvl)) self%comp_lvl = comp_lvl
 if (present(verbose)) self%verbose = verbose
 if (present(debug)) self%debug = debug
 
+!> get library version
+self%libversion = nf90_inq_libvers()
+
 lstatus = 'old'
 if(present(status)) lstatus = toLower(status)
 
@@ -226,20 +237,23 @@ if(present(action)) laction = toLower(action)
 select case(lstatus)
 case ('old', 'unknown')
   select case(laction)
-    case('read','r')  !< Open an existing file.
+    case('read','r')
       ier = nf90_open(self%filename, NF90_NOWRITE, self%ncid)
-    case('write','readwrite','w','rw', 'r+', 'append', 'a')
+    case('r+')
       ier = nf90_open(self%filename, NF90_NETCDF4, self%ncid)
+    case('readwrite', 'rw', 'append', 'a')
+      ier = nf90_open(self%filename, NF90_NETCDF4, self%ncid)
+    case('w','write')
+      ier = nf90_create(self%filename, ior(NF90_CLOBBER, NF90_NETCDF4), self%ncid)
     case default
-      write(stderr,*) 'ERROR:initialize: Unsupported action -> ' // laction
-      ier = 128
+      write(stderr,*) 'Unsupported action -> ' // laction
+      error stop 128
     end select
 case('new','replace')
-  ier = unlink(filename)
-  ier = nf90_create(self%filename, NF90_NETCDF4, self%ncid)
+  ier = nf90_create(self%filename, ior(NF90_CLOBBER, NF90_NETCDF4), self%ncid)
 case default
-  write(stderr,*) 'ERROR:initialize: Unsupported status -> '// lstatus
-  ier = 128
+  write(stderr,*) 'Unsupported status -> '// lstatus
+  error stop 128
 end select
 
 if (present(ierr)) ierr = ier
@@ -312,25 +326,6 @@ end select
 if(check_error) write(stderr,'(/,A)') m
 
 end function check_error
-
-
-integer function unlink(path) result (ierr)
-!! the non-standard unlink present in some compilers can be unstable
-!! in particular ifort can hang, but not with this standard method
-character(*), intent(in) :: path
-logical :: exists
-integer :: u
-
-ierr = 0
-
-inquire(file=path, exist=exists)
-if(.not.exists) return
-
-open(newunit=u, file=path, status='old', iostat=ierr)
-if(ierr/=0) return
-close(u, status='delete', iostat=ierr)
-
-end function unlink
 
 
 end module nc4fortran
