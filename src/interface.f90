@@ -224,7 +224,7 @@ character(:), allocatable :: lstatus, laction
 integer :: ier
 
 if (self%is_open) then
-  write(stderr,*) 'WARNING:nc4fortran: file handle already open to: '// filename
+  write(stderr,*) 'WARNING:nc4fortran:initialize file handle already open to: '// filename
   return
 endif
 
@@ -286,6 +286,11 @@ class(netcdf_file), intent(inout) :: self
 integer, intent(out), optional :: ierr
 
 integer :: ier
+
+if(.not. self%is_open) then
+  write(stderr,*) 'WARNING:nc4fortran:finalize file handle is not open'
+  return
+endif
 
 ier = nf90_close(self%ncid)
 if (present(ierr)) ierr = ier

@@ -8,6 +8,8 @@ contains
 module procedure nc_write_scalar
 integer :: varid, ier
 
+if(.not.self%is_open) error stop 'ERROR:nc4fortran:writer: file handle not open'
+
 select type (value)
 type is (real(real64))
   ier = nf90_def_var(self%ncid, dname, NF90_DOUBLE, varid=varid)

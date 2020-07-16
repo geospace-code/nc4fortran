@@ -7,6 +7,9 @@ contains
 
 module procedure nc_read_scalar
 integer :: varid, ier
+
+if(.not.self%is_open) error stop 'ERROR:nc4fortran:reader file handle not open'
+
 ier = nf90_inq_varid(self%ncid, dname, varid)
 
 if(ier == NF90_NOERR) then
@@ -36,6 +39,9 @@ end procedure nc_read_scalar
 
 module procedure nc_read_1d
 integer :: varid, ier
+
+if(.not.self%is_open) error stop 'ERROR:nc4fortran:reader file handle not open'
+
 ier = nf90_inq_varid(self%ncid, dname, varid)
 
 if(ier == NF90_NOERR) then
@@ -65,6 +71,9 @@ end procedure nc_read_1d
 
 module procedure nc_read_2d
 integer :: varid, ier
+
+if(.not.self%is_open) error stop 'ERROR:nc4fortran:reader file handle not open'
+
 ier = nf90_inq_varid(self%ncid, dname, varid)
 
 if(ier == NF90_NOERR) then
@@ -93,6 +102,9 @@ end procedure nc_read_2d
 
 module procedure nc_read_3d
 integer :: varid, ier
+
+if(.not.self%is_open) error stop 'ERROR:nc4fortran:reader file handle not open'
+
 ier = nf90_inq_varid(self%ncid, dname, varid)
 
 if(ier == NF90_NOERR) then
@@ -121,6 +133,9 @@ end procedure nc_read_3d
 
 module procedure nc_read_4d
 integer :: varid, ier
+
+if(.not.self%is_open) error stop 'ERROR:nc4fortran:reader file handle not open'
+
 ier = nf90_inq_varid(self%ncid, dname, varid)
 
 if(ier == NF90_NOERR) then
@@ -149,6 +164,9 @@ end procedure nc_read_4d
 
 module procedure nc_read_5d
 integer :: varid, ier
+
+if(.not.self%is_open) error stop 'ERROR:nc4fortran:reader file handle not open'
+
 ier = nf90_inq_varid(self%ncid, dname, varid)
 
 if(ier == NF90_NOERR) then
@@ -177,6 +195,9 @@ end procedure nc_read_5d
 
 module procedure nc_read_6d
 integer :: varid, ier
+
+if(.not.self%is_open) error stop 'ERROR:nc4fortran:reader file handle not open'
+
 ier = nf90_inq_varid(self%ncid, dname, varid)
 
 if(ier == NF90_NOERR) then
@@ -205,6 +226,9 @@ end procedure nc_read_6d
 
 module procedure nc_read_7d
 integer :: varid, ier
+
+if(.not.self%is_open) error stop 'ERROR:nc4fortran:reader file handle not open'
+
 ier = nf90_inq_varid(self%ncid, dname, varid)
 
 if(ier == NF90_NOERR) then

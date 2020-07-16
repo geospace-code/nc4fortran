@@ -10,6 +10,8 @@ module procedure def_dims
 integer :: i, L
 character(NF90_MAX_NAME) :: name
 
+if(.not.self%is_open) error stop 'ERROR:nc4fortran:write: file handle not open'
+
 do i=1,size(dims)
   if (present(dimnames)) then
     ierr = nf90_inq_dimid(self%ncid, dimnames(i), dimids(i))
@@ -33,6 +35,8 @@ end procedure def_dims
 
 module procedure write_attribute
 integer :: varid, ier
+
+if(.not.self%is_open) error stop 'ERROR:nc4fortran:write: file handle not open'
 
 ier = nf90_inq_varid(self%ncid, dname, varid)
 

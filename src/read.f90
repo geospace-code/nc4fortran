@@ -11,6 +11,9 @@ module procedure nc_get_shape
 integer :: i, tempdims(NC_MAXDIM), N, ier
 character(NF90_MAX_NAME) :: tempnames(NC_MAXDIM)
 
+
+if(.not.self%is_open) error stop 'ERROR:nc4fortran:read: file handle not open'
+
 N = 0
 do i = 1,NC_MAXDIM
   ier = nf90_inquire_dimension(self%ncid, dimid=i, name=tempnames(i), len=tempdims(i))
@@ -28,9 +31,17 @@ end procedure nc_get_shape
 
 module procedure nc_check_exist
 integer :: varid, ierr
-ierr = nf90_inq_varid(self%ncid, dname, varid)
 
 exists = .false.
+
+if(.not.self%is_open) then
+  write(stderr,*) 'WARNING:nc4fortran:read: file handle not open ' // self%filename
+  return
+endif
+
+ierr = nf90_inq_varid(self%ncid, dname, varid)
+
+
 select case (ierr)
 case (NF90_NOERR)
   exists = .true.
