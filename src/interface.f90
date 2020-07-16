@@ -10,6 +10,7 @@ use netcdf, only : nf90_create, nf90_open, NF90_CLOBBER, NF90_NETCDF4, NF90_MAX_
   nf90_def_dim, nf90_put_att, nf90_def_var, nf90_get_var, nf90_put_var, nf90_float, nf90_double, nf90_int, nf90_int64, &
   nf90_inq_libvers
 
+use pathlib, only : unlink, get_tempdir, is_absolute_path
 use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
 implicit none (type, external)
@@ -28,6 +29,8 @@ integer :: ncid   !< location identifier
 integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
 logical :: verbose = .false.
 logical :: debug = .false.
+logical :: is_scratch = .false.
+!! will be auto-deleted on close
 character(80) :: libversion
 
 contains
@@ -251,6 +254,10 @@ case ('old', 'unknown')
     end select
 case('new','replace')
   ier = nf90_create(self%filename, ior(NF90_CLOBBER, NF90_NETCDF4), self%ncid)
+case('scratch')
+    ier = nf90_create(self%filename, ior(NF90_CLOBBER, NF90_NETCDF4), self%ncid)
+  self%is_scratch = .true.
+  if(.not.is_absolute_path(filename)) self%filename = get_tempdir() // '/' // filename
 case default
   write(stderr,*) 'Unsupported status -> '// lstatus
   error stop 128
@@ -279,6 +286,11 @@ if (ier /= NF90_NOERR) then
   if (present(ierr)) return
   error stop
 endif
+
+if(self%is_scratch) then
+  if (unlink(self%filename)) write(stderr,*) 'WARNING: could not delete scratch file: ' // self%filename
+endif
+
 end subroutine nc_finalize
 
 

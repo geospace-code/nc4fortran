@@ -23,6 +23,9 @@ print *, 'test path: ', path
 call test_exist(path)
 print *, 'OK: exist check'
 
+call test_scratch(path)
+print *, 'OK: scratch'
+
 call test_scalar(path)
 print *, 'OK: scalar'
 
@@ -45,6 +48,27 @@ if(hf%exist('nothere')) error stop 'variable does not actually exist'
 call hf%finalize()
 
 end subroutine test_exist
+
+
+subroutine test_scratch(path)
+
+character(*), intent(in) :: path
+type(netcdf_file) :: hf
+logical :: e
+
+call hf%initialize('scratch.nc', status='scratch')
+print *, 'scratch: ', hf%filename
+call hf%finalize()
+
+call hf%initialize(path // '/scalar.nc', status='scratch')
+print *, 'scratch: ', hf%filename
+call hf%write('here', 12)
+call hf%finalize()
+
+inquire(file=path//'/scalar.nc', exist=e)
+if(e) error stop 'scratch file was not auto-deletect'
+
+end subroutine test_scratch
 
 
 subroutine test_scalar(path)
