@@ -81,17 +81,7 @@ revision = head
 ### CMake
 
 ```sh
-cmake -B build
-
-cmake --build build --parallel
-```
-
-Optionally run self-tests:
-
-```sh
-cd build
-
-ctest -V
+ctest -S setup.cmake -VV
 ```
 
 To specify a particular NetCDF library, use
@@ -108,7 +98,7 @@ To use nc4fortran as a CMake ExternalProject do like:
 include(FetchContent)
 
 FetchContent_Declare(nc4fortran_proj
-  GIT_REPOSITORY https://github.com/geospace-code/h5fortran.git
+  GIT_REPOSITORY https://github.com/geospace-code/nc4fortran.git
   GIT_TAG master  # whatever desired version is
 )
 
@@ -142,7 +132,7 @@ If `ierr` is omitted, nc4fortran will `error stop` on error.
 ### Create new NetCDF file, with variable "value1"
 
 ```fortran
-call hf%initialize('test.h5', status='new',action='w')
+call hf%initialize('test.nc', status='new')
 
 call hf%write('value1', 123.)
 
@@ -159,13 +149,13 @@ logical :: exists
 exists = hf%exist('fooname')
 ```
 
-### Add/append variable "value1" to existing NetCDF file "test.h5"
+### Add/append variable "value1" to existing NetCDF file "test.nc"
 
-* if file `test.h5` exists, add a variable to it
-* if file `test.h5` does not exist, create it and add a variable to it.
+* if file `test.nc` exists, add a variable to it
+* if file `test.nc` does not exist, create it and add a variable to it.
 
 ```fortran
-call hf%initialize('test.h5', status='unknown',action='rw')
+call hf%initialize('test.nc', status='unknown',action='rw')
 
 call hf%write('value1', 123.)
 
@@ -175,7 +165,7 @@ call hf%finalize()
 ### Read scalar, 3-D array of unknown size
 
 ```fortran
-call ncf%initialize('test.h5', status='old',action='r')
+call ncf%initialize('test.nc', status='old',action='r')
 
 integer, allocatable :: dims(:)
 character(256), allocatable :: dimnames
