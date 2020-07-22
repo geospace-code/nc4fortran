@@ -24,7 +24,7 @@ For example, reading a float NetCDF4 variable into an integer Fortran variable: 
 Tested on systems with NetCDF4 including:
 
 * MacOS
-* Ubuntu 16.04 / 18.04 (gfortran 6 or newer)
+* Ubuntu 16.04 / 18.04 / 20.04 (gfortran 6 or newer)
 * Windows Subsystem for Linux
 * Windows Cygwin
 
