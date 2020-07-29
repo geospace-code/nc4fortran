@@ -24,7 +24,6 @@ type is (integer(int64))
   ier = nf90_def_var(self%ncid, dname, NF90_INT64, varid=varid)
   if(ier == NF90_NOERR) ier = nf90_put_var(self%ncid, varid, value)
 class default
-  write(stderr,*) 'ERROR:write_scalar ' // dname // ' datatype is not handled by nc4fortran.'
   ier = NF90_EBADTYPE
 end select
 
@@ -56,7 +55,6 @@ type is (integer(int32))
   if(ier == NF90_NOERR) ier = nf90_def_var(self%ncid, dname, NF90_INT, dimids=dimids, varid=varid)
   if(ier == NF90_NOERR) ier = nf90_put_var(self%ncid, varid, value)
 class default
-  write(stderr,*) 'ERROR:write_1d: ' // dname // ' datatype is not handled by nc4fortran.'
   ierr = NF90_EBADTYPE
 end select
 
@@ -88,7 +86,6 @@ type is (integer(int32))
   if(ier == NF90_NOERR) ier = nf90_def_var(self%ncid, dname, NF90_INT, dimids=dimids, varid=varid)
   if(ier == NF90_NOERR) ier = nf90_put_var(self%ncid, varid, value)
 class default
-  write(stderr,*) 'ERROR:write_1d: ' // dname // ' datatype is not handled by nc4fortran.'
   ierr = NF90_EBADTYPE
 end select
 
@@ -120,7 +117,6 @@ type is (integer(int32))
   if(ier == NF90_NOERR) ier = nf90_def_var(self%ncid, dname, NF90_INT, dimids=dimids, varid=varid)
   if(ier == NF90_NOERR) ier = nf90_put_var(self%ncid, varid, value)
 class default
-  write(stderr,*) 'ERROR:write_1d: ' // dname // ' datatype is not handled by nc4fortran.'
   ierr = NF90_EBADTYPE
 end select
 
@@ -152,7 +148,6 @@ type is (integer(int32))
   if(ier == NF90_NOERR) ier = nf90_def_var(self%ncid, dname, NF90_INT, dimids=dimids, varid=varid)
   if(ier == NF90_NOERR) ier = nf90_put_var(self%ncid, varid, value)
 class default
-  write(stderr,*) 'ERROR:write_1d: ' // dname // ' datatype is not handled by nc4fortran.'
   ierr = NF90_EBADTYPE
 end select
 
@@ -184,7 +179,6 @@ type is (integer(int32))
   if(ier == NF90_NOERR) ier = nf90_def_var(self%ncid, dname, NF90_INT, dimids=dimids, varid=varid)
   if(ier == NF90_NOERR) ier = nf90_put_var(self%ncid, varid, value)
 class default
-  write(stderr,*) 'ERROR:write_1d: ' // dname // ' datatype is not handled by nc4fortran.'
   ierr = NF90_EBADTYPE
 end select
 
@@ -216,7 +210,6 @@ type is (integer(int32))
   if(ier == NF90_NOERR) ier = nf90_def_var(self%ncid, dname, NF90_INT, dimids=dimids, varid=varid)
   if(ier == NF90_NOERR) ier = nf90_put_var(self%ncid, varid, value)
 class default
-  write(stderr,*) 'ERROR:write_1d: ' // dname // ' datatype is not handled by nc4fortran.'
   ierr = NF90_EBADTYPE
 end select
 
@@ -248,7 +241,6 @@ type is (integer(int32))
   if(ier == NF90_NOERR) ier = nf90_def_var(self%ncid, dname, NF90_INT, dimids=dimids, varid=varid)
   if(ier == NF90_NOERR) ier = nf90_put_var(self%ncid, varid, value)
 class default
-  write(stderr,*) 'ERROR:write_1d: ' // dname // ' datatype is not handled by nc4fortran.'
   ierr = NF90_EBADTYPE
 end select
 

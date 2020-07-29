@@ -23,7 +23,6 @@ type is (integer(int64))
 type is (integer(int32))
   ier = nf90_get_var(self%ncid, varid, value)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by nc4fortran.'
   ier = NF90_EBADTYPE
 end select
 endif
@@ -55,7 +54,6 @@ type is (integer(int64))
 type is (integer(int32))
   ier = nf90_get_var(self%ncid, varid, value)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by nc4fortran.'
   ier = NF90_EBADTYPE
 end select
 endif
@@ -87,7 +85,6 @@ type is (integer(int64))
 type is (integer(int32))
   ier = nf90_get_var(self%ncid, varid, value)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by nc4fortran.'
   ier = NF90_EBADTYPE
 end select
 endif
@@ -118,7 +115,6 @@ type is (integer(int64))
 type is (integer(int32))
   ier = nf90_get_var(self%ncid, varid, value)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by nc4fortran.'
   ier = NF90_EBADTYPE
 end select
 endif
@@ -149,7 +145,6 @@ type is (integer(int64))
 type is (integer(int32))
   ier = nf90_get_var(self%ncid, varid, value)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by nc4fortran.'
   ier = NF90_EBADTYPE
 end select
 endif
@@ -180,7 +175,6 @@ type is (integer(int64))
 type is (integer(int32))
   ier = nf90_get_var(self%ncid, varid, value)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by nc4fortran.'
   ier = NF90_EBADTYPE
 end select
 endif
@@ -211,7 +205,6 @@ type is (integer(int64))
 type is (integer(int32))
   ier = nf90_get_var(self%ncid, varid, value)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by nc4fortran.'
   ier = NF90_EBADTYPE
 end select
 endif
@@ -242,7 +235,6 @@ type is (integer(int64))
 type is (integer(int32))
   ier = nf90_get_var(self%ncid, varid, value)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by nc4fortran.'
   ier = NF90_EBADTYPE
 end select
 endif
