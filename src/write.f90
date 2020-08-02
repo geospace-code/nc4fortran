@@ -33,22 +33,4 @@ end do
 end procedure def_dims
 
 
-module procedure write_attribute
-integer :: varid, ier
-
-if(.not.self%is_open) error stop 'ERROR:nc4fortran:write: file handle not open'
-
-ier = nf90_inq_varid(self%ncid, dname, varid)
-
-if(ierr == nf90_noerr) ier = nf90_put_att(self%ncid, varid, attrname, value)
-
-if (present(ierr)) ierr = ier
-if (check_error(ierr, dname)) then
-  if (present(ierr)) return
-  error stop
-endif
-
-end procedure write_attribute
-
-
 end submodule write

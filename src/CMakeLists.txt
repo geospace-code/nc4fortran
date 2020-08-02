@@ -39,7 +39,7 @@ configure_file(reader.in.f90 reader.f90)
 set(writer_template "
 integer :: varid, dimids(rank(value)), ier
 
-call self%def_dims(dname, dims, shape(value), dimids, ier)
+call self%def_dims(dname, dimnames=dims, dims=shape(value), dimids=dimids, ierr=ier)
 
 select type (value)
 type is (real(real64))
@@ -67,7 +67,7 @@ endif
 configure_file(writer.in.f90 writer.f90)
 
 target_sources(nc4fortran PRIVATE
-interface.f90
+interface.f90 attributes.f90
 read.f90 ${CMAKE_CURRENT_BINARY_DIR}/reader.f90
 write.f90 ${CMAKE_CURRENT_BINARY_DIR}/writer.f90
 string_utils.f90 ${CMAKE_CURRENT_BINARY_DIR}/pathlib.f90)

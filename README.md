@@ -18,6 +18,11 @@ Polymorphic API with read/write for types int32, int64, real32, real64 with rank
 * scalar (0-D)
 * 1-D .. 7-D
 
+Also:
+
+* read/write **character** variables.
+* read/write character, int, float, double attributes
+
 Mismatched datatypes are coerced as per standard Fortran rules.
 For example, reading a float NetCDF4 variable into an integer Fortran variable:  42.3 => 42
 
@@ -168,10 +173,9 @@ call hf%finalize()
 call ncf%initialize('test.nc', status='old',action='r')
 
 integer, allocatable :: dims(:)
-character(256), allocatable :: dimnames
 real, allocatable :: A(:,:,:)
 
-call ncf%shape('foo', dims, dimnames)
+call ncf%shape('foo', dims)
 allocate(A(dims(1), dims(2), dims(3)))
 call ncf%read('foo', A)
 

@@ -6,17 +6,10 @@ implicit none (type, external)
 
 character(:), allocatable :: path
 character(256) :: argv
-integer :: i,l
 
-call get_command_argument(1, argv, length=l, status=i)
-if (i /= 0 .or. l == 0) then
-  write(stderr,*) 'please specify test directory e.g. /tmp'
-  error stop 77
-endif
-
+if(command_argument_count() /= 1) error stop 'input temp path'
+call get_command_argument(1, argv)
 path = trim(argv)
-
-print *, 'test path: ', path
 
 call test_nonexist_old_file(path)
 print *, 'OK: non-existing old file'

@@ -2,29 +2,16 @@ program test_netcdf
 
 use, intrinsic:: iso_fortran_env, only: int64, int32, real32, real64, stderr=>error_unit
 use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
-use nc4fortran, only : netcdf_file, NF90_MAX_NAME
+use nc4fortran, only : netcdf_file
 
 implicit none (type, external)
 
 character(:), allocatable :: path
 character(256) :: argv
-integer :: i,l
 
-call get_command_argument(1, argv, length=l, status=i)
-if (i /= 0 .or. l == 0) then
-  write(stderr,*) 'please specify test directory e.g. /tmp'
-  error stop 77
-endif
-
+if(command_argument_count() /= 1) error stop 'input temp path'
+call get_command_argument(1, argv)
 path = trim(argv)
-
-print *, 'test path: ', path
-
-call test_exist(path)
-print *, 'OK: exist check'
-
-call test_scratch(path)
-print *, 'OK: scratch'
 
 call test_scalar(path)
 print *, 'OK: scalar'
@@ -35,48 +22,10 @@ print *,'OK: array'
 contains
 
 
-subroutine test_exist(path)
-character(*), intent(in) :: path
-type(netcdf_file) :: hf
-
-if (hf%exist('foovar')) error stop 'variable and file not exists and not opened'
-
-if(hf%is_open) error stop 'file not opened yet'
-call hf%initialize(path // '/scalar.nc', status='replace')
-if (.not.hf%is_open) error stop 'file not detected as open'
-call hf%write('here', 12)
-if(.not. hf%exist('here')) error stop 'variable exists'
-if(hf%exist('nothere')) error stop 'variable does not actually exist'
-call hf%finalize()
-
-end subroutine test_exist
-
-
-subroutine test_scratch(path)
-
-character(*), intent(in) :: path
-type(netcdf_file) :: hf
-logical :: e
-
-call hf%initialize('scratch.nc', status='scratch')
-print *, 'scratch: ', hf%filename
-call hf%finalize()
-
-call hf%initialize(path // '/scalar.nc', status='scratch')
-print *, 'scratch: ', hf%filename
-call hf%write('here', 12)
-call hf%finalize()
-
-inquire(file=path//'/scalar.nc', exist=e)
-if(e) error stop 'scratch file was not auto-deletect'
-
-end subroutine test_scratch
-
-
 subroutine test_scalar(path)
 
 character(*), intent(in) :: path
-type(netcdf_file) :: hf
+type(netcdf_file) :: h
 
 integer :: i
 real(real32) :: nan,r
@@ -85,26 +34,31 @@ nan = ieee_value(1.0, ieee_quiet_nan)
 
 !! write
 
-call hf%initialize(path // '/scalar.nc', status='replace')
-call hf%write('nan', nan)
-call hf%write('scalar_real', 42.)
-call hf%write('scalar_int', 42)
-call hf%finalize()
+call h%initialize(path // '/scalar.nc', status='replace')
+call h%write('nan', nan)
+call h%write('scalar_real', 22.)
+call h%finalize()
+
+call h%initialize(path //'/scalar.nc', status='old', action='rw')
+!! test rewrite
+call h%write('scalar_real', 42.)
+call h%write('scalar_int', 42)
+call h%finalize()
 
 !! read
 
-call hf%initialize(path // '/scalar.nc',status='old',action='r')
+call h%initialize(path // '/scalar.nc',status='old',action='r')
 
-call hf%read('nan', r)
+call h%read('nan', r)
 if (.not.ieee_is_nan(r)) error stop 'failed storing or reading NaN'
 
-call hf%read('scalar_real', r)
+call h%read('scalar_real', r)
 if (r/=42.) error stop 'scalar real'
 
-call hf%read('scalar_int', i)
+call h%read('scalar_int', i)
 if (i/=42) error stop 'scalar int'
 
-call hf%finalize()
+call h%finalize()
 
 end subroutine test_scalar
 
@@ -114,9 +68,8 @@ subroutine test_array(path)
 character(*), intent(in) :: path
 type(netcdf_file) :: hf
 integer, allocatable :: dims(:)
-character(NF90_MAX_NAME), allocatable :: dimnames(:)
 
-integer :: i1(4)
+integer :: i1(4), i
 real(real32)    :: r1(4), r2(4,4), B(6,6), r4(1,2,3,4)
 integer(int32), dimension(4,4) :: i2, i2t
 integer(int64), dimension(4,4) :: i2t64
@@ -159,13 +112,11 @@ call hf%initialize(path // '/array.nc',status='old',action='r')
 
 call hf%read('int32-2d',i2t)
 if (.not.all(i2==i2t)) error stop 'read 2-D: int32 does not match write'
-print *, 'array: read int32-2d'
 
 call hf%read('int64-2d',i2t64)
 if (.not.all(i2==i2t64)) error stop 'read 2-D: int64 does not match write'
 
-call hf%shape('real32-2d', dimnames, dims)
-print *, 'array: got shape real32-2d', dims
+call hf%shape('real32-2d', dims)
 
 allocate(rr2(dims(1), dims(2)))
 call hf%read('real32-2d',rr2)

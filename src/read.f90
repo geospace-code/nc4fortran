@@ -1,32 +1,68 @@
 submodule (nc4fortran) read
 !! This submodule is for reading NetCDF via submodules
 
+use netcdf, only : nf90_inquire_variable
 implicit none (type, external)
 
 contains
 
 
-module procedure nc_get_shape
-
-integer :: i, tempdims(NC_MAXDIM), N, ier
-character(NF90_MAX_NAME) :: tempnames(NC_MAXDIM)
-
+module procedure get_ndims
+integer :: varid, ierr
 
 if(.not.self%is_open) error stop 'ERROR:nc4fortran:read: file handle not open'
 
-N = 0
-do i = 1,NC_MAXDIM
-  ier = nf90_inquire_dimension(self%ncid, dimid=i, name=tempnames(i), len=tempdims(i))
-  if(ier/=NF90_NOERR) exit
-  N = i
+drank = -1
+
+ierr = nf90_inq_varid(self%ncid, dname, varid)
+if(ierr/=NF90_NOERR) then
+  write(stderr,*) 'nc4fortran:get_ndims: could not get variable ID for ' // dname
+  error stop
+endif
+
+ierr = nf90_inquire_variable(self%ncid, varid, ndims=drank)
+
+end procedure get_ndims
+
+
+module procedure get_shape
+
+integer :: ier, varid, i, N
+integer, allocatable :: dimids(:)
+character(NF90_MAX_NAME), allocatable :: tempnames(:)
+
+N = self%ndims(dname)
+allocate(dimids(N), dims(N))
+
+ier = nf90_inq_varid(self%ncid, dname, varid)
+if(check_error(ier, dname)) then
+  write(stderr,*) 'nc4fortran:get_shape: could not get variable ID for: '//dname
+  error stop
+endif
+
+ier = nf90_inquire_variable(self%ncid, varid, dimids = dimids)
+if(check_error(ier, dname)) then
+  write(stderr,*) 'nc4fortran:get_shape: could not get dimension IDs for: '//dname
+  error stop
+endif
+
+if (present(dimnames)) allocate(tempnames(N))
+
+do i = 1,N
+  if(present(dimnames)) then
+    ier = nf90_inquire_dimension(self%ncid, dimid=dimids(i), name=tempnames(i), len=dims(i))
+  else
+    ier = nf90_inquire_dimension(self%ncid, dimid=dimids(i), len=dims(i))
+  endif
+  if(ier/=NF90_NOERR) error stop 'nc4fortran:get_shape: querying dimension size'
 enddo
-if(N==0) return  !< no good dims at all
 
-allocate(dims(N), dimnames(N))
-dims = tempdims(:N)
-dimnames = tempnames(:N)
+if (present(dimnames)) then
+  allocate(dimnames(N))
+  dimnames = tempnames
+endif
 
-end procedure nc_get_shape
+end procedure get_shape
 
 
 module procedure nc_check_exist
@@ -34,13 +70,9 @@ integer :: varid, ierr
 
 exists = .false.
 
-if(.not.self%is_open) then
-  write(stderr,*) 'WARNING:nc4fortran:read: file handle not open ' // self%filename
-  return
-endif
+if(.not.self%is_open) error stop 'nc4fortran:exist: file handle not open '
 
 ierr = nf90_inq_varid(self%ncid, dname, varid)
-
 
 select case (ierr)
 case (NF90_NOERR)
@@ -54,5 +86,16 @@ case default
 end select
 
 end procedure nc_check_exist
+
+
+module procedure nc_exist
+
+type(netcdf_file) :: h
+
+call h%initialize(filename, status='old', action='r')
+nc_exist = h%exist(dname)
+call h%finalize()
+
+end procedure nc_exist
 
 end submodule read
