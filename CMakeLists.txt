@@ -4,7 +4,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 project(nc4fortran
   LANGUAGES Fortran
-  VERSION 1.0.0
+  VERSION 1.0.1
   DESCRIPTION "thin, light object-oriented NetCDF4 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/nc4fortran)
 

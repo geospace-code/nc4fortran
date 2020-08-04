@@ -8,7 +8,7 @@ use netcdf, only : nf90_create, nf90_open, NF90_WRITE, NF90_CLOBBER, NF90_NETCDF
   NF90_ECHAR, NF90_EEDGE, NF90_ENAMEINUSE, NF90_EBADID, NF90_EINDEFINE, NF90_NOWRITE, NF90_EDIMSIZE, &
   nf90_open, nf90_close, nf90_estride, nf90_inq_varid, nf90_inq_dimid, nf90_inquire_dimension, &
   nf90_def_dim, nf90_def_var, nf90_get_var, nf90_put_var, &
-  nf90_inq_libvers, nf90_sync
+  nf90_inq_libvers, nf90_sync, nf90_inquire_variable
 
 use pathlib, only : unlink, get_tempdir, is_absolute_path
 use string_utils, only : toLower, strip_trailing_null, truncate_string_null
@@ -39,8 +39,9 @@ contains
 
 !> methods used directly without type/rank agnosticism
 procedure, public :: initialize => nc_initialize, finalize => nc_finalize, &
-  shape => get_shape, ndims => get_ndims, write_attribute, read_attribute, flush, &
-  exist=>nc_check_exist, exists=>nc_check_exist
+  shape => get_shape, ndims => get_ndims, write_attribute, read_attribute, flush=>nc_flush, &
+  exist=>nc_check_exist, exists=>nc_check_exist, &
+  is_chunked, is_contig, chunks=>get_chunk
 
 !> generic procedures mapped over type / rank
 generic, public :: write => nc_write_scalar, nc_write_1d, nc_write_2d, nc_write_3d, &
@@ -340,7 +341,7 @@ self%is_open = .false.
 end subroutine nc_finalize
 
 
-subroutine flush(self, ierr)
+subroutine nc_flush(self, ierr)
 
 class(netcdf_file), intent(in) :: self
 integer, intent(out), optional :: ierr
@@ -354,7 +355,69 @@ if (check_error(ier, "")) then
   error stop
 endif
 
-end subroutine flush
+end subroutine nc_flush
+
+
+logical function is_contig(self, dname)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+integer :: ier, varid
+
+ier = nf90_inq_varid(self%ncid, dname, varid)
+if (ier/=NF90_NOERR) then
+  write(stderr,*) 'ERROR:nc4fortran:is_contig: cannot find variable: ' // dname
+  error stop
+endif
+ier = nf90_inquire_variable(self%ncid, varid, contiguous=is_contig)
+if (ier/=NF90_NOERR) then
+  write(stderr,*) 'ERROR:nc4fortran:is_contig: cannot get variable properties'
+  error stop
+endif
+end function is_contig
+
+
+logical function is_chunked(self, dname)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+integer :: ier, varid
+
+ier = nf90_inq_varid(self%ncid, dname, varid)
+if (ier/=NF90_NOERR) then
+  write(stderr,*) 'ERROR:nc4fortran:is_chunked: cannot find variable: ' // dname
+  error stop
+endif
+ier = nf90_inquire_variable(self%ncid, varid, contiguous=is_chunked)
+if (ier/=NF90_NOERR) then
+  write(stderr,*) 'ERROR:nc4fortran:is_chunked: cannot get variable properties'
+  error stop
+endif
+is_chunked = .not.is_chunked
+end function is_chunked
+
+
+subroutine get_chunk(self, dname, chunk_size)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+integer, intent(out) :: chunk_size(:)
+logical :: contig
+integer :: i, varid
+
+chunk_size = -1
+
+i = nf90_inq_varid(self%ncid, dname, varid)
+if (i/=NF90_NOERR) then
+  write(stderr,*) 'ERROR:nc4fortran:chunk: cannot find variable: ' // dname
+  return
+endif
+i = nf90_inquire_variable(self%ncid, varid, contiguous=contig)
+if (i/=NF90_NOERR) then
+  write(stderr,*) 'nc4fortran:chunk: cannot get variable properties'
+  return
+endif
+if(contig) return
+i = nf90_inquire_variable(self%ncid, varid, chunksizes=chunk_size)
+if (i/=NF90_NOERR) write(stderr,*) 'nc4fortran:chunk: cannot get variable properties'
+end subroutine get_chunk
 
 
 logical function is_netcdf(filename)

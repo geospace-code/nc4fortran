@@ -127,7 +127,6 @@ type(netcdf_file) :: hf
 * gzip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value between 1 and 9.
   Shuffle filter is automatically applied for better compression
 * string attributes may be applied to any variable at time of writing or later.
-* `chunk_size` option may be set for better compression
 
 `integer, intent(out) :: ierr` is optional.
 It will be non-zero if error detected.
