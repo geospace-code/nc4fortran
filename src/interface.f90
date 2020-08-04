@@ -5,7 +5,7 @@ use, intrinsic :: iso_fortran_env, only : real32, real64, int32, int64, stderr=>
 
 use netcdf, only : nf90_create, nf90_open, NF90_WRITE, NF90_CLOBBER, NF90_NETCDF4, NF90_MAX_NAME, &
   NF90_NOERR, NF90_EHDFERR, NF90_EBADNAME, NF90_EBADDIM, NF90_EBADTYPE, NF90_EBADGRPID, NF90_ENOTNC, NF90_ENOTVAR, &
-  NF90_ECHAR, NF90_EEDGE, NF90_ENAMEINUSE, NF90_EBADID, NF90_EINDEFINE, NF90_NOWRITE, &
+  NF90_ECHAR, NF90_EEDGE, NF90_ENAMEINUSE, NF90_EBADID, NF90_EINDEFINE, NF90_NOWRITE, NF90_EDIMSIZE, &
   nf90_open, nf90_close, nf90_estride, nf90_inq_varid, nf90_inq_dimid, nf90_inquire_dimension, &
   nf90_def_dim, nf90_def_var, nf90_get_var, nf90_put_var, &
   nf90_inq_libvers, nf90_sync
@@ -391,6 +391,8 @@ case (NF90_EBADNAME)
   m = 'ERROR: ' // dname // ' Name contains illegal characters.'
 case (NF90_EBADTYPE)
   m = 'ERROR: ' // dname // ' specified type is not a valid netCDF type'
+case (NF90_EDIMSIZE)
+  m = 'ERROR: ' // dname // ' bad dimension size'
 case (NF90_EBADDIM)
   m = 'ERROR: ' // dname // ' invalid dimension ID or Name'
 case (NF90_EBADGRPID)

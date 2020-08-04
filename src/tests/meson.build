@@ -3,15 +3,15 @@ test_io = executable('test_io', 'test_io.f90',
   dependencies: netcdf_interface)
 test('ReadWrite', test_io,  args: meson.current_build_dir(), timeout: 10, suite: 'nc4basic')
 
-test_attr = executable('test_attr', 'test_attr.f90',
+test_attr = executable('test_attributes', 'test_attributes.f90',
   fortran_args: quiet,
   dependencies: netcdf_interface)
 test('attributes', test_attr, args: meson.current_build_dir(), timeout: 10, suite: 'nc4basic')
 
-test_errors = executable('test_errors', 'test_errors.f90',
+test_error = executable('test_error', 'test_error.f90',
   fortran_args: quiet,
   dependencies: netcdf_interface)
-test('errors', test_errors, args: meson.current_build_dir(), timeout: 10, suite: 'nc4basic')
+test('errors', test_error, args: meson.current_build_dir(), timeout: 10, suite: 'nc4basic')
 
 test_exist = executable('test_exist', 'test_exist.f90',
   fortran_args: quiet,

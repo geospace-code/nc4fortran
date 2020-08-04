@@ -1,56 +1,41 @@
-program test_exist
+program exist_tests
 !! test "exist" variable
 use, intrinsic :: iso_fortran_env, only : stderr=>error_unit
 use nc4fortran, only : netcdf_file, is_netcdf, nc_exist
 
 implicit none (type, external)
 
-character(1024) :: argv
-character(:), allocatable :: path
-
-if(command_argument_count() /= 1) error stop 'input temp path'
-call get_command_argument(1, argv)
-path = trim(argv)
-
-call test_is_netcdf(argv)
+call test_is_netcdf()
 print *, 'OK: is_netcdf'
 
-call test_exists(argv)
+call test_exist()
 print *, 'OK: exist'
 
-call test_scratch(argv)
+call test_scratch()
 print *, 'OK: scratch'
 
 call test_multifiles()
 print *, 'OK: multiple files open at once'
 
-
 contains
 
-subroutine test_is_netcdf(path)
-
-character(*), intent(in) :: path
-character(:), allocatable :: fn
+subroutine test_is_netcdf()
 integer :: i
 
-if(is_netcdf(trim(path) // '/apidfjpj-8j9ejfpq984jfp89q39SHf.nc')) error stop 'test_exist: non-existant file declared netcdf'
-fn = trim(path) // '/not_netcdf.nc'
-open(newunit=i, file=fn, action='write', status='replace')
-write(i,*) 'I am not an netcdf file.'
+if(is_netcdf('apidfjpj-8j9ejfpq984jfp89q39SHf.nc')) error stop 'test_exist: non-existant file declared netcdf'
+
+open(newunit=i, file='not_netcdf.nc', action='write', status='replace')
+write(i,*) 'I am not a NetCDF4 file.'
 close(i)
 
-if(is_netcdf(fn)) error stop 'text files are not netcdf'
+if(is_netcdf('not.nc')) error stop 'text files are not NetCDF4'
 
 end subroutine test_is_netcdf
 
 
-subroutine test_exists(path)
-
-character(*), intent(in) :: path
+subroutine test_exist()
 type(netcdf_file) :: h
-character(:), allocatable :: fn
-
-fn = trim(path) // '/test_exist.nc'
+character(*), parameter :: fn = 'exist.nc'
 
 call h%initialize(fn, status='replace')
 call h%write('x', 42)
@@ -73,20 +58,19 @@ if(h%is_open) error stop 'file is closed'
 if (.not. nc_exist(fn, 'x')) error stop 'x exists'
 if (nc_exist(fn, 'foo')) error stop 'foo not exist'
 
-end subroutine test_exists
+end subroutine test_exist
 
 
-subroutine test_scratch(path)
-character(*), intent(in) :: path
+subroutine test_scratch()
 logical :: e
 type(netcdf_file) :: h
 
-call h%initialize(trim(path) // '/scratch.nc', status='scratch')
+call h%initialize('scratch.nc', status='scratch')
 call h%write('here', 12)
 call h%finalize()
 
 inquire(file=h%filename, exist=e)
-if(e) error stop 'scratch file was not auto-deletect'
+if(e) error stop 'scratch file not autodeleted'
 
 end subroutine test_scratch
 

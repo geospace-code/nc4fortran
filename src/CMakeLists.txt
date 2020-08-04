@@ -7,11 +7,21 @@ endif()
 configure_file(pathlib.in.f90 pathlib.f90)
 
 set(reader_template "
-integer :: varid, ier
+integer :: varid, ier, drank
+
 
 if(.not.self%is_open) error stop 'ERROR:nc4fortran:reader file handle not open'
 
 ier = nf90_inq_varid(self%ncid, dname, varid)
+
+if(ier == NF90_NOERR) then
+  ier = nf90_inquire_variable(self%ncid, varid, ndims=drank)
+  if(drank /= rank(value)) then
+    ier = NF90_EDIMSIZE
+    write(stderr,*) 'ERROR: ' // dname // ' rank ', drank, ' /= variable rank ',rank(value)
+    return
+  endif
+endif
 
 if(ier == NF90_NOERR) then
 select type (value)

@@ -7,14 +7,7 @@ use nc4fortran, only : toLower, netcdf_file, strip_trailing_null, truncate_strin
 
 implicit none (type, external)
 
-character(:), allocatable :: path
-character(256) :: argv
-
-if(command_argument_count() /= 1) error stop 'input temporary path'
-call get_command_argument(1, argv)
-path = trim(argv)
-
-call test_string_rw(path)
+call test_string_rw()
 print *,'PASSED: HDF5 string write/read'
 
 call test_lowercase()
@@ -44,23 +37,24 @@ if (.not.strip_trailing_null(hello // c_null_char) == hello) error stop 'problem
 end subroutine test_strip_null
 
 
-subroutine test_string_rw(path)
+subroutine test_string_rw()
 
 type(netcdf_file) :: h
 
-character(*), intent(in) :: path
 character(2) :: value
 character(1024) :: val1k
 character(:), allocatable :: final
 
-call h%initialize(path//'/test_string.nc', status='replace')
+character(*), parameter :: path='test_string.nc'
+
+call h%initialize(path, status='replace')
 
 call h%write('little', '42')
 call h%write('MySentence', 'this is a little sentence.')
 
 call h%finalize()
 
-call h%initialize(path//'/test_string.nc', status='old', action='r')
+call h%initialize(path, status='old', action='r')
 call h%read('little', value)
 
 if (value /= '42') then
@@ -72,7 +66,6 @@ print *,'test_string_rw: reading too much data'
 !! try reading too much data, then truncating to first C_NULL
 call h%read('little', val1k)
 final = truncate_string_null(val1k)
-print *,'TRACE:',final, len(final)
 
 if (len(final) /= 2) then
   write(stderr, *) 'trimming str to c_null did not work, got len() = ', len(final)

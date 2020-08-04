@@ -5,16 +5,7 @@ use nc4fortran, only : netcdf_file
 
 implicit none (type, external)
 
-character(:), allocatable :: path, filename
-character(1024) :: argv
-
-
-if(command_argument_count() /= 1) error stop 'input temp path'
-call get_command_argument(1, argv)
-path = trim(argv)
-
-filename = path // '/test_attr.nc'
-
+character(*), parameter :: filename = 'test_attr.h5'
 
 call test_write_attributes(filename)
 print *,'PASSED: write attributes'
@@ -75,6 +66,5 @@ if (attr64 /= 42._real64) error stop 'read_attribute: real64'
 call h%finalize()
 
 end subroutine test_read_attributes
-
 
 end program
