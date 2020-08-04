@@ -7,7 +7,8 @@ use nc4fortran, only: netcdf_file, toLower, strip_trailing_null, truncate_string
 implicit none (type, external)
 
 type(netcdf_file) :: h
-integer, parameter :: N=1000
+integer, parameter :: N=250
+!! don't use too big otherwise platform/version dependent autochunk fouls up test ~ 4MB
 integer :: crat, chunks(3)
 integer ::  fsize
 
@@ -40,7 +41,10 @@ call h%initialize(fn1, status='old', action='r', debug=.false.)
 if(.not. h%is_chunked('big2')) error stop '#1 not chunked layout'
 
 call h%chunks('big2', chunks(:2))
-if(any(chunks(:2) /= [1000, 1000])) error stop '#1 get_chunk mismatch'
+if(any(chunks(:2) /= [N, N])) then
+  write(stderr,*) '#1 chunk size', chunks(:2)
+  error stop '#1 auto chunk unexpected chunk size'
+endif
 
 if(.not.h%is_contig('small_contig')) error stop '#1 not contig layout'
 call h%chunks('small_contig', chunks(:2))
@@ -55,7 +59,8 @@ call h%write('big3', big3)
 
 call h%write('big3_autochunk', big3)
 call h%chunks('big3_autochunk', chunks)
-if(any(chunks /= [500,500,2])) then
+if(any(chunks(:2) /= [N, N])) then
+  !! chunks(3) varies based on platform
   write(stderr,*) '#2 chunk size', chunks
   error stop '#2 auto chunk unexpected chunk size'
 endif
@@ -72,7 +77,7 @@ call h%initialize(fn3, status='replace',comp_lvl=1, debug=.true.)
 
 call h%write('ibig3', ibig3(:N-10,:N-20,:))
 call h%chunks('ibig3', chunks)
-if(any(chunks /= [495,490,2]))  then
+if(any(chunks(:2) /= [N-10, N-20]))  then
   write(stderr,*) '#3 chunk size', chunks
   error stop '#3 auto chunk unexpected chunk size'
 endif
