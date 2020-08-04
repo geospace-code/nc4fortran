@@ -17,7 +17,7 @@ add_test(NAME nc4fortran:attributes COMMAND $<TARGET_FILE:test_attributes>
 add_executable(test_error test_error.f90)
 target_link_libraries(test_error nc4fortran::nc4fortran)
 add_test(NAME nc4fortran:error COMMAND $<TARGET_FILE:test_error>
- WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(test_exist test_exist.f90)
 target_link_libraries(test_exist PRIVATE nc4fortran::nc4fortran)
