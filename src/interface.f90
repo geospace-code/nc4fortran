@@ -10,13 +10,9 @@ use netcdf, only : nf90_create, nf90_open, NF90_WRITE, NF90_CLOBBER, NF90_NETCDF
   nf90_def_dim, nf90_def_var, nf90_get_var, nf90_put_var, &
   nf90_inq_libvers, nf90_sync, nf90_inquire_variable
 
-use pathlib, only : unlink, get_tempdir, is_absolute_path
-use string_utils, only : toLower, strip_trailing_null, truncate_string_null
-
 implicit none (type, external)
 private
-public :: netcdf_file, NF90_MAX_NAME, NF90_NOERR, check_error, is_netcdf, nc_exist, &
- toLower, strip_trailing_null, truncate_string_null
+public :: netcdf_file, NF90_MAX_NAME, NF90_NOERR, check_error, is_netcdf, nc_exist
 
 !! at this time, we assume up to 7 dimension NetCDF variable.
 integer, parameter :: NC_MAXDIM = 7
@@ -55,9 +51,24 @@ procedure, private :: nc_write_scalar, nc_write_1d, nc_write_2d, nc_write_3d, nc
 
 end type netcdf_file
 
-!! Submodules
+!> Submodules
 
-interface
+interface !< pathlib.f90
+module logical function unlink(filename)
+character(*), intent(in) :: filename
+end function unlink
+
+module logical function is_absolute_path(path)
+character(*), intent(in) :: path
+end function is_absolute_path
+
+module function get_tempdir()
+character(:), allocatable :: get_tempdir
+end function
+
+end interface
+
+interface !< writer.f90
 module subroutine nc_write_scalar(self, dname, value, ierr)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
@@ -146,7 +157,6 @@ module logical function nc_exist(filename, dname)
 character(*), intent(in) :: filename, dname
 end function nc_exist
 end interface
-
 
 interface !< reader.f90
 module subroutine nc_read_scalar(self, dname, value, ierr)
@@ -265,10 +275,10 @@ if (present(debug)) self%debug = debug
 self%libversion = nf90_inq_libvers()
 
 lstatus = 'unknown'
-if(present(status)) lstatus = toLower(status)
+if(present(status)) lstatus = status
 
 laction = 'rw'
-if(present(action)) laction = toLower(action)
+if(present(action)) laction = action
 
 select case(lstatus)
 case ('old', 'unknown')
