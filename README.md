@@ -54,6 +54,37 @@ Platforms that currently do **not** have Fortran NetCDF4 libraries, and thus wil
 Build this NetCDF OO Fortran interface with Meson or CMake.
 The library `libnc4fortran.a` is built, link it into your program as usual.
 
+### CMake
+
+```sh
+ctest -S setup.cmake -VV
+```
+
+To specify a particular NetCDF library, use
+
+```sh
+cmake -DNetCDF_ROOT=/path/to/netcdff -B build
+```
+
+or set environment variable `NetCDF_ROOT=/path/to/netcdff`
+
+To use nc4fortran as a CMake ExternalProject do like:
+
+```cmake
+include(FetchContent)
+
+FetchContent_Declare(nc4fortran_proj
+  GIT_REPOSITORY https://github.com/geospace-code/nc4fortran.git
+  GIT_TAG v1.0.2)
+
+FetchContent_MakeAvailable(nc4fortran_proj)
+
+# ------------------------------------------------------
+# whatever your program is
+add_executable(myProj main.f90)
+target_link_libraries(myProj nc4fortran::nc4fortran)
+```
+
 ### Meson
 
 To build nc4fortran as a standalone project
@@ -81,38 +112,6 @@ and have a file in the master project `subprojects/nc4fortran.wrap` containing:
 directory = nc4fortran
 url = https://github.com/geospace-code/nc4fortran.git
 revision = head
-```
-
-### CMake
-
-```sh
-ctest -S setup.cmake -VV
-```
-
-To specify a particular NetCDF library, use
-
-```sh
-cmake -DNetCDF_ROOT=/path/to/netcdff -B build
-```
-
-or set environment variable `NetCDF_ROOT=/path/to/netcdff`
-
-To use nc4fortran as a CMake ExternalProject do like:
-
-```cmake
-include(FetchContent)
-
-FetchContent_Declare(nc4fortran_proj
-  GIT_REPOSITORY https://github.com/geospace-code/nc4fortran.git
-  GIT_TAG master  # whatever desired version is
-)
-
-FetchContent_MakeAvailable(nc4fortran_proj)
-
-# ------------------------------------------------------
-# whatever your program is
-add_executable(myProj main.f90)
-target_link_libraries(myProj nc4fortran::nc4fortran)
 ```
 
 ## Usage

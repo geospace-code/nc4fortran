@@ -2,7 +2,7 @@ program deflate_test
 !! unit tests and registration tests of HDF5 deflate compression write
 use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_unit
 
-use nc4fortran, only: netcdf_file, toLower, strip_trailing_null, truncate_string_null
+use nc4fortran, only: netcdf_file
 
 implicit none (type, external)
 
