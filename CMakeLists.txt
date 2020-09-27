@@ -1,22 +1,26 @@
 cmake_minimum_required(VERSION 3.14)
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug or Release")
 endif()
+
 project(nc4fortran
   LANGUAGES Fortran
   VERSION 1.0.2
   DESCRIPTION "thin, light object-oriented NetCDF4 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/nc4fortran)
 
-enable_testing()
 include(CTest)
-include(FeatureSummary)
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
 # this helps linters e.g. Visual Studio Intellicode work properly
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
-set_package_properties(NetCDF PROPERTIES URL "https://www.unidata.ucar.edu/software/netcdf/" DESCRIPTION "fast, versatile file I/O format")
+
+if(NOT DEFINED ${PROJECT_NAME}_BUILD_TESTING)
+  set(${PROJECT_NAME}_BUILD_TESTING ${BUILD_TESTING})
+endif()
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/netcdf.cmake)
@@ -44,10 +48,14 @@ add_library(nc4fortran::nc4fortran ALIAS nc4fortran)
 
 add_subdirectory(src)
 
-if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+if(${PROJECT_NAME}_BUILD_TESTING)
   add_subdirectory(src/tests)
+endif()
 
+if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/install.cmake)
 
+  include(FeatureSummary)
+  set_package_properties(NetCDF PROPERTIES URL "https://www.unidata.ucar.edu/software/netcdf/" DESCRIPTION "fast, versatile file I/O format")
   feature_summary(WHAT ALL)
 endif()
