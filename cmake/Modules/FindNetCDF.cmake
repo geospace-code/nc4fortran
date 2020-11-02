@@ -62,6 +62,25 @@ if(NOT NetCDF_C_LIBRARY)
   return()
 endif()
 
+set(CMAKE_REQUIRED_FLAGS)
+set(CMAKE_REQUIRED_INCLUDES ${NetCDF_C_INCLUDE_DIR})
+set(CMAKE_REQUIRED_LIBRARIES ${NetCDF_C_LIBRARY})
+
+include(CheckCSourceCompiles)
+check_c_source_compiles("
+#include <netcdf.h>
+#include <stdio.h>
+
+int main(void){
+printf(\"%s\", nc_inq_libvers());
+return 0;
+}
+" NetCDF_C_links)
+
+if(NOT NetCDF_C_links)
+  return()
+endif()
+
 set(NetCDF_C_FOUND true PARENT_SCOPE)
 set(NetCDF_C_INCLUDE_DIR ${NetCDF_C_INCLUDE_DIR} PARENT_SCOPE)
 set(NetCDF_C_LIBRARY ${NetCDF_C_LIBRARY} PARENT_SCOPE)
@@ -92,6 +111,17 @@ find_library(NetCDF_Fortran_LIBRARY
   DOC "NetCDF Fortran library")
 
 if(NOT NetCDF_Fortran_LIBRARY)
+  return()
+endif()
+
+set(CMAKE_REQUIRED_FLAGS)
+set(CMAKE_REQUIRED_INCLUDES ${NetCDF_Fortran_INCLUDE_DIR})
+set(CMAKE_REQUIRED_LIBRARIES ${NetCDF_Fortran_LIBRARY})
+
+include(CheckFortranSourceCompiles)
+check_fortran_source_compiles("use netcdf; end" NetCDF_Fortran_links SRC_EXT f90)
+
+if(NOT NetCDF_Fortran_links)
   return()
 endif()
 
@@ -139,6 +169,10 @@ if(Fortran IN_LIST NetCDF_FIND_COMPONENTS)
   netcdf_fortran()
   list(APPEND _ncdf_req ${NetCDF_Fortran_LIBRARY})
 endif()
+
+set(CMAKE_REQUIRED_FLAGS)
+set(CMAKE_REQUIRED_INCLUDES)
+set(CMAKE_REQUIRED_LIBRARIES)
 
 mark_as_advanced(NetCDF_C_INCLUDE_DIR NetCDF_Fortran_INCLUDE_DIR NetCDF_C_LIBRARY NetCDF_Fortran_LIBRARY)
 

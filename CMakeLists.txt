@@ -1,12 +1,10 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.15)
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug or Release")
-endif()
+include(cmake/compiler_find.cmake)
 
 project(nc4fortran
-  LANGUAGES Fortran
-  VERSION 1.0.2
+  LANGUAGES C Fortran
+  VERSION 1.1.0
   DESCRIPTION "thin, light object-oriented NetCDF4 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/nc4fortran)
 
@@ -14,24 +12,20 @@ include(CTest)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
-# this helps linters e.g. Visual Studio Intellicode work properly
-set(CMAKE_EXPORT_COMPILE_COMMANDS on)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/policy.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
 
+# --- find NetCDF4
 
-if(NOT DEFINED ${PROJECT_NAME}_BUILD_TESTING)
-  set(${PROJECT_NAME}_BUILD_TESTING ${BUILD_TESTING})
+if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  find_package(NetCDF COMPONENTS Fortran REQUIRED)
+else()
+  find_package(NetCDF COMPONENTS Fortran)
 endif()
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/netcdf.cmake)
-
-if(NOT NCDFOK)
-  message(STATUS "nc4fortran: NetCDF4 not working")
-  if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-    message(FATAL_ERROR)
-  else()
-    return()
-  endif()
+if(NOT NetCDF_FOUND)
+  message(STATUS "nc4fortran: NetCDF4 not working, so nc4fortran is not available.")
+  return()
 endif()
 
 # --- build

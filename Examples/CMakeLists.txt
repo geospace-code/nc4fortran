@@ -11,11 +11,11 @@ else()
   include(FetchContent)
   FetchContent_Declare(nc4fortran_proj
     GIT_REPOSITORY https://github.com/geospace-code/nc4fortran.git
-    GIT_TAG v1.0.2)
+    GIT_TAG master)
   FetchContent_MakeAvailable(nc4fortran_proj)
 endif()
 
-if(NOT NCDFOK)
+if(NOT TARGET nc4fortran::nc4fortran)
   message(FATAL_ERROR "NetCDF4 is not working on your system, so nc4fortran cannot work.")
 endif()
 
