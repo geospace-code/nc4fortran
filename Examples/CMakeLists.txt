@@ -1,8 +1,13 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.15)
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/policy.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/compiler_find.cmake)
+
 project(nc4fortranExample
-LANGUAGES C CXX Fortran)
+LANGUAGES Fortran)
 enable_testing()
 
+# see if ncfortran is installed; build if not found
 find_package(nc4fortran CONFIG)
 
 if(nc4fortran_FOUND)
