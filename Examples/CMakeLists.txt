@@ -24,8 +24,6 @@ if(NOT TARGET nc4fortran::nc4fortran)
   message(FATAL_ERROR "NetCDF4 is not working on your system, so nc4fortran cannot work.")
 endif()
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS on)
-
 # --- Fortran interface for examples
 add_library(fortran_interface fortran_interface.f90)
 target_link_libraries(fortran_interface PRIVATE nc4fortran::nc4fortran)

@@ -1,8 +1,5 @@
 # --- package specific
 
-install(FILES ${CMAKE_CURRENT_LIST_DIR}/netcdf.cmake ${CMAKE_CURRENT_LIST_DIR}/Modules/FindNetCDF.cmake
-  DESTINATION lib/cmake/${PROJECT_NAME})
-
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/nc4fortran.mod
   DESTINATION include)
 

@@ -17,10 +17,10 @@ jobs:
       with:
         python-version: '3.x'
 
-    - run: pip install meson
+    - run: pip install meson ninja
     - run: |
         sudo apt update -yq
-        sudo apt install -yq --no-install-recommends gfortran ninja-build libnetcdff-dev
+        sudo apt install -yq --no-install-recommends gfortran libnetcdff-dev
 
     - run: meson setup build
     - run: meson compile -C build

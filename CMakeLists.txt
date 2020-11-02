@@ -1,18 +1,21 @@
 cmake_minimum_required(VERSION 3.15)
 
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/policy.cmake)
 include(cmake/compiler_find.cmake)
 
 project(nc4fortran
   LANGUAGES C Fortran
-  VERSION 1.1.0
+  VERSION 1.1.1
   DESCRIPTION "thin, light object-oriented NetCDF4 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/nc4fortran)
 
 include(CTest)
+if(NOT DEFINED ${PROJECT_NAME}_BUILD_TESTING)
+  set(${PROJECT_NAME}_BUILD_TESTING ${BUILD_TESTING})
+endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/policy.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
 
 # --- find NetCDF4
@@ -48,8 +51,8 @@ endif()
 
 if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/install.cmake)
-
-  include(FeatureSummary)
-  set_package_properties(NetCDF PROPERTIES URL "https://www.unidata.ucar.edu/software/netcdf/" DESCRIPTION "fast, versatile file I/O format")
-  feature_summary(WHAT ALL)
 endif()
+
+include(FeatureSummary)
+set_package_properties(NetCDF PROPERTIES URL "https://www.unidata.ucar.edu/software/netcdf/" DESCRIPTION "fast, versatile file I/O format")
+feature_summary(WHAT ALL)
