@@ -1,4 +1,4 @@
-name: ci_linux
+name: ci
 
 on:
   push:
@@ -6,11 +6,11 @@ on:
       - "**/CMakeLists.txt"
       - "**.cmake"
       - "**.f90"
-      - ".github/workflows/ci_linux.yml"
+      - ".github/workflows/ci.yml"
 
 jobs:
 
-  cmake:
+  linux:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -18,6 +18,26 @@ jobs:
     - run: |
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends gfortran libnetcdff-dev
+
+    - run: ctest -S setup.cmake -VV
+
+    - name: build examples
+      run: |
+        cmake -B Examples/build -S Examples
+        cmake --build Examples/build
+
+    - name: test examples
+      run: ctest -V
+      working-directory: Examples/build
+
+
+  mac:
+    needs: linux
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: brew install gcc netcdf ninja
 
     - run: ctest -S setup.cmake -VV
 

@@ -3,8 +3,8 @@
 [![DOI](https://zenodo.org/badge/229812591.svg)](https://zenodo.org/badge/latestdoi/229812591)
 [![CDash](./archive/cdash.png)](https://my.cdash.org/index.php?project=nc4fortran)
 
-![ci_linux](https://github.com/geospace-code/nc4fortran/workflows/ci_linux/badge.svg)
-![ci_mac](https://github.com/geospace-code/nc4fortran/workflows/ci_mac/badge.svg)
+![ci](https://github.com/geospace-code/nc4fortran/workflows/ci/badge.svg)
+![ci_meson](https://github.com/geospace-code/nc4fortran/workflows/ci_meson/badge.svg)
 
 Simple, robust, thin HDF5 polymorphic read/write interface.
 For HDF5 see [h5fortran](https://github.com/geospace-code/h5fortran).

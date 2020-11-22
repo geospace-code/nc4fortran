@@ -1,10 +1,10 @@
-name: ci_linux_meson
+name: ci_meson
 
 on:
   push:
     paths:
       - "**/meson.build"
-      - ".github/workflows/ci_linux_meson.yml"
+      - ".github/workflows/ci_meson.yml"
 
 
 jobs:
