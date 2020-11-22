@@ -5,7 +5,7 @@ include(cmake/compiler_find.cmake)
 
 project(nc4fortran
   LANGUAGES C Fortran
-  VERSION 1.1.1
+  VERSION 1.1.2
   DESCRIPTION "thin, light object-oriented NetCDF4 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/nc4fortran)
 
