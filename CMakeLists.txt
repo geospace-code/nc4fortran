@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/policy.cmake)
+include(cmake/policy.cmake)
 include(cmake/compiler_find.cmake)
 
 project(nc4fortran
@@ -16,7 +16,7 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
+include(cmake/compilers.cmake)
 
 # --- find NetCDF4
 
