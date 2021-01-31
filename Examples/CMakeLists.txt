@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.14)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/policy.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/compiler_find.cmake)
@@ -17,7 +17,7 @@ else()
   include(FetchContent)
   FetchContent_Declare(nc4fortran_proj
     GIT_REPOSITORY https://github.com/geospace-code/nc4fortran.git
-    GIT_TAG master)
+    GIT_TAG v1.1.2)
   FetchContent_MakeAvailable(nc4fortran_proj)
 endif()
 
