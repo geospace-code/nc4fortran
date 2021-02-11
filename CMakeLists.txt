@@ -6,7 +6,7 @@ find_c_fortran()
 
 project(nc4fortran
   LANGUAGES C Fortran
-  VERSION 1.1.3
+  VERSION 1.1.4
   DESCRIPTION "thin, light object-oriented NetCDF4 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/nc4fortran)
 
