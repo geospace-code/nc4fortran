@@ -54,4 +54,4 @@ include(cmake/install.cmake)
 
 include(FeatureSummary)
 set_package_properties(NetCDF PROPERTIES URL "https://www.unidata.ucar.edu/software/netcdf/" DESCRIPTION "fast, versatile file I/O format")
-feature_summary(WHAT ENABLED_FEATURES PACKAGES_FOUND)
+feature_summary(WHAT ENABLED_FEATURES)

@@ -6,24 +6,23 @@ find_c_fortran()
 
 project(nc4fortranExample
 LANGUAGES Fortran)
-enable_testing()
+
+include(CTest)
+
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../cmake/Modules)
 
 # see if ncfortran is installed; build if not found
 find_package(nc4fortran CONFIG)
 
 if(nc4fortran_FOUND)
   include(${nc4fortran_DIR}/nc4fortranTargets.cmake)
-else()
-  include(FetchContent)
-  FetchContent_Declare(nc4fortran_proj
-    GIT_REPOSITORY https://github.com/geospace-code/nc4fortran.git
-    GIT_TAG v1.1.2)
-  FetchContent_MakeAvailable(nc4fortran_proj)
 endif()
 
 if(NOT TARGET nc4fortran::nc4fortran)
-  message(FATAL_ERROR "NetCDF4 is not working on your system, so nc4fortran cannot work.")
+  message(FATAL_ERROR "nc4fortran not found.")
 endif()
+
+find_package(NetCDF COMPONENTS Fortran REQUIRED)
 
 # --- Fortran interface for examples
 add_library(fortran_interface fortran_interface.f90)

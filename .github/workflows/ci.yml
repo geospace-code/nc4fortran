@@ -1,6 +1,7 @@
 name: ci
 env:
    HOMEBREW_NO_INSTALL_CLEANUP: 1
+   CMAKE_GENERATOR: Ninja
 
 on:
   push:
@@ -9,32 +10,53 @@ on:
       - "**.cmake"
       - "**.f90"
       - ".github/workflows/ci.yml"
+  release:
+    types: published
+
 
 jobs:
 
   linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
 
     - run: |
         sudo apt update -yq
-        sudo apt install -yq --no-install-recommends gfortran libnetcdff-dev
+        sudo apt install -yq --no-install-recommends ninja-build gfortran libnetcdff-dev
 
-    - run: cmake -B build
+    - run: cmake -B build -DCMAKE_INSTALL_PREFIX=~/hdf5
     - run: cmake --build build --parallel
-
+    - run: cmake --install build
     - run: ctest --parallel 2 --output-on-failure
       working-directory: build
 
-    - name: build examples
-      run: |
-        cmake -B Examples/build -S Examples
-        cmake --build Examples/build
-
-    - name: test examples
-      run: ctest -V
+    - name: configure examples
+      run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=~/hdf5
+    - name: build exmaples
+      run: cmake --build Examples/build --parallel
+    - name: Test examples
+      run: ctest --parallel 2 --output-on-failure
       working-directory: Examples/build
+
+    - name: create package
+      run: cpack --config build/CPackConfig.cmake
+
+    - name: get version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
+
+    - name: Upload release asset
+      if: github.event.action == 'published'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./nc4fortran-${{ steps.get_version.outputs.VERSION }}-Linux.zip
+        asset_name:  nc4fortran-${{ steps.get_version.outputs.VERSION }}-Linux.zip
+        asset_content_type: application/zip
+
 
 
   mac:
@@ -45,8 +67,31 @@ jobs:
 
     - run: brew install gcc netcdf ninja
 
-    - run: cmake -B build
+    - run: cmake -B build -DCMAKE_INSTALL_PREFIX=~/hdf5
     - run: cmake --build build --parallel
-
+    - run: cmake --install build
     - run: ctest --parallel 2 --output-on-failure
       working-directory: build
+
+    - run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=~/hdf5
+    - run: cmake --build Examples/build --parallel
+    - run: ctest --parallel 2 --output-on-failure
+      working-directory: Examples/build
+
+    - name: create package
+      run: cpack --config build/CPackConfig.cmake
+
+    - name: get version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
+
+    - name: Upload release asset
+      if: github.event.action == 'published'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./nc4fortran-${{ steps.get_version.outputs.VERSION }}-Darwin.zip
+        asset_name:  nc4fortran-${{ steps.get_version.outputs.VERSION }}-Darwin.zip
+        asset_content_type: application/zip
