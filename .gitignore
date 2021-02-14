@@ -1,7 +1,10 @@
+*.h5
+*.pdf
 build*/
+.cache
 
-# Prerequisites
-*.d
+*.pyd
+__pycache__/
 
 # Compiled Object files
 *.slo

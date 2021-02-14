@@ -21,7 +21,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: |
+    - name: install hdf5
+      run: |
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends ninja-build gfortran libnetcdff-dev
 
@@ -71,7 +72,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: brew install gcc netcdf ninja
+    - run: brew install netcdf ninja
 
     - run: cmake -B build -DCMAKE_INSTALL_PREFIX=~/hdf5
     - run: cmake --build build --parallel

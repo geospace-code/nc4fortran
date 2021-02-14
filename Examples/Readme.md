@@ -1,19 +1,13 @@
-# nc4ortran Example project
+# nc4ortran Examples
 
-It's easiest to use CMake with nc4fortran, since HDF5 consists of many library files and headers.
-From the nc4fortran/ directory, build the examples (or change to the Examples/ directory):
-
-```sh
-cmake -B Examples/build -S Examples
-cmake --build Examples/build
-```
-
-which creates examples under the Examples/build direcotry
-
-If you installed nc4fortran previously, you can use that version by:
+From the nc4fortran/ directory, specify the nc4fortran install like:
 
 ```sh
-cmake -B Examples/build -S Examples -Dnc4fortran_DIR=~/libs/nc4fortran/lib/cmake/nc4fortran
+cmake -B build -DCMAKE_INSTALL_PREFIX=~/nc4fortran
+cmake --build build
+cmake --install build
+
+cmake -B Examples/build -S Examples -Dnc4fortran_ROOT=~/nc4fortran
 ```
 
 ## Examples

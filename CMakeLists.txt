@@ -42,7 +42,18 @@ target_include_directories(nc4fortran
   $<INSTALL_INTERFACE:include>)
 target_link_libraries(nc4fortran PUBLIC NetCDF::NetCDF_Fortran)
 set_target_properties(nc4fortran PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
-add_library(nc4fortran::nc4fortran ALIAS nc4fortran)
+
+add_library(nc4fortran::nc4fortran INTERFACE IMPORTED)
+target_link_libraries(nc4fortran::nc4fortran INTERFACE nc4fortran)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/nc4fortran.mod
+  DESTINATION include)
+
+install(TARGETS nc4fortran
+  EXPORT ${PROJECT_NAME}Targets
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib)
+
 
 add_subdirectory(src)
 

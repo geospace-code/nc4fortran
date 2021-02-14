@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.13)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/policy.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/compiler_find.cmake)
@@ -11,12 +11,13 @@ include(CTest)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../cmake/Modules)
 
-# see if ncfortran is installed; build if not found
 find_package(nc4fortran CONFIG)
 
-if(nc4fortran_FOUND)
-  include(${nc4fortran_DIR}/nc4fortranTargets.cmake)
+if(NOT nc4fortran_FOUND)
+  message(FATAL_ERROR "could not find nc4fortran")
 endif()
+
+include(${nc4fortran_DIR}/nc4fortranTargets.cmake)
 
 if(NOT TARGET nc4fortran::nc4fortran)
   message(FATAL_ERROR "nc4fortran not found.")
