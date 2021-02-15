@@ -37,7 +37,7 @@ Tested on systems with NetCDF4 including:
 
 Requirements:
 
-* modern Fortran compiler (this project uses `submodule` and `error stop`). For example, Gfortran &ge; 6.
+* modern Fortran compiler (this project uses `submodule` and `error stop`). For example, Gfortran &ge; 7 or Intel oneAPI.
 * NetCDF4 Fortran library
   * Mac / Homebrew: `brew install gcc netcdf`
   * Linux: `apt install gfortran libnetcdf-dev libnetcdff-dev`
