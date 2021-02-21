@@ -42,7 +42,9 @@ Search details:
 
 function(netcdf_c)
 
-pkg_check_modules(pc_nc netcdf QUIET)
+if(PkgConfig_FOUND AND NOT NetCDF_C_LIBRARY)
+  pkg_search_module(pc_nc netcdf)
+endif()
 
 find_path(NetCDF_C_INCLUDE_DIR
   NAMES netcdf.h
@@ -90,15 +92,13 @@ endfunction(netcdf_c)
 
 function(netcdf_fortran)
 
-pkg_check_modules(pc_nc netcdf-fortran QUIET)
-if(NOT pc_nc_FOUND)
-  # homebrew
-  pkg_check_modules(pc_nc netcdf QUIET)
+if(PkgConfig_FOUND AND NOT NetCDF_Fortran_LIBRARY)
+  pkg_search_module(pc_ncf netcdf-fortran netcdf)
 endif()
 
 find_path(NetCDF_Fortran_INCLUDE_DIR
   names netcdf.mod
-  HINTS ${pc_nc_INCLUDE_DIRS}
+  HINTS ${pc_ncf_INCLUDE_DIRS}
   DOC "NetCDF Fortran Include")
 
 if(NOT NetCDF_Fortran_INCLUDE_DIR)
@@ -107,7 +107,7 @@ endif()
 
 find_library(NetCDF_Fortran_LIBRARY
   NAMES netcdff
-  HINTS ${pc_nc_LIBRARY_DIRS} ${pc_nc_LIBDIR}
+  HINTS ${pc_ncf_LIBRARY_DIRS} ${pc_ncf_LIBDIR}
   DOC "NetCDF Fortran library")
 
 if(NOT NetCDF_Fortran_LIBRARY)
@@ -159,7 +159,7 @@ if(netCDF_FOUND)
 endif(netCDF_FOUND)
 
 # 2. manual search for Fortran (and C if needed) using optional pkg-config
-find_package(PkgConfig QUIET)
+find_package(PkgConfig)
 if(NOT NetCDF_C_FOUND)
   netcdf_c()
 endif()

@@ -99,7 +99,7 @@ else()
   message(STATUS "SKIP: ctest_test(): returncode: ${return_code}; CMake error code: ${cmake_err}")
 endif()
 
-ctest_submit()
+# ctest_submit()
 
 if(NOT (return_code EQUAL 0 AND Nerror EQUAL 0 AND cmake_err EQUAL 0 AND ctest_err EQUAL 0))
   message(FATAL_ERROR "Build and test failed.")

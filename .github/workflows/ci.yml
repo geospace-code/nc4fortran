@@ -1,7 +1,4 @@
 name: ci
-env:
-   HOMEBREW_NO_INSTALL_CLEANUP: 1
-   CMAKE_GENERATOR: Ninja
 
 on:
   push:
@@ -26,8 +23,8 @@ jobs:
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends ninja-build gfortran libnetcdff-dev
 
-    - run: cmake -B build -DCMAKE_INSTALL_PREFIX=~/hdf5
-    - run: cmake --build build --parallel
+    - run: cmake --preset=ninja -DCMAKE_INSTALL_PREFIX=~/hdf5
+    - run: cmake --build build
     - run: cmake --install build
     - run: ctest --parallel 2 --output-on-failure
       working-directory: build
@@ -69,13 +66,18 @@ jobs:
   mac:
     needs: linux
     runs-on: macos-latest
+    env:
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+      FC: gfortran-10
+      CC: gcc-10
+
     steps:
     - uses: actions/checkout@v2
 
     - run: brew install netcdf ninja
 
-    - run: cmake -B build -DCMAKE_INSTALL_PREFIX=~/hdf5
-    - run: cmake --build build --parallel
+    - run: cmake --preset=ninja -DCMAKE_INSTALL_PREFIX=~/hdf5
+    - run: cmake --build build
     - run: cmake --install build
     - run: ctest --parallel 2 --output-on-failure
       working-directory: build
