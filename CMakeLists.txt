@@ -37,7 +37,8 @@ target_include_directories(nc4fortran
 target_link_libraries(nc4fortran PUBLIC NetCDF::NetCDF_Fortran)
 set_target_properties(nc4fortran PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
 
-add_library(nc4fortran::nc4fortran INTERFACE IMPORTED)
+# GLOBAL needed for FetchContent use
+add_library(nc4fortran::nc4fortran INTERFACE IMPORTED GLOBAL)
 target_link_libraries(nc4fortran::nc4fortran INTERFACE nc4fortran)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/nc4fortran.mod
