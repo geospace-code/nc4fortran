@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.13...3.20)
 
 project(nc4fortran
   LANGUAGES C Fortran
-  VERSION 1.2.0
+  VERSION 1.2.1
   DESCRIPTION "thin, light object-oriented NetCDF4 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/nc4fortran)
 
