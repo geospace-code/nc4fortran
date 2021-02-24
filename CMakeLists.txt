@@ -56,6 +56,7 @@ if(${PROJECT_NAME}_BUILD_TESTING)
   add_subdirectory(src/tests)
 endif()
 
+include(cmake/pkgconf.cmake)
 include(cmake/install.cmake)
 
 include(FeatureSummary)
