@@ -1,6 +1,6 @@
 project('nc4fortran', 'fortran',
   meson_version : '>=0.52.0',
-  version: '1.2.1',
+  version: '1.2.2',
   default_options : ['default_library=static', 'buildtype=release', 'warning_level=3'])
 
 # --- find netcdf

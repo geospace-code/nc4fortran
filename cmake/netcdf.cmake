@@ -7,7 +7,10 @@ find_package(HDF5 COMPONENTS C Fortran REQUIRED)
 
 set(netcdf_external true CACHE BOOL "autobuild NetCDF")
 
-set(NetCDF_ROOT ${PROJECT_BINARY_DIR}/netcdf)
+if(NOT DEFINED NetCDF_ROOT)
+  set(NetCDF_ROOT ${PROJECT_BINARY_DIR}/netcdf)
+endif()
+
 set(NetCDF_INCLUDE_DIRS ${NetCDF_ROOT}/include)
 
 set(NetCDF_C_LIBRARIES ${NetCDF_ROOT}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}netcdf${CMAKE_SHARED_LIBRARY_SUFFIX})
@@ -43,10 +46,7 @@ target_link_libraries(NetCDF::NetCDF_C INTERFACE "${NetCDF_C_LIBRARIES}")
 add_dependencies(NetCDF::NetCDF_C NETCDF_C)
 
 # -- external deps
-
 target_link_libraries(NetCDF::NetCDF_C INTERFACE HDF5::HDF5)
-
-
 
 # --- NetCDF-Fortran
 ExternalProject_Add(NETCDF_FORTRAN
