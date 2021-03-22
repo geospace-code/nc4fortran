@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.13...3.20)
 
+file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/VERSION PROJECT_VERSION
+  REGEX "^([0-9]+\.[0-9]+\.[0-9]+)" LIMIT_INPUT 16 LENGTH_MAXIMUM 16 LIMIT_COUNT 1)
+
 project(nc4fortran
   LANGUAGES C Fortran
-  VERSION 1.2.2
+  VERSION ${PROJECT_VERSION}
   DESCRIPTION "thin, light object-oriented NetCDF4 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/nc4fortran)
 
@@ -35,7 +38,10 @@ target_include_directories(nc4fortran
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 target_link_libraries(nc4fortran PUBLIC NetCDF::NetCDF_Fortran)
-set_target_properties(nc4fortran PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
+set_target_properties(nc4fortran PROPERTIES
+  Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include
+  LABELS core
+  VERSION ${PROJECT_VERSION})
 
 # GLOBAL needed for FetchContent use
 add_library(nc4fortran::nc4fortran INTERFACE IMPORTED GLOBAL)
