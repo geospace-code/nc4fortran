@@ -57,7 +57,12 @@ The library `libnc4fortran.a` is built, link it into your program as usual.
 ### CMake
 
 ```sh
-ctest -S setup.cmake -VV
+cmake -B build
+cmake --build build
+
+# optional
+cd build
+ctest -V
 ```
 
 To specify a particular NetCDF library, use
