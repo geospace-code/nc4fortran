@@ -7,15 +7,11 @@ include(CTest)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../cmake/Modules)
 
-# --- find external libraries
+if(NOT nc4fortran_ROOT AND NOT DEFINED ENV{nc4fortran_ROOT})
+  set(nc4fortran_ROOT ${PROJECT_SOURCE_DIR}/../build)
+endif()
 
-find_package(NetCDF COMPONENTS Fortran REQUIRED)
-
-# --- Find our library
-
-set(CMAKE_FIND_PACKAGE_PREFER_CONFIG true)
-
-find_package(nc4fortran REQUIRED PATHS ${PROJECT_SOURCE_DIR}/../build)
+find_package(nc4fortran REQUIRED)
 
 # --- Fortran interface for examples
 add_library(fortran_interface fortran_interface.f90)

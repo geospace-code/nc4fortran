@@ -54,9 +54,9 @@ end type netcdf_file
 !> Submodules
 
 interface !< pathlib.f90
-module logical function unlink(filename)
+module logical function std_unlink(filename)
 character(*), intent(in) :: filename
-end function unlink
+end function std_unlink
 
 module logical function is_absolute_path(path)
 character(*), intent(in) :: path
@@ -343,7 +343,7 @@ if (ier /= NF90_NOERR) then
 endif
 
 if(self%is_scratch) then
-  if (unlink(self%filename)) write(stderr,*) 'WARNING: could not delete scratch file: ' // self%filename
+  if (std_unlink(self%filename)) write(stderr,*) 'WARNING: could not delete scratch file: ' // self%filename
 endif
 
 self%is_open = .false.

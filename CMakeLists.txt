@@ -49,6 +49,13 @@ install(TARGETS nc4fortran
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib)
 
+# additional Find*.cmake necesary
+install(FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindHDF5.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindSZIP.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindNetCDF.cmake
+  DESTINATION lib/cmake/Modules)
+
 
 add_subdirectory(src)
 
