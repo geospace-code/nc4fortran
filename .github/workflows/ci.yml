@@ -15,6 +15,10 @@ jobs:
 
   linux:
     runs-on: ubuntu-20.04
+    timeout-minutes: 15
+    env:
+      CTEST_SITE: GitHub_Ubuntu
+
     steps:
     - uses: actions/checkout@v2
 
@@ -23,30 +27,35 @@ jobs:
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends ninja-build gfortran libnetcdff-dev
 
-    - run: cmake --preset=ninja -DCMAKE_INSTALL_PREFIX=~/hdf5
-    - run: cmake --build build
-    - run: cmake --install build
-    - run: ctest --parallel 2 --output-on-failure
-      working-directory: build
+    - name: CDash
+      run: ctest -S ci.cmake -V
+
+    - name: Install package
+      run: |
+        cmake -B build -DCMAKE_INSTALL_PREFIX:PATH=~/nc4fortran
+        cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=~/hdf5
-    - name: build exmaples
+      run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT:PATH=~/nc4fortran
+    - name: build examples
       run: cmake --build Examples/build --parallel
     - name: Test examples
       run: ctest --parallel 2 --output-on-failure
       working-directory: Examples/build
 
     - name: create package
+      if: github.event.action == 'published'
       run: cpack --config build/CPackConfig.cmake
 
     - name: Upload artifact
+      if: github.event.action == 'published'
       uses: actions/upload-artifact@v1
       with:
         name: binary-archive
         path: build/package
 
     - name: get version
+      if: github.event.action == 'published'
       id: get_version
       run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
 
@@ -63,14 +72,16 @@ jobs:
 
 
   linuxCmake313:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
     steps:
     - uses: actions/checkout@v2
 
     - name: install netcdf4
       run: |
         sudo apt update -yq
-        sudo apt install -yq --no-install-recommends ninja-build gfortran libnetcdff-dev
+        sudo apt install -yq --no-install-recommends gfortran libnetcdff-dev
 
     - name: get CMake 3.13
       run: |
@@ -85,39 +96,45 @@ jobs:
 
 
   mac:
-    needs: linux
     runs-on: macos-latest
+    timeout-minutes: 20
     env:
       HOMEBREW_NO_INSTALL_CLEANUP: 1
-      FC: gfortran-10
       CC: gcc-10
+      FC: gfortran-10
+      CTEST_SITE: GitHub_MacOS
 
     steps:
     - uses: actions/checkout@v2
 
     - run: brew install netcdf ninja
 
-    - run: cmake --preset=ninja -DCMAKE_INSTALL_PREFIX=~/hdf5
-    - run: cmake --build build
-    - run: cmake --install build
-    - run: ctest --parallel 2 --output-on-failure
-      working-directory: build
+    - name: CDash
+      run: ctest -S ci.cmake -V
 
-    - run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=~/hdf5
+    - name: Install package
+      run: |
+        cmake -B build -DCMAKE_INSTALL_PREFIX:PATH=~/nc4fortran
+        cmake --install build
+
+    - run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT:PATH=~/h5fortran
     - run: cmake --build Examples/build --parallel
     - run: ctest --parallel 2 --output-on-failure
       working-directory: Examples/build
 
     - name: create package
+      if: github.event.action == 'published'
       run: cpack --config build/CPackConfig.cmake
 
     - name: Upload artifact
+      if: github.event.action == 'published'
       uses: actions/upload-artifact@v1
       with:
         name: binary-archive
         path: build/package
 
     - name: get version
+      if: github.event.action == 'published'
       id: get_version
       run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
 
