@@ -14,10 +14,11 @@ on:
 jobs:
 
   linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
       CTEST_SITE: GitHub_Ubuntu
+      CTEST_PARALLEL_LEVEL: 2
 
     steps:
     - uses: actions/checkout@v2
@@ -27,16 +28,13 @@ jobs:
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends ninja-build gfortran libnetcdff-dev
 
-    - name: CDash
-      run: ctest -S ci.cmake -V
-
-    - name: Install package
-      run: |
-        cmake -B build -DCMAKE_INSTALL_PREFIX:PATH=~/nc4fortran
-        cmake --install build
+    - run: cmake --preset default -DCMAKE_INSTALL_PREFIX=~
+    - run: cmake --build --preset default
+    - run: ctest --preset default
+    - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT:PATH=~/nc4fortran
+      run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=~
     - name: build examples
       run: cmake --build Examples/build --parallel
     - name: Test examples
@@ -66,14 +64,16 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: build/package/nc4fortran-${{ steps.get_version.outputs.VERSION }}-Linux.tar.gz
-        asset_name:  nc4fortran-${{ steps.get_version.outputs.VERSION }}-Linux.tar.gz
+        asset_path: build/package/nc4fortran-${{ steps.get_version.outputs.VERSION }}-Linux.tar.zst
+        asset_name:  nc4fortran-${{ steps.get_version.outputs.VERSION }}-Linux.tar.zst
         asset_content_type: application/zip
 
 
   linuxCmake313:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      CTEST_PARALLEL_LEVEL: 2
 
     steps:
     - uses: actions/checkout@v2
@@ -91,7 +91,7 @@ jobs:
 
     - run: cmake -B build
     - run: cmake --build build --parallel
-    - run: ctest --parallel 2 --output-on-failure
+    - run: ctest --output-on-failure
       working-directory: build
 
 
@@ -103,21 +103,19 @@ jobs:
       CC: gcc-10
       FC: gfortran-10
       CTEST_SITE: GitHub_MacOS
+      CTEST_PARALLEL_LEVEL: 3
 
     steps:
     - uses: actions/checkout@v2
 
     - run: brew install netcdf ninja
 
-    - name: CDash
-      run: ctest -S ci.cmake -V
+    - run: cmake --preset gcc10 -DCMAKE_INSTALL_PREFIX=~
+    - run: cmake --build --preset default
+    - run: ctest --preset default
+    - run: cmake --install build
 
-    - name: Install package
-      run: |
-        cmake -B build -DCMAKE_INSTALL_PREFIX:PATH=~/nc4fortran
-        cmake --install build
-
-    - run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT:PATH=~/h5fortran
+    - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
     - run: cmake --build Examples/build --parallel
     - run: ctest --parallel 2 --output-on-failure
       working-directory: Examples/build
@@ -145,6 +143,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: build/nc4fortran-${{ steps.get_version.outputs.VERSION }}-Darwin.tar.gz
-        asset_name:  nc4fortran-${{ steps.get_version.outputs.VERSION }}-Darwin.tar.gz
+        asset_path: build/nc4fortran-${{ steps.get_version.outputs.VERSION }}-Darwin.tar.zst
+        asset_name:  nc4fortran-${{ steps.get_version.outputs.VERSION }}-Darwin.tar.zst
         asset_content_type: application/zip

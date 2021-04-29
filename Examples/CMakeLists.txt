@@ -1,7 +1,6 @@
-cmake_minimum_required(VERSION 3.13...3.20)
+cmake_minimum_required(VERSION 3.13...${CMAKE_VERSION})
 
-project(nc4fortranExample
-LANGUAGES Fortran)
+project(nc4fortranExample LANGUAGES Fortran)
 
 include(CTest)
 

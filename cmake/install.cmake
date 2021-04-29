@@ -8,11 +8,9 @@ configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/Config.cmake.in
 
 write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}ConfigVersion.cmake
-  VERSION ${${PROJECT_NAME}_VERSION}
   COMPATIBILITY SameMinorVersion)
 
 install(EXPORT ${PROJECT_NAME}Targets
-  FILE ${PROJECT_NAME}Targets.cmake
   NAMESPACE ${PROJECT_NAME}::
   DESTINATION lib/cmake/${PROJECT_NAME})
 
@@ -27,12 +25,8 @@ export(EXPORT ${PROJECT_NAME}Targets
 
 # --- CPack
 
-set(_fmt TGZ)
-if(WIN32)
-  set(_fmt ZIP)
-endif()
-set(CPACK_GENERATOR ${_fmt})
-set(CPACK_SOURCE_GENERATOR ${_fmt})
+set(CPACK_GENERATOR "TZST")
+set(CPACK_SOURCE_GENERATOR "TZST")
 set(CPACK_PACKAGE_VENDOR "Michael Hirsch")
 set(CPACK_PACKAGE_CONTACT "Michael Hirsch")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libnetcdff-dev")
