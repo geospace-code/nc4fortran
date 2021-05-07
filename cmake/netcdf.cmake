@@ -7,8 +7,13 @@ find_package(HDF5 COMPONENTS C Fortran REQUIRED)
 
 set(netcdf_external true CACHE BOOL "autobuild NetCDF")
 
-if(NOT DEFINED NetCDF_ROOT)
-  set(NetCDF_ROOT ${CMAKE_INSTALL_PREFIX})
+# need to be sure _ROOT isn't empty, defined is not enough
+if(NOT NetCDF_ROOT)
+  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(NetCDF_ROOT ${PROJECT_BINARY_DIR})
+  else()
+    set(NetCDF_ROOT ${CMAKE_INSTALL_PREFIX})
+  endif()
 endif()
 
 set(NetCDF_INCLUDE_DIRS ${NetCDF_ROOT}/include)
@@ -53,7 +58,6 @@ ExternalProject_Add(NETCDF_FORTRAN
 URL https://github.com/Unidata/netcdf-fortran/archive/v4.5.3.zip
 URL_HASH SHA256=a2b9395622ba7411037ca153ad3a6d0824f445b238f1f5c3d3352f8ab7f3117b
 UPDATE_DISCONNECTED ${EP_UPDATE_DISCONNECTED}
-TLS_VERIFY ON
 CONFIGURE_HANDLED_BY_BUILD ON
 INACTIVITY_TIMEOUT 30
 # Shared_libs=on for netcdf-fortran symbol finding bug

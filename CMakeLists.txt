@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13...3.20)
+cmake_minimum_required(VERSION 3.14...3.20)
 
 file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/VERSION PROJECT_VERSION
   REGEX "^([0-9]+\.[0-9]+\.[0-9]+)" LIMIT_INPUT 16 LENGTH_MAXIMUM 16 LIMIT_COUNT 1)
@@ -50,10 +50,7 @@ target_link_libraries(nc4fortran::nc4fortran INTERFACE nc4fortran)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/nc4fortran.mod
   DESTINATION include)
 
-install(TARGETS nc4fortran
-  EXPORT ${PROJECT_NAME}Targets
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib)
+install(TARGETS nc4fortran EXPORT ${PROJECT_NAME}Targets)
 
 # additional Find*.cmake necesary
 install(FILES

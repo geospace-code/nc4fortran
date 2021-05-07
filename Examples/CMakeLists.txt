@@ -6,10 +6,6 @@ include(CTest)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../cmake/Modules)
 
-if(NOT nc4fortran_ROOT AND NOT DEFINED ENV{nc4fortran_ROOT})
-  set(nc4fortran_ROOT ${PROJECT_SOURCE_DIR}/../build)
-endif()
-
 find_package(nc4fortran REQUIRED)
 
 # --- Fortran interface for examples
