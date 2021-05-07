@@ -32,7 +32,6 @@ endif()
 ExternalProject_Add(NETCDF_C
 URL https://github.com/Unidata/netcdf-c/archive/v4.7.4.zip
 URL_HASH SHA256=170c9c9020f8909811b06e1034d5ea9288b3d5bd90793e3dd27490191faa7566
-UPDATE_DISCONNECTED ${EP_UPDATE_DISCONNECTED}
 CONFIGURE_HANDLED_BY_BUILD TRUE
 INACTIVITY_TIMEOUT 30
 # Shared_libs=on for netcdf-fortran symbol finding bug
@@ -57,7 +56,6 @@ target_link_libraries(NetCDF::NetCDF_C INTERFACE HDF5::HDF5)
 ExternalProject_Add(NETCDF_FORTRAN
 URL https://github.com/Unidata/netcdf-fortran/archive/v4.5.3.zip
 URL_HASH SHA256=a2b9395622ba7411037ca153ad3a6d0824f445b238f1f5c3d3352f8ab7f3117b
-UPDATE_DISCONNECTED ${EP_UPDATE_DISCONNECTED}
 CONFIGURE_HANDLED_BY_BUILD ON
 INACTIVITY_TIMEOUT 30
 # Shared_libs=on for netcdf-fortran symbol finding bug
