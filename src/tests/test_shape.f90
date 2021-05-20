@@ -1,5 +1,5 @@
 program test_shape
-!! This program shows how netcdf dimension orders are distinct in different langauges
+!! This program shows how netcdf dimension orders are distinct in different languages
 use nc4fortran, only: netcdf_file, is_netcdf, NF90_MAX_NAME
 use, intrinsic:: iso_fortran_env, only: real64, stdout=>output_unit, stderr=>error_unit
 

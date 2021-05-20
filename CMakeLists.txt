@@ -52,7 +52,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/nc4fortran.mod
 
 install(TARGETS nc4fortran EXPORT ${PROJECT_NAME}Targets)
 
-# additional Find*.cmake necesary
+# additional Find*.cmake necessary
 install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindHDF5.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindSZIP.cmake

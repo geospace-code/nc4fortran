@@ -22,7 +22,7 @@ contains
 subroutine test_is_netcdf()
 integer :: i
 
-if(is_netcdf('apidfjpj-8j9ejfpq984jfp89q39SHf.nc')) error stop 'test_exist: non-existant file declared netcdf'
+if(is_netcdf('apidfjpj-8j9ejfpq984jfp89q39SHf.nc')) error stop 'test_exist: non-existent file declared netcdf'
 
 open(newunit=i, file='not_netcdf.nc', action='write', status='replace')
 write(i,*) 'I am not a NetCDF4 file.'
