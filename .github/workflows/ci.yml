@@ -7,9 +7,6 @@ on:
       - "**.cmake"
       - "**.f90"
       - ".github/workflows/ci.yml"
-  release:
-    types: [published]
-
 
 jobs:
 
@@ -38,35 +35,7 @@ jobs:
     - name: build examples
       run: cmake --build Examples/build --parallel
     - name: Test examples
-      run: ctest --parallel 2 --output-on-failure
-      working-directory: Examples/build
-
-    - name: create package
-      if: github.event.action == 'published'
-      run: cpack --config build/CPackConfig.cmake
-
-    - name: Upload artifact
-      if: github.event.action == 'published'
-      uses: actions/upload-artifact@v1
-      with:
-        name: binary-archive
-        path: build/package
-
-    - name: get version
-      if: github.event.action == 'published'
-      id: get_version
-      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
-
-    - name: Upload release asset
-      if: github.event.action == 'published'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: build/package/nc4fortran-${{ steps.get_version.outputs.VERSION }}-Linux.tar.zst
-        asset_name:  nc4fortran-${{ steps.get_version.outputs.VERSION }}-Linux.tar.zst
-        asset_content_type: application/zip
+      run: ctest --test-dir Examples/build --output-on-failure
 
 
   linuxCmake314:
@@ -96,12 +65,13 @@ jobs:
 
 
   mac:
+    needs: linux
     runs-on: macos-latest
     timeout-minutes: 20
     env:
       HOMEBREW_NO_INSTALL_CLEANUP: 1
-      CC: gcc-10
-      FC: gfortran-10
+      CC: gcc-11
+      FC: gfortran-11
       CTEST_SITE: GitHub_MacOS
       CTEST_PARALLEL_LEVEL: 3
 
@@ -117,32 +87,4 @@ jobs:
 
     - run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=~
     - run: cmake --build Examples/build --parallel
-    - run: ctest --parallel 2 --output-on-failure
-      working-directory: Examples/build
-
-    - name: create package
-      if: github.event.action == 'published'
-      run: cpack --config build/CPackConfig.cmake
-
-    - name: Upload artifact
-      if: github.event.action == 'published'
-      uses: actions/upload-artifact@v1
-      with:
-        name: binary-archive
-        path: build/package
-
-    - name: get version
-      if: github.event.action == 'published'
-      id: get_version
-      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
-
-    - name: Upload release asset
-      if: github.event.action == 'published'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: build/nc4fortran-${{ steps.get_version.outputs.VERSION }}-Darwin.tar.zst
-        asset_name:  nc4fortran-${{ steps.get_version.outputs.VERSION }}-Darwin.tar.zst
-        asset_content_type: application/zip
+    - run: ctest --test-dir Examples/build --output-on-failure
