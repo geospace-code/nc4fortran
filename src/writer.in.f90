@@ -101,39 +101,118 @@ if (check_error(ier, dname) .and. .not. present(ierr)) error stop 'nc4fortran:wr
 end procedure nc_write_scalar_i64
 
 
-module procedure nc_write_1d
-@writer_template@
-end procedure nc_write_1d
+module procedure nc_write_1d_r32
+@writer_template_r32@
+end procedure nc_write_1d_r32
+
+module procedure nc_write_1d_r64
+@writer_template_r64@
+end procedure nc_write_1d_r64
+
+module procedure nc_write_1d_i32
+@writer_template_i32@
+end procedure nc_write_1d_i32
+
+module procedure nc_write_1d_i64
+@writer_template_i64@
+end procedure nc_write_1d_i64
 
 
-module procedure nc_write_2d
-@writer_template@
-end procedure nc_write_2d
+module procedure nc_write_2d_r32
+@writer_template_r32@
+end procedure nc_write_2d_r32
 
+module procedure nc_write_2d_r64
+@writer_template_r64@
+end procedure nc_write_2d_r64
 
-module procedure nc_write_3d
-@writer_template@
-end procedure nc_write_3d
+module procedure nc_write_2d_i32
+@writer_template_i32@
+end procedure nc_write_2d_i32
 
+module procedure nc_write_2d_i64
+@writer_template_i64@
+end procedure nc_write_2d_i64
 
-module procedure nc_write_4d
-@writer_template@
-end procedure nc_write_4d
+module procedure nc_write_3d_r32
+@writer_template_r32@
+end procedure nc_write_3d_r32
 
+module procedure nc_write_3d_r64
+@writer_template_r64@
+end procedure nc_write_3d_r64
 
-module procedure nc_write_5d
-@writer_template@
-end procedure nc_write_5d
+module procedure nc_write_3d_i32
+@writer_template_i32@
+end procedure nc_write_3d_i32
 
+module procedure nc_write_3d_i64
+@writer_template_i64@
+end procedure nc_write_3d_i64
 
-module procedure nc_write_6d
-@writer_template@
-end procedure nc_write_6d
+module procedure nc_write_4d_r32
+@writer_template_r32@
+end procedure nc_write_4d_r32
 
+module procedure nc_write_4d_r64
+@writer_template_r64@
+end procedure nc_write_4d_r64
 
-module procedure nc_write_7d
-@writer_template@
-end procedure nc_write_7d
+module procedure nc_write_4d_i32
+@writer_template_i32@
+end procedure nc_write_4d_i32
+
+module procedure nc_write_4d_i64
+@writer_template_i64@
+end procedure nc_write_4d_i64
+
+module procedure nc_write_5d_r32
+@writer_template_r32@
+end procedure nc_write_5d_r32
+
+module procedure nc_write_5d_r64
+@writer_template_r64@
+end procedure nc_write_5d_r64
+
+module procedure nc_write_5d_i32
+@writer_template_i32@
+end procedure nc_write_5d_i32
+
+module procedure nc_write_5d_i64
+@writer_template_i64@
+end procedure nc_write_5d_i64
+
+module procedure nc_write_6d_r32
+@writer_template_r32@
+end procedure nc_write_6d_r32
+
+module procedure nc_write_6d_r64
+@writer_template_r64@
+end procedure nc_write_6d_r64
+
+module procedure nc_write_6d_i32
+@writer_template_i32@
+end procedure nc_write_6d_i32
+
+module procedure nc_write_6d_i64
+@writer_template_i64@
+end procedure nc_write_6d_i64
+
+module procedure nc_write_7d_r32
+@writer_template_r32@
+end procedure nc_write_7d_r32
+
+module procedure nc_write_7d_r64
+@writer_template_r64@
+end procedure nc_write_7d_r64
+
+module procedure nc_write_7d_i32
+@writer_template_i32@
+end procedure nc_write_7d_i32
+
+module procedure nc_write_7d_i64
+@writer_template_i64@
+end procedure nc_write_7d_i64
 
 
 end submodule writer
