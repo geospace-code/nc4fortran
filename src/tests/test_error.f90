@@ -14,8 +14,6 @@ call test_nonexist_variable()
 print *, 'OK: non-existing variable'
 call test_wrong_type()
 print *, "OK: wrong type read"
-call test_unknown_write()
-print *, 'OK: unknown write'
 call test_unknown_read()
 print *, 'OK: unknown read'
 
@@ -81,20 +79,6 @@ if (u /= 42) error stop 'test_wrong_type: did not coerce real to integer'
 call h%finalize()
 
 end subroutine test_wrong_type
-
-
-subroutine test_unknown_write()
-integer :: ierr
-type(netcdf_file) :: h
-character(*), parameter :: filename = 'bad.nc'
-complex :: x
-
-x = (1, -1)
-
-call h%initialize(filename, ierr, status='replace')
-call h%write('/complex', x, ierr)
-if(ierr==NF90_NOERR) error stop 'test_unknown_write: writing unknown type variable'
-end subroutine test_unknown_write
 
 
 subroutine test_unknown_read()

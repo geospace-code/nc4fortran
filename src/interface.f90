@@ -40,12 +40,15 @@ procedure, public :: initialize => nc_initialize, finalize => nc_finalize, &
   is_chunked, is_contig, chunks=>get_chunk
 
 !> generic procedures mapped over type / rank
-generic, public :: write => nc_write_scalar, nc_write_1d, nc_write_2d, nc_write_3d, &
+generic, public :: write => &
+  nc_write_scalar_r32, nc_write_scalar_r64, nc_write_scalar_i32, nc_write_scalar_i64, nc_write_scalar_char, &
+  nc_write_1d, nc_write_2d, nc_write_3d, &
   nc_write_4d, nc_write_5d, nc_write_6d, nc_write_7d
 
 generic, public :: read => nc_read_scalar, nc_read_1d, nc_read_2d, nc_read_3d, nc_read_4d, nc_read_5d, nc_read_6d, nc_read_7d
 
-procedure, private :: nc_write_scalar, nc_write_1d, nc_write_2d, nc_write_3d, nc_write_4d, nc_write_5d, nc_write_6d, nc_write_7d, &
+procedure, private :: nc_write_scalar_r32, nc_write_scalar_r64, nc_write_scalar_i32, nc_write_scalar_i64, nc_write_scalar_char, &
+  nc_write_1d, nc_write_2d, nc_write_3d, nc_write_4d, nc_write_5d, nc_write_6d, nc_write_7d, &
   nc_read_scalar, nc_read_1d, nc_read_2d, nc_read_3d, nc_read_4d, nc_read_5d, nc_read_6d, nc_read_7d, &
   def_dims
 
@@ -69,12 +72,40 @@ end function
 end interface
 
 interface !< writer.f90
-module subroutine nc_write_scalar(self, dname, value, ierr)
+module subroutine nc_write_scalar_char(self, dname, value, ierr)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: value
+character(*), intent(in) :: value
 integer, intent(out), optional :: ierr
-end subroutine nc_write_scalar
+end subroutine nc_write_scalar_char
+
+module subroutine nc_write_scalar_r32(self, dname, value, ierr)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+real(real32), intent(in) :: value
+integer, intent(out), optional :: ierr
+end subroutine nc_write_scalar_r32
+
+module subroutine nc_write_scalar_r64(self, dname, value, ierr)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+real(real64), intent(in) :: value
+integer, intent(out), optional :: ierr
+end subroutine nc_write_scalar_r64
+
+module subroutine nc_write_scalar_i32(self, dname, value, ierr)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+integer(int32), intent(in) :: value
+integer, intent(out), optional :: ierr
+end subroutine nc_write_scalar_i32
+
+module subroutine nc_write_scalar_i64(self, dname, value, ierr)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+integer(int64), intent(in) :: value
+integer, intent(out), optional :: ierr
+end subroutine nc_write_scalar_i64
 
 module subroutine nc_write_1d(self, dname, value, dims, ierr)
 class(netcdf_file), intent(in) :: self
