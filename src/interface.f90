@@ -64,6 +64,9 @@ procedure, private :: nc_write_scalar_r32, nc_write_scalar_r64, nc_write_scalar_
   nc_read_scalar, nc_read_1d, nc_read_2d, nc_read_3d, nc_read_4d, nc_read_5d, nc_read_6d, nc_read_7d, &
   def_dims
 
+!> flush file to disk and close file if user forgets to do so.
+final :: destructor
+
 end type netcdf_file
 
 !> Submodules
@@ -537,6 +540,18 @@ if (present(ierr)) return
 error stop
 
 end subroutine nc_initialize
+
+
+subroutine destructor(self)
+!! Close file and handle if user forgets to do so
+
+type(netcdf_file), intent(inout) :: self
+
+print *, "auto-closing " // self%filename
+
+call self%close()
+
+end subroutine destructor
 
 
 subroutine nc_finalize(self, ierr)
