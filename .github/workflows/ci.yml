@@ -20,7 +20,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: install hdf5
+    - name: install libs
       run: |
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends ninja-build gfortran libnetcdff-dev
@@ -38,7 +38,27 @@ jobs:
       run: ctest --test-dir Examples/build --output-on-failure
 
 
+  linux-gcc7:
+    runs-on: ubuntu-18.04
+    timeout-minutes: 15
+    env:
+      CTEST_PARALLEL_LEVEL: 2
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: install libs
+      run: |
+        sudo apt update -yq
+        sudo apt install -yq --no-install-recommends gfortran libnetcdff-dev
+
+    - run: cmake --preset make
+    - run: cmake --build --preset default
+    - run: ctest --preset default
+
+
   linuxCmake314:
+    needs: linux
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -72,7 +92,6 @@ jobs:
       HOMEBREW_NO_INSTALL_CLEANUP: 1
       CC: gcc-11
       FC: gfortran-11
-      CTEST_SITE: GitHub_MacOS
       CTEST_PARALLEL_LEVEL: 3
 
     steps:

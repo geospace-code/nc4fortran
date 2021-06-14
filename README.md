@@ -29,7 +29,7 @@ For example, reading a float NetCDF4 variable into an integer Fortran variable: 
 Tested on systems with NetCDF4 including:
 
 * MacOS
-* Ubuntu 16.04 / 18.04 / 20.04 (gfortran 6 or newer)
+* Ubuntu 18.04 / 20.04
 * Windows Subsystem for Linux
 * Windows Cygwin
 
@@ -37,7 +37,7 @@ Tested on systems with NetCDF4 including:
 
 Requirements:
 
-* modern Fortran compiler (this project uses `submodule` and `error stop`). For example, Gfortran &ge; 7 or Intel oneAPI.
+* modern Fortran compiler: examples: GCC &ge; 7 or Intel oneAPI &ge; 2021
 * NetCDF4 Fortran library
   * Mac / Homebrew: `brew install gcc netcdf`
   * Linux: `apt install gfortran libnetcdf-dev libnetcdff-dev`
@@ -61,8 +61,7 @@ cmake -B build
 cmake --build build
 
 # optional
-cd build
-ctest -V
+ctest --test-dir build
 ```
 
 To specify a particular NetCDF library, use
@@ -80,7 +79,7 @@ include(FetchContent)
 
 FetchContent_Declare(nc4fortran_proj
   GIT_REPOSITORY https://github.com/geospace-code/nc4fortran.git
-  GIT_TAG v1.0.2)
+  GIT_TAG v1.3.0)
 
 FetchContent_MakeAvailable(nc4fortran_proj)
 
@@ -100,7 +99,6 @@ meson build
 meson test -C build
 ```
 
-Meson &ge; 0.53.0 has enhanced NetCDF dependency finding and is recommended.
 To include nc4fortran as a Meson subproject, in the master project meson.build (that uses nc4fortran) have like:
 
 ```meson
