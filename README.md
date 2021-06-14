@@ -6,12 +6,12 @@
 ![ci](https://github.com/geospace-code/nc4fortran/workflows/ci/badge.svg)
 ![ci_meson](https://github.com/geospace-code/nc4fortran/workflows/ci_meson/badge.svg)
 
-Simple, robust, thin HDF5 polymorphic read/write interface.
+Simple, robust, thin, object-oriented NetCDF4 polymorphic read/write interface.
 For HDF5 see [h5fortran](https://github.com/geospace-code/h5fortran).
 Designed for easy use as a Meson "subproject" or CMake "ExternalProject" using **static** or **shared** linking.
 Uses Fortran 2008 `submodule` for clean template structure.
-This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of NetCDF4 so that you can read/write various types/ranks of data with a single command.
-In distinction from other high-level NetCDF4 interfaces, nc4fortran works to deduplicate code, using polymorphism wherever feasible and extensive test suite.
+nc4fortran abstracts away the messy parts of NetCDF4 so that you can read/write various types/ranks of data with a single command.
+In distinction from other high-level NetCDF4 interfaces, nc4fortran works to deduplicate code, using polymorphism wherever feasible, with an extensive test suite.
 
 Polymorphic API with read/write for types int32, int64, real32, real64 with rank:
 
