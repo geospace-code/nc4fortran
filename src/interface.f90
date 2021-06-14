@@ -526,13 +526,14 @@ case default
 end select
 
 if (present(ierr)) ierr = ier
-if (ier /= NF90_NOERR) then
-  write(stderr,*) 'ERROR:initialize ' // filename // ' could not be created'
-  if (present(ierr)) return
-  error stop
+if (ier == NF90_NOERR) then
+  self%is_open = .true.
+  return
 endif
 
-self%is_open = .true.
+write(stderr,*) 'ERROR:initialize ' // filename // ' could not be created'
+if (present(ierr)) return
+error stop
 
 end subroutine nc_initialize
 
@@ -588,15 +589,11 @@ character(*), intent(in) :: dname
 integer :: ier, varid
 
 ier = nf90_inq_varid(self%ncid, dname, varid)
-if (ier/=NF90_NOERR) then
-  write(stderr,*) 'ERROR:nc4fortran:is_contig: cannot find variable: ' // dname
-  error stop
-endif
+if (ier/=NF90_NOERR) error stop 'nc4fortran:is_contig: cannot find variable: ' // dname
+
 ier = nf90_inquire_variable(self%ncid, varid, contiguous=is_contig)
-if (ier/=NF90_NOERR) then
-  write(stderr,*) 'ERROR:nc4fortran:is_contig: cannot get variable properties'
-  error stop
-endif
+if (ier/=NF90_NOERR) error stop 'nc4fortran:is_contig: cannot get variable properties' // dname
+
 end function is_contig
 
 
@@ -606,15 +603,11 @@ character(*), intent(in) :: dname
 integer :: ier, varid
 
 ier = nf90_inq_varid(self%ncid, dname, varid)
-if (ier/=NF90_NOERR) then
-  write(stderr,*) 'ERROR:nc4fortran:is_chunked: cannot find variable: ' // dname
-  error stop
-endif
+if (ier/=NF90_NOERR) error stop 'nc4fortran:is_chunked: cannot find variable: ' // dname
+
 ier = nf90_inquire_variable(self%ncid, varid, contiguous=is_chunked)
-if (ier/=NF90_NOERR) then
-  write(stderr,*) 'ERROR:nc4fortran:is_chunked: cannot get variable properties'
-  error stop
-endif
+if (ier/=NF90_NOERR) error stop 'nc4fortran:is_chunked: cannot get variable properties' // dname
+
 is_chunked = .not.is_chunked
 end function is_chunked
 
@@ -629,18 +622,15 @@ integer :: i, varid
 chunk_size = -1
 
 i = nf90_inq_varid(self%ncid, dname, varid)
-if (i/=NF90_NOERR) then
-  write(stderr,*) 'ERROR:nc4fortran:chunk: cannot find variable: ' // dname
-  return
-endif
+if (i/=NF90_NOERR) error stop 'nc4fortran:chunk: cannot find variable: ' // dname
+
 i = nf90_inquire_variable(self%ncid, varid, contiguous=contig)
-if (i/=NF90_NOERR) then
-  write(stderr,*) 'nc4fortran:chunk: cannot get variable properties'
-  return
-endif
+if (i/=NF90_NOERR) error stop 'nc4fortran:chunk: cannot get variable properties' // dname
+
 if(contig) return
 i = nf90_inquire_variable(self%ncid, varid, chunksizes=chunk_size)
-if (i/=NF90_NOERR) write(stderr,*) 'nc4fortran:chunk: cannot get variable properties'
+if (i/=NF90_NOERR) error stop 'nc4fortran:chunk: cannot get variable properties' // dname
+
 end subroutine get_chunk
 
 

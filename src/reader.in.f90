@@ -8,7 +8,7 @@ contains
 module procedure nc_read_scalar
 integer :: varid, ier
 
-if(.not.self%is_open) error stop 'ERROR:nc4fortran:reader file handle not open'
+if(.not.self%is_open) error stop 'nc4fortran:reader file handle not open'
 
 ier = nf90_inq_varid(self%ncid, dname, varid)
 
@@ -40,10 +40,8 @@ end select
 endif
 
 if (present(ierr)) ierr = ier
-if (check_error(ier, dname)) then
-  if (present(ierr)) return
-  error stop
-endif
+if (check_error(ier, dname) .and. .not. present(ierr)) error stop 'nc4fortran:read failed ' // dname
+
 end procedure nc_read_scalar
 
 

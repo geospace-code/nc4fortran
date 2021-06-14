@@ -9,15 +9,12 @@ contains
 module procedure get_ndims
 integer :: varid, ierr
 
-if(.not.self%is_open) error stop 'ERROR:nc4fortran:read: file handle not open'
+if(.not.self%is_open) error stop 'nc4fortran:read: file handle not open'
 
 drank = -1
 
 ierr = nf90_inq_varid(self%ncid, dname, varid)
-if(ierr/=NF90_NOERR) then
-  write(stderr,*) 'nc4fortran:get_ndims: could not get variable ID for ' // dname
-  error stop
-endif
+if(ierr/=NF90_NOERR) error stop 'nc4fortran:get_ndims: could not get variable ID for ' // dname
 
 ierr = nf90_inquire_variable(self%ncid, varid, ndims=drank)
 
@@ -34,16 +31,10 @@ N = self%ndims(dname)
 allocate(dimids(N), dims(N))
 
 ier = nf90_inq_varid(self%ncid, dname, varid)
-if(check_error(ier, dname)) then
-  write(stderr,*) 'nc4fortran:get_shape: could not get variable ID for: '//dname
-  error stop
-endif
+if(check_error(ier, dname)) error stop 'nc4fortran:get_shape: could not get variable ID for: ' // dname
 
 ier = nf90_inquire_variable(self%ncid, varid, dimids = dimids)
-if(check_error(ier, dname)) then
-  write(stderr,*) 'nc4fortran:get_shape: could not get dimension IDs for: '//dname
-  error stop
-endif
+if(check_error(ier, dname)) error stop 'nc4fortran:get_shape: could not get dimension IDs for: ' // dname
 
 if (present(dimnames)) allocate(tempnames(N))
 

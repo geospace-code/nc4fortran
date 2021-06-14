@@ -10,7 +10,7 @@ contains
 module procedure nc_write_scalar_char
 integer :: varid, ier, lenid
 
-if(.not.self%is_open) error stop 'ERROR:nc4fortran:writer: file handle not open'
+if(.not.self%is_open) error stop 'nc4fortran:writer: file handle not open'
 
 !! uses string prefill method
 !! https://www.unidata.ucar.edu/software/netcdf/docs-fortran/f90-variables.html#f90-reading-and-writing-character-string-values

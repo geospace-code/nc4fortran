@@ -10,7 +10,7 @@ module procedure def_dims
 integer :: i, L
 character(NF90_MAX_NAME) :: name
 
-if(.not.self%is_open) error stop 'ERROR:nc4fortran:write: file handle not open'
+if(.not.self%is_open) error stop 'nc4fortran:write: file handle not open'
 
 do i=1,size(dims)
   if (present(dimnames)) then
