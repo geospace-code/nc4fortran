@@ -41,7 +41,7 @@ enddo
 r1 = i1
 r2 = i2
 
-call h%initialize(filename, status='replace', comp_lvl=1)
+call h%open(filename, status='replace', comp_lvl=1)
 
 call h%write('int32-1d', i1)
 call h%write('int32-2d', i2, ['x', 'y'])
@@ -57,10 +57,10 @@ if(ierr==0) error stop 'test_write_array: did not error for write array shape mi
 call h%write('int32-1d', i2, ierr=ierr)
 if(ierr==0) error stop 'test_write_array: did not error for write array rank mismatch'
 
-call h%finalize()
+call h%close()
 
 !! read
-call h%initialize(filename, status='old', action='r')
+call h%open(filename, status='old', action='r')
 
 !> int32
 call h%read('int32-1d', i1t)
@@ -96,7 +96,7 @@ if(.not.all(B(2:5,3:6) == r2)) error stop 'real 2D: reading into variable slice'
 call h%read('nan',nant)
 if (.not.ieee_is_nan(nant)) error stop 'failed storing or reading NaN'
 
-call h%finalize()
+call h%close()
 
 end subroutine test_basic_array
 

@@ -21,7 +21,7 @@ enddo
 r1 = i1
 
 !> write
-call h%initialize(fn, status='replace')
+call h%open(fn, status='replace')
 !! scalar tests
 call h%write('scalar_int', 42_int32)
 call h%write('scalar_real', -1._real32)
@@ -31,11 +31,11 @@ call h%write('1d_int', i1)
 !! test rewrite
 call h%write('scalar_real', 42.)
 call h%write('scalar_int', 42)
-call h%finalize()
+call h%close()
 
 !> read
 
-call h%initialize(fn, status='old', action='r')
+call h%open(fn, status='old', action='r')
 
 call h%read('scalar_int', it)
 call h%read('scalar_real', rt)
@@ -59,6 +59,6 @@ if (.not. h%filename == fn) then
   error stop
 endif
 
-call h%finalize()
+call h%close()
 
 end program

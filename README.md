@@ -140,16 +140,16 @@ If `ierr` is omitted, nc4fortran will `error stop` on error.
 ### Create new NetCDF file, with variable "value1"
 
 ```fortran
-call hf%initialize('test.nc', status='new')
+call hf%open('test.nc', status='new')
 
 call hf%write('value1', 123.)
 
-call hf%finalize()
+call hf%close()
 ```
 
 ### Check if variable exists
 
-This will not raise error stop, even if the file isn't initialized, but it will print a message to stderr.
+This will not raise error stop, even if the file isn't opened, but it will print a message to stderr.
 
 ```fortran
 logical :: exists
@@ -163,17 +163,17 @@ exists = hf%exist('fooname')
 * if file `test.nc` does not exist, create it and add a variable to it.
 
 ```fortran
-call hf%initialize('test.nc', status='unknown',action='rw')
+call hf%open('test.nc', status='unknown',action='rw')
 
 call hf%write('value1', 123.)
 
-call hf%finalize()
+call hf%close()
 ```
 
 ### Read scalar, 3-D array of unknown size
 
 ```fortran
-call ncf%initialize('test.nc', status='old',action='r')
+call ncf%open('test.nc', status='old',action='r')
 
 integer, allocatable :: dims(:)
 real, allocatable :: A(:,:,:)
@@ -182,7 +182,7 @@ call ncf%shape('foo', dims)
 allocate(A(dims(1), dims(2), dims(3)))
 call ncf%read('foo', A)
 
-call ncf%finalize()
+call ncf%close()
 ```
 
 ## Permissive syntax

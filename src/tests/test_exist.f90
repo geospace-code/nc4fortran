@@ -37,12 +37,12 @@ subroutine test_exist()
 type(netcdf_file) :: h
 character(*), parameter :: fn = 'exist.nc'
 
-call h%initialize(fn, status='replace')
+call h%open(fn, status='replace')
 call h%write('x', 42)
-call h%finalize()
+call h%close()
 if(.not.is_netcdf(fn)) error stop 'file does not exist'
 
-call h%initialize(fn)
+call h%open(fn)
 if (.not.h%is_open) error stop 'file is open'
 if (.not. h%exist('x')) error stop 'x exists'
 
@@ -51,7 +51,7 @@ if (h%exist('foo')) then
   error stop
 endif
 
-call h%finalize()
+call h%close()
 
 if(h%is_open) error stop 'file is closed'
 
@@ -65,9 +65,9 @@ subroutine test_scratch()
 logical :: e
 type(netcdf_file) :: h
 
-call h%initialize('scratch.nc', status='scratch')
+call h%open('scratch.nc', status='scratch')
 call h%write('here', 12)
-call h%finalize()
+call h%close()
 
 inquire(file=h%filename, exist=e)
 if(e) error stop 'scratch file not autodeleted'
@@ -80,19 +80,19 @@ subroutine test_multifiles()
 type(netcdf_file) :: f,g,h
 integer :: ierr
 
-call f%initialize(filename='A.nc', status='scratch')
-call g%initialize(filename='B.nc', status='scratch')
+call f%open(filename='A.nc', status='scratch')
+call g%open(filename='B.nc', status='scratch')
 if (h%is_open) error stop 'is_open not isolated at constructor'
-call h%initialize(filename='C.nc', status='scratch')
+call h%open(filename='C.nc', status='scratch')
 
 call f%flush()
 
-call f%finalize(ierr)
+call f%close(ierr)
 if (ierr/=0) error stop 'close a.nc'
 if (.not.g%is_open .or. .not. h%is_open) error stop 'is_open not isolated at destructor'
-call g%finalize(ierr)
+call g%close(ierr)
 if (ierr/=0) error stop 'close b.nc'
-call h%finalize(ierr)
+call h%close(ierr)
 if (ierr/=0) error stop 'close c.nc'
 
 end subroutine test_multifiles

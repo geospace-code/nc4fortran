@@ -24,7 +24,7 @@ subroutine test_nonexist_old_file()
 integer :: ierr
 type(netcdf_file) :: h
 
-call h%initialize('not-exist.nc', ierr, status='old', action='read')
+call h%open('not-exist.nc', ierr, status='old', action='read')
 if (ierr==NF90_NOERR) error stop 'should have had ierr/=0 on non-existing old file'
 end subroutine test_nonexist_old_file
 
@@ -33,7 +33,7 @@ subroutine test_nonexist_unknown_file()
 integer :: ierr
 type(netcdf_file) :: h
 
-call h%initialize('not-exist.nc', ierr, status='unknown', action='read')
+call h%open('not-exist.nc', ierr, status='unknown', action='read')
 if (ierr==NF90_NOERR) error stop 'should have had ierr/=0 on non-existing unknown read file'
 end subroutine test_nonexist_unknown_file
 
@@ -47,7 +47,7 @@ character(*), parameter :: filename = 'bad.nc'
 open(newunit=u, file=filename, status='replace', action='write')
 close(u)
 
-call h%initialize(filename, ierr, status='old', action='read')
+call h%open(filename, ierr, status='old', action='read')
 if (ierr==NF90_NOERR) error stop 'should have had ierr/=0 on invalid NetCDF file'
 end subroutine test_nonnetcdf_file
 
@@ -57,10 +57,10 @@ integer :: u,ierr
 type(netcdf_file) :: h
 character(*), parameter :: filename = 'bad.nc'
 
-call h%initialize(filename, status='replace')
+call h%open(filename, status='replace')
 call h%read('/not-exist', u, ierr)
 if (ierr==NF90_NOERR) error stop 'test_nonexist_variable: should have ierr/=0 on non-exist variable'
-call h%finalize()
+call h%close()
 end subroutine test_nonexist_variable
 
 
@@ -69,14 +69,14 @@ integer :: u
 type(netcdf_file) :: h
 character(*), parameter :: filename = 'bad.nc'
 
-call h%initialize(filename, status='replace')
+call h%open(filename, status='replace')
 call h%write('real32', 42.)
-call h%finalize()
+call h%close()
 
-call h%initialize(filename, status='old', action='read')
+call h%open(filename, status='old', action='read')
 call h%read('real32', u)
 if (u /= 42) error stop 'test_wrong_type: did not coerce real to integer'
-call h%finalize()
+call h%close()
 
 end subroutine test_wrong_type
 
@@ -89,7 +89,7 @@ complex :: x
 
 x = (1, -1)
 
-call h%initialize(filename, status='unknown', action='readwrite')
+call h%open(filename, status='unknown', action='readwrite')
 call h%read('/complex', x, ierr)
 if(ierr==NF90_NOERR) error stop 'test_unknown_read: reading unknown type variable'
 end subroutine test_unknown_read

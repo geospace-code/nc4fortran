@@ -16,14 +16,14 @@ character(:), allocatable :: final
 integer :: i
 character(*), parameter :: path='test_string.nc'
 
-call h%initialize(path, status='replace')
+call h%open(path, status='replace')
 
 call h%write('little', '42')
 call h%write('MySentence', 'this is a little sentence.')
 
-call h%finalize()
+call h%close()
 
-call h%initialize(path, status='old', action='r')
+call h%open(path, status='old', action='r')
 call h%read('little', value)
 
 if (value /= '42') then
@@ -43,6 +43,6 @@ if (len(final) /= 2) then
   error stop
 endif
 
-call h%finalize()
+call h%close()
 
 end program

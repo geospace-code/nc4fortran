@@ -34,7 +34,8 @@ character(80) :: libversion
 contains
 
 !> methods used directly without type/rank agnosticism
-procedure, public :: initialize => nc_initialize, finalize => nc_finalize, &
+procedure, public :: initialize => nc_initialize, open => nc_initialize, &
+  finalize => nc_finalize, close => nc_finalize, &
   shape => get_shape, ndims => get_ndims, write_attribute, read_attribute, flush=>nc_flush, &
   exist=>nc_check_exist, exists=>nc_check_exist, &
   is_chunked, is_contig, chunks=>get_chunk
@@ -469,7 +470,7 @@ integer, intent(out), optional :: ierr
 character(*), intent(in), optional :: status
 character(*), intent(in), optional :: action
 integer, intent(in), optional :: comp_lvl
-logical, intent(in), optional      :: verbose, debug
+logical, intent(in), optional :: verbose, debug
 
 character(:), allocatable :: lstatus, laction
 integer :: ier

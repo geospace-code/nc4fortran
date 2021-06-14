@@ -15,9 +15,9 @@ character(kind=C_CHAR) :: var_name(64)
 integer(C_INT32_T), intent(in) :: i32
 type(netcdf_file) :: h
 
-call h%initialize(cstr2fstr(filename), status='replace')
+call h%open(cstr2fstr(filename), status='replace')
 call h%write(cstr2fstr(var_name), i32)
-call h%finalize()
+call h%close()
 
 end subroutine write_int32
 
@@ -28,9 +28,9 @@ character(kind=C_CHAR) :: var_name(64)
 integer(C_INT32_T), intent(out) :: i32
 type(netcdf_file) :: h
 
-call h%initialize(cstr2fstr(filename), status='old', action='r')
+call h%open(cstr2fstr(filename), status='old', action='r')
 call h%read(cstr2fstr(var_name), i32)
-call h%finalize()
+call h%close()
 
 end subroutine read_int32
 

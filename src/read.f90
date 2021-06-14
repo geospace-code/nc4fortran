@@ -68,7 +68,7 @@ select case (ierr)
 case (NF90_NOERR)
   exists = .true.
 case (NF90_EBADID)
-  write(stderr,*) 'check_exist: ERROR: is file initialized?  ', self%filename
+  write(stderr,*) 'check_exist: ERROR: is file opened?  ', self%filename
 case (NF90_ENOTVAR)
   if (self%verbose) write(stderr,*) dname, ' does not exist in ', self%filename
 case default
@@ -82,9 +82,9 @@ module procedure nc_exist
 
 type(netcdf_file) :: h
 
-call h%initialize(filename, status='old', action='r')
+call h%open(filename, status='old', action='r')
 nc_exist = h%exist(dname)
-call h%finalize()
+call h%close()
 
 end procedure nc_exist
 
