@@ -52,36 +52,9 @@ jobs:
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends gfortran libnetcdff-dev
 
-    - run: cmake --preset make
+    - run: cmake --preset default -G "Unix Makefiles"
     - run: cmake --build --preset default
     - run: ctest --preset default
-
-
-  linuxCmake314:
-    needs: linux
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      CTEST_PARALLEL_LEVEL: 2
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: install netcdf4
-      run: |
-        sudo apt update -yq
-        sudo apt install -yq --no-install-recommends gfortran libnetcdff-dev
-
-    - name: get CMake 3.14
-      run: |
-        curl -L -O https://github.com/Kitware/CMake/releases/download/v3.14.7/cmake-3.14.7-Linux-x86_64.tar.gz
-        tar xf cmake-3.14.7-Linux-x86_64.tar.gz
-        echo "${GITHUB_WORKSPACE}/cmake-3.14.7-Linux-x86_64/bin" >> $GITHUB_PATH
-
-    - run: cmake -B build
-    - run: cmake --build build --parallel
-    - run: ctest --output-on-failure
-      working-directory: build
 
 
   mac:
@@ -90,7 +63,6 @@ jobs:
     timeout-minutes: 20
     env:
       HOMEBREW_NO_INSTALL_CLEANUP: 1
-      CC: gcc-11
       FC: gfortran-11
       CTEST_PARALLEL_LEVEL: 3
 
