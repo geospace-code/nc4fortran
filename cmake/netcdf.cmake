@@ -10,7 +10,7 @@ set(netcdf_external true CACHE BOOL "autobuild NetCDF")
 # need to be sure _ROOT isn't empty, defined is not enough
 if(NOT NetCDF_ROOT)
   if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(NetCDF_ROOT ${PROJECT_BINARY_DIR})
+    set(NetCDF_ROOT ${PROJECT_BINARY_DIR} CACHE PATH "NetCDF_ROOT")
   else()
     set(NetCDF_ROOT ${CMAKE_INSTALL_PREFIX})
   endif()
