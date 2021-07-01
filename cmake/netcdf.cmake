@@ -3,6 +3,10 @@ include(ExternalProject)
 # due to limitations of NetCDF-C 4.7.4 and NetCDF-Fortran 4.5.3, as per their docs,
 # we MUST use shared libraries or they don't archive/link properly.
 
+if(CMAKE_VERSION VERSION_LESS 3.20)
+  message(FATAL_ERROR "CMake >= 3.20 required for NetCDF4 autobuild")
+endif()
+
 find_package(HDF5 COMPONENTS C Fortran REQUIRED)
 
 set(netcdf_external true CACHE BOOL "autobuild NetCDF")
