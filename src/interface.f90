@@ -27,7 +27,6 @@ integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
 logical :: verbose = .false.
 logical :: debug = .false.
 logical :: is_open = .false.
-logical :: is_scratch = .false.
 !! will be auto-deleted on close
 character(80) :: libversion
 
@@ -470,12 +469,12 @@ subroutine nc_initialize(self,filename,ierr, status,action,comp_lvl,verbose,debu
 class(netcdf_file), intent(inout) :: self
 character(*), intent(in) :: filename
 integer, intent(out), optional :: ierr
-character(*), intent(in), optional :: status
+character(*), intent(in), optional :: status !< DEPRECATED
 character(*), intent(in), optional :: action
 integer, intent(in), optional :: comp_lvl
 logical, intent(in), optional :: verbose, debug
 
-character(:), allocatable :: lstatus, laction
+character(:), allocatable :: laction
 integer :: ier
 
 if (self%is_open) then
@@ -492,42 +491,29 @@ if (present(debug)) self%debug = debug
 !> get library version
 self%libversion = nf90_inq_libvers()
 
-lstatus = 'unknown'
-if(present(status)) lstatus = status
+if(present(status)) write(stderr,*) 'nc4fortran:WARNING: status is deprecated. use action instead.'
 
 laction = 'rw'
 if(present(action)) laction = action
 
-select case(lstatus)
-case ('old', 'unknown')
-  select case(laction)
-    case('read','r')
-      ier = nf90_open(self%filename, NF90_NOWRITE, self%ncid)
-    case('r+')
-      ier = nf90_open(self%filename, NF90_NETCDF4, self%ncid)
-    case('readwrite', 'rw', 'append', 'a')
-      if(is_netcdf(filename)) then
-        !! NF90_WRITE is necessary to be in true read/write mode
-        ier = nf90_open(self%filename, ior(NF90_WRITE, NF90_NETCDF4), self%ncid)
-      else
-        ier = nf90_create(self%filename, ior(NF90_CLOBBER, NF90_NETCDF4), self%ncid)
-      endif
-    case('w','write')
-      ier = nf90_create(self%filename, ior(NF90_CLOBBER, NF90_NETCDF4), self%ncid)
-    case default
-      write(stderr,*) 'Unsupported action -> ' // laction
-      error stop 128
-    end select
-case('new','replace')
-  ier = nf90_create(self%filename, ior(NF90_CLOBBER, NF90_NETCDF4), self%ncid)
-case('scratch')
+select case(laction)
+case('read','r')
+  ier = nf90_open(self%filename, NF90_NOWRITE, self%ncid)
+case('r+')
+  ier = nf90_open(self%filename, NF90_NETCDF4, self%ncid)
+case('readwrite', 'rw', 'append', 'a')
+  if(is_netcdf(filename)) then
+    !! NF90_WRITE is necessary to be in true read/write mode
+    ier = nf90_open(self%filename, ior(NF90_WRITE, NF90_NETCDF4), self%ncid)
+  else
     ier = nf90_create(self%filename, ior(NF90_CLOBBER, NF90_NETCDF4), self%ncid)
-  self%is_scratch = .true.
-  if(.not.is_absolute_path(filename)) self%filename = get_tempdir() // '/' // filename
+  endif
+case('w','write')
+  ier = nf90_create(self%filename, ior(NF90_CLOBBER, NF90_NETCDF4), self%ncid)
 case default
-  write(stderr,*) 'Unsupported status -> '// lstatus
-  error stop 128
+  error stop 'nc4fortran: Unsupported action -> ' // laction
 end select
+
 
 if (present(ierr)) ierr = ier
 if (ier == NF90_NOERR) then
@@ -535,7 +521,7 @@ if (ier == NF90_NOERR) then
   return
 endif
 
-write(stderr,*) 'ERROR:initialize ' // filename // ' could not be created'
+write(stderr,*) 'nc4fortran:ERROR: initialize ' // filename // ' could not be created'
 if (present(ierr)) return
 error stop
 
@@ -571,10 +557,6 @@ if (ier /= NF90_NOERR) then
   write(stderr,*) 'ERROR:finalize: ' // self%filename
   if (present(ierr)) return
   error stop
-endif
-
-if(self%is_scratch) then
-  if (std_unlink(self%filename)) write(stderr,*) 'WARNING: could not delete scratch file: ' // self%filename
 endif
 
 self%is_open = .false.

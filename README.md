@@ -138,7 +138,7 @@ If `ierr` is omitted, nc4fortran will `error stop` on error.
 ### Create new NetCDF file, with variable "value1"
 
 ```fortran
-call hf%open('test.nc', status='new')
+call hf%open('test.nc', action='w')
 
 call hf%write('value1', 123.)
 
@@ -161,7 +161,7 @@ exists = hf%exist('fooname')
 * if file `test.nc` does not exist, create it and add a variable to it.
 
 ```fortran
-call hf%open('test.nc', status='unknown',action='rw')
+call hf%open('test.nc', action='rw')
 
 call hf%write('value1', 123.)
 
@@ -171,7 +171,7 @@ call hf%close()
 ### Read scalar, 3-D array of unknown size
 
 ```fortran
-call ncf%open('test.nc', status='old',action='r')
+call ncf%open('test.nc', action='r')
 
 integer, allocatable :: dims(:)
 real, allocatable :: A(:,:,:)
@@ -185,10 +185,10 @@ call ncf%close()
 
 ## Permissive syntax
 
-We make the ncf%open(..., status=...) like Fortran open()
+We make the ncf%open(..., action=...) like Fortran open()
 
-* overwrite (truncate) existing file: open with `status='new'` or `status='replace'`
-* append to existing file or create file: `status='old'` or `status='unknown'`
+* overwrite (truncate) existing file: open with `action='w'`
+* append to existing file or create file: `action='rw'`
 
 ## Notes
 

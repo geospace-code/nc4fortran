@@ -24,7 +24,7 @@ subroutine test_nonexist_old_file()
 integer :: ierr
 type(netcdf_file) :: h
 
-call h%open('not-exist.nc', ierr, status='old', action='read')
+call h%open('not-exist.nc', ierr, action='r')
 if (ierr==NF90_NOERR) error stop 'should have had ierr/=0 on non-existing old file'
 end subroutine test_nonexist_old_file
 
@@ -33,7 +33,7 @@ subroutine test_nonexist_unknown_file()
 integer :: ierr
 type(netcdf_file) :: h
 
-call h%open('not-exist.nc', ierr, status='unknown', action='read')
+call h%open('not-exist.nc', ierr, action='r')
 if (ierr==NF90_NOERR) error stop 'should have had ierr/=0 on non-existing unknown read file'
 end subroutine test_nonexist_unknown_file
 
@@ -47,7 +47,7 @@ character(*), parameter :: filename = 'bad.nc'
 open(newunit=u, file=filename, status='replace', action='write')
 close(u)
 
-call h%open(filename, ierr, status='old', action='read')
+call h%open(filename, ierr, action='r')
 if (ierr==NF90_NOERR) error stop 'should have had ierr/=0 on invalid NetCDF file'
 end subroutine test_nonnetcdf_file
 
@@ -57,7 +57,7 @@ integer :: u,ierr
 type(netcdf_file) :: h
 character(*), parameter :: filename = 'bad.nc'
 
-call h%open(filename, status='replace')
+call h%open(filename, action='rw')
 call h%read('/not-exist', u, ierr)
 if (ierr==NF90_NOERR) error stop 'test_nonexist_variable: should have ierr/=0 on non-exist variable'
 call h%close()
@@ -69,11 +69,11 @@ integer :: u
 type(netcdf_file) :: h
 character(*), parameter :: filename = 'bad.nc'
 
-call h%open(filename, status='replace')
+call h%open(filename, action='w')
 call h%write('real32', 42.)
 call h%close()
 
-call h%open(filename, status='old', action='read')
+call h%open(filename, action='r')
 call h%read('real32', u)
 if (u /= 42) error stop 'test_wrong_type: did not coerce real to integer'
 call h%close()
@@ -89,7 +89,7 @@ complex :: x
 
 x = (1, -1)
 
-call h%open(filename, status='unknown', action='readwrite')
+call h%open(filename, action='r')
 call h%read('/complex', x, ierr)
 if(ierr==NF90_NOERR) error stop 'test_unknown_read: reading unknown type variable'
 end subroutine test_unknown_read

@@ -82,7 +82,7 @@ module procedure nc_exist
 
 type(netcdf_file) :: h
 
-call h%open(filename, status='old', action='r')
+call h%open(filename, action='r')
 nc_exist = h%exist(dname)
 call h%close()
 

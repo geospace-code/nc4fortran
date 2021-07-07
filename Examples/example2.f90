@@ -10,11 +10,11 @@ type(netcdf_file) :: h
 
 filename = 'nc4fortran_example2.nc'
 
-call h%open(filename, status='replace')
+call h%open(filename, action='w')
 call h%write('x', 123)
 call h%close()
 
-call h%open(filename, status='old', action='r')
+call h%open(filename, action='r')
 call h%read('x', i32)
 if (i32 /= 123) error stop 'incorrect value read'
 

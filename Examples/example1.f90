@@ -9,9 +9,9 @@ integer :: i32
 
 filename = 'nc4fortran_example1.nc'
 
-call h%open(filename, status='replace')
+call h%open(filename, action='w')
 
-call h%write( 'x', 123)
+call h%write('x', 123)
 
 call h%read('x', i32)
 call h%close()

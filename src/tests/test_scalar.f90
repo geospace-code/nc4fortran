@@ -21,7 +21,7 @@ enddo
 r1 = i1
 
 !> write
-call h%open(fn, status='replace')
+call h%open(fn, action='w')
 !! scalar tests
 call h%write('scalar_int', 42_int32)
 call h%write('scalar_real', -1._real32)
@@ -35,7 +35,7 @@ call h%close()
 
 !> read
 
-call h%open(fn, status='old', action='r')
+call h%open(fn, action='r')
 
 call h%read('scalar_int', it)
 call h%read('scalar_real', rt)

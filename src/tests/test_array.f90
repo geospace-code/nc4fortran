@@ -41,7 +41,7 @@ enddo
 r1 = i1
 r2 = i2
 
-call h%open(filename, status='replace', comp_lvl=1)
+call h%open(filename, action='w', comp_lvl=1)
 
 call h%write('int32-1d', i1)
 call h%write('int32-2d', i2, ['x', 'y'])
@@ -60,7 +60,7 @@ if(ierr==0) error stop 'test_write_array: did not error for write array rank mis
 call h%close()
 
 !! read
-call h%open(filename, status='old', action='r')
+call h%open(filename, action='r')
 
 !> int32
 call h%read('int32-1d', i1t)

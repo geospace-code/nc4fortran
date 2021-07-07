@@ -11,9 +11,6 @@ print *, 'OK: is_netcdf'
 call test_exist()
 print *, 'OK: exist'
 
-call test_scratch()
-print *, 'OK: scratch'
-
 call test_multifiles()
 print *, 'OK: multiple files open at once'
 
@@ -37,7 +34,7 @@ subroutine test_exist()
 type(netcdf_file) :: h
 character(*), parameter :: fn = 'exist.nc'
 
-call h%open(fn, status='replace')
+call h%open(fn, action='w')
 call h%write('x', 42)
 call h%close()
 if(.not.is_netcdf(fn)) error stop 'file does not exist'
@@ -61,29 +58,15 @@ if (nc_exist(fn, 'foo')) error stop 'foo not exist'
 end subroutine test_exist
 
 
-subroutine test_scratch()
-logical :: e
-type(netcdf_file) :: h
-
-call h%open('scratch.nc', status='scratch')
-call h%write('here', 12)
-call h%close()
-
-inquire(file=h%filename, exist=e)
-if(e) error stop 'scratch file not autodeleted'
-
-end subroutine test_scratch
-
-
 subroutine test_multifiles()
 
 type(netcdf_file) :: f,g,h
 integer :: ierr
 
-call f%open(filename='A.nc', status='scratch')
-call g%open(filename='B.nc', status='scratch')
+call f%open(filename='A.nc', action='w')
+call g%open(filename='B.nc', action='w')
 if (h%is_open) error stop 'is_open not isolated at constructor'
-call h%open(filename='C.nc', status='scratch')
+call h%open(filename='C.nc', action='w')
 
 call f%flush()
 
