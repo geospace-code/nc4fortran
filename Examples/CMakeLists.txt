@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13...${CMAKE_VERSION})
+cmake_minimum_required(VERSION 3.19...3.21)
 
 project(nc4fortranExample LANGUAGES Fortran)
 
