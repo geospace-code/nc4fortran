@@ -15,4 +15,3 @@ if(ier == NF90_NOERR) ier = nf90_put_var(self%ncid, varid, value)
 
 if (present(ierr)) ierr = ier
 if (check_error(ier, dname) .and. .not. present(ierr)) error stop 'nc4fortran:write could not write ' // dname
-

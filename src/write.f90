@@ -7,7 +7,7 @@ contains
 
 module procedure def_dims
 !! checks if dimension name exists. if not, create dimension
-integer :: i, L
+integer :: i
 character(NF90_MAX_NAME) :: name
 
 if(.not.self%is_open) error stop 'nc4fortran:write: file handle not open'
@@ -15,15 +15,14 @@ if(.not.self%is_open) error stop 'nc4fortran:write: file handle not open'
 do i=1,size(dims)
   if (present(dimnames)) then
     ierr = nf90_inq_dimid(self%ncid, dimnames(i), dimids(i))
-  else  ! ensure the dimension exists despite unspecified name
-    ierr = nf90_inquire_dimension(self%ncid, dimid=i, name=name, len=L)
+    if(ierr==NF90_NOERR) cycle
+    !! dimension already exists
   endif
-  if(ierr==NF90_NOERR) cycle  !< dimension already exists
   !! create new dimension
   if(present(dimnames)) then
     ierr = nf90_def_dim(self%ncid, dimnames(i), dims(i), dimids(i))
   else
-    write(name,'(A,I1)') "dim",i
+    write(name,'(A,A4,I1)') dname,"_dim",i
     ierr = nf90_def_dim(self%ncid, trim(name), dims(i), dimids(i))
     ! print *,trim(name)
   endif
