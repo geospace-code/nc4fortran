@@ -72,6 +72,7 @@ endif
 call h%read('vector_scalar_real', rt)
 if(rt/=37) error stop 'vector_scalar: 1d length 1 => scalar'
 
+!> 1D vector read write
 call h%shape('1d_real', dims)
 allocate(rr1(dims(1)))
 print *, "OK: 1d shape read real32"
@@ -84,9 +85,16 @@ allocate(i1t(dims(1)))
 call h%read('1d_int32',i1t)
 if (.not.all(i1==i1t)) error stop 'int32 1-D: read does not match write'
 
+print *, 'PASSED: 1D read/write'
+
+!> 1D vector read casting -- real to int and int to real
+call h%read('1d_real', i1t)
+if (.not.all(r1==i1t)) error stop '1Dcast real => int32'
+call h%read('1d_int32', rr1)
+if (.not.all(i1==rr1)) error stop '1D cast int32 => real'
+
 !> check filename property
 if (.not. h%filename == fn) error stop h%filename // ' mismatch filename'
-
 
 call h%close()
 
