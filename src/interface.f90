@@ -533,6 +533,8 @@ subroutine destructor(self)
 
 type(netcdf_file), intent(inout) :: self
 
+if (.not. self%is_open) return
+
 print *, "auto-closing " // self%filename
 
 call self%close()
