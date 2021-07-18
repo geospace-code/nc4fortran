@@ -387,49 +387,49 @@ end subroutine nc_read_scalar
 module subroutine nc_read_1d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out)      :: value(:)
+class(*), intent(inout)      :: value(:)
 integer, intent(out), optional :: ierr
 end subroutine nc_read_1d
 
 module subroutine nc_read_2d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out)      :: value(:,:)
+class(*), intent(inout)      :: value(:,:)
 integer, intent(out), optional :: ierr
 end subroutine nc_read_2d
 
 module subroutine nc_read_3d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out)      :: value(:,:,:)
+class(*), intent(inout)      :: value(:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine nc_read_3d
 
 module subroutine nc_read_4d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out)      :: value(:,:,:,:)
+class(*), intent(inout)      :: value(:,:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine nc_read_4d
 
 module subroutine nc_read_5d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out)      :: value(:,:,:,:,:)
+class(*), intent(inout)      :: value(:,:,:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine nc_read_5d
 
 module subroutine nc_read_6d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out)      :: value(:,:,:,:,:,:)
+class(*), intent(inout)      :: value(:,:,:,:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine nc_read_6d
 
 module subroutine nc_read_7d(self, dname, value, ierr)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out)      :: value(:,:,:,:,:,:,:)
+class(*), intent(inout)      :: value(:,:,:,:,:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine nc_read_7d
 

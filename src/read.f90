@@ -28,6 +28,7 @@ integer, allocatable :: dimids(:)
 character(NF90_MAX_NAME), allocatable :: tempnames(:)
 
 N = self%ndims(dname)
+
 allocate(dimids(N), dims(N))
 
 ier = nf90_inq_varid(self%ncid, dname, varid)
