@@ -1,5 +1,9 @@
 name: ci
 
+env:
+  CMAKE_BUILD_PARALLEL_LEVEL: 3
+  CTEST_PARALLEL_LEVEL: 3
+
 on:
   push:
     paths:
@@ -13,9 +17,6 @@ jobs:
   linux:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    env:
-      CTEST_SITE: GitHub_Ubuntu
-      CTEST_PARALLEL_LEVEL: 2
 
     steps:
     - uses: actions/checkout@v2
@@ -45,8 +46,6 @@ jobs:
   linux-gcc7:
     runs-on: ubuntu-18.04
     timeout-minutes: 15
-    env:
-      CTEST_PARALLEL_LEVEL: 2
 
     steps:
     - uses: actions/checkout@v2
@@ -56,7 +55,7 @@ jobs:
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends gfortran libnetcdff-dev
 
-    - run: cmake --preset default -G "Unix Makefiles"
+    - run: cmake --preset default
     - run: cmake --build --preset default
     - run: ctest --preset default
 
@@ -68,7 +67,6 @@ jobs:
     env:
       HOMEBREW_NO_INSTALL_CLEANUP: 1
       FC: gfortran-11
-      CTEST_PARALLEL_LEVEL: 3
 
     steps:
     - uses: actions/checkout@v2
