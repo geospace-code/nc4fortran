@@ -497,18 +497,18 @@ laction = 'rw'
 if(present(action)) laction = action
 
 select case(laction)
-case('read','r')
+case('r')
   ier = nf90_open(self%filename, NF90_NOWRITE, self%ncid)
 case('r+')
   ier = nf90_open(self%filename, NF90_NETCDF4, self%ncid)
-case('readwrite', 'rw', 'append', 'a')
+case('rw', 'a')
   if(is_netcdf(filename)) then
     !! NF90_WRITE is necessary to be in true read/write mode
     ier = nf90_open(self%filename, ior(NF90_WRITE, NF90_NETCDF4), self%ncid)
   else
     ier = nf90_create(self%filename, ior(NF90_CLOBBER, NF90_NETCDF4), self%ncid)
   endif
-case('w','write')
+case('w')
   ier = nf90_create(self%filename, ior(NF90_CLOBBER, NF90_NETCDF4), self%ncid)
 case default
   error stop 'nc4fortran: Unsupported action -> ' // laction
@@ -575,10 +575,7 @@ integer :: ier
 ier = nf90_sync(self%ncid)
 
 if (present(ierr)) ierr = ier
-if (check_error(ier, "")) then
-  if (present(ierr)) return
-  error stop
-endif
+if (check_error(ier, "") .and. .not. present(ierr)) error stop
 
 end subroutine nc_flush
 
