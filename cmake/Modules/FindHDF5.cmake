@@ -93,8 +93,8 @@ if(HDF5_IS_PARALLEL)
   if(Fortran IN_LIST HDF5_FIND_COMPONENTS)
     list(APPEND mpi_comp Fortran)
   endif()
-
   find_package(MPI COMPONENTS ${mpi_comp})
+
   if(MPI_FOUND)
     set(HDF5_parallel_FOUND true PARENT_SCOPE)
   endif()
@@ -168,6 +168,8 @@ endif()
 
 find_program(HDF5_Fortran_COMPILER_EXECUTABLE
   NAMES ${wrapper_names}
+  PATHS ${_binpref}
+  PATH_SUFFIXES ${_binsuf}
 )
 
 find_library(HDF5_Fortran_LIBRARY
@@ -210,9 +212,10 @@ find_path(HDF5_Fortran_INCLUDE_DIR
   NAMES hdf5.mod
   HINTS ${pc_hdf5_INCLUDE_DIRS}
   PATH_SUFFIXES ${_msuf}
-  PATHS /usr/lib64
+  PATHS ${_binpref}
   DOC "HDF5 Fortran modules")
-  # CentOS: /usr/lib64/gfortran/modules/hdf5.mod
+# CentOS: /usr/lib64/gfortran/modules/hdf5.mod
+
 if(NOT HDF5_Fortran_INCLUDE_DIR)
   return()
 endif()
@@ -229,6 +232,8 @@ function(find_hdf5_cxx)
 
 find_program(HDF5_CXX_COMPILER_EXECUTABLE
   NAMES h5c++ h5c++-64
+  PATHS ${_binpref}
+  PATH_SUFFIXES ${_binsuf}
 )
 
 find_library(HDF5_CXX_LIBRARY
@@ -274,6 +279,8 @@ endif()
 
 find_program(HDF5_C_COMPILER_EXECUTABLE
   NAMES ${wrapper_names}
+  PATHS ${_binpref}
+  PATH_SUFFIXES ${_binsuf}
 )
 
 find_library(HDF5_C_LIBRARY
@@ -309,71 +316,23 @@ set(HDF5_HL_FOUND true PARENT_SCOPE)
 
 endfunction(find_hdf5_c)
 
-# === main program
 
-set(CMAKE_REQUIRED_LIBRARIES)
+function(check_hdf5_link)
 
-# we don't use pkg-config names because some distros pkg-config for HDF5 is broken
-# however at least the paths are often correct
-find_package(PkgConfig)
-if(NOT HDF5_FOUND)
-  if(parallel IN_LIST HDF5_FIND_COMPONENTS)
-    pkg_search_module(pc_hdf5 hdf5-openmpi hdf5-mpich hdf5)
-  else()
-    pkg_search_module(pc_hdf5 hdf5-serial hdf5)
-  endif()
+if(NOT HDF5_C_FOUND)
+  return()
 endif()
-
-set(_lsuf hdf5)
-if(parallel IN_LIST HDF5_FIND_COMPONENTS)
-  list(PREPEND _lsuf openmpi/lib mpich/lib hdf5/openmpi hdf5/mpich)
-else()
-  list(PREPEND _lsuf hdf5/serial)
-endif()
-
-set(_psuf static ${_lsuf})
-if(parallel IN_LIST HDF5_FIND_COMPONENTS)
-  list(PREPEND _psuf openmpi-x86_64 mpich-x86_64)
-endif()
-
-set(_msuf ${_psuf})
-if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
-  list(APPEND _msuf gfortran/modules)
-  if(parallel IN_LIST HDF5_FIND_COMPONENTS)
-    list(PREPEND _msuf gfortran/modules/openmpi gfortran/modules/mpich)
-  endif()
-endif()
-# Not immediately clear the benefits of this, as we'd have to foreach()
-# a priori names, kind of like we already do with find_library()
-# find_package(hdf5 CONFIG)
-# message(STATUS "hdf5 found ${hdf5_FOUND}")
-
-if(Fortran IN_LIST HDF5_FIND_COMPONENTS)
-  find_hdf5_fortran()
-endif()
-
-if(CXX IN_LIST HDF5_FIND_COMPONENTS)
-  find_hdf5_cxx()
-endif()
-
-# C is always needed
-find_hdf5_c()
-
-# required libraries
-if(HDF5_C_FOUND)
-  detect_config()
-endif(HDF5_C_FOUND)
-
-# --- configure time checks
-# these checks avoid messy, confusing errors at build time
-
-if(HDF5_C_FOUND)
 
 list(PREPEND CMAKE_REQUIRED_LIBRARIES ${HDF5_C_LIBRARIES})
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_C_INCLUDE_DIR})
 
 if(HDF5_parallel_FOUND)
   list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_C)
+
+  check_symbol_exists(H5Pset_fapl_mpio hdf5.h HAVE_H5Pset_fapl_mpio)
+  if(NOT HAVE_H5Pset_fapl_mpio)
+    return()
+  endif()
 
   set(src [=[
   #include "hdf5.h"
@@ -398,7 +357,7 @@ else()
   #include "hdf5.h"
 
   int main(void){
-  hid_t f = H5Fcreate ("junk.h5", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+  hid_t f = H5Fcreate("junk.h5", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
   herr_t status = H5Fclose (f);
   return 0;}
   ]=])
@@ -406,12 +365,13 @@ endif(HDF5_parallel_FOUND)
 
 check_c_source_compiles("${src}" HDF5_C_links)
 
-set(HDF5_links ${HDF5_C_links})
+if(NOT HDF5_C_links)
+  return()
+endif()
 
-endif(HDF5_C_FOUND)
 
 
-if(HDF5_Fortran_FOUND AND HDF5_links)
+if(HDF5_Fortran_FOUND)
 
 list(PREPEND CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES})
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_Fortran_INCLUDE_DIR} ${HDF5_C_INCLUDE_DIR})
@@ -451,17 +411,78 @@ endif()
 
 check_fortran_source_compiles(${src} HDF5_Fortran_links SRC_EXT f90)
 
-
 if(NOT HDF5_Fortran_links)
-  set(HDF5_Fortran_links false)
+  return()
 endif()
 
-endif(HDF5_Fortran_FOUND AND HDF5_links)
+endif(HDF5_Fortran_FOUND)
 
 
-if(HDF5_Fortran_FOUND AND NOT HDF5_Fortran_links)
-  set(HDF5_links false)
+set(HDF5_links true PARENT_SCOPE)
+
+endfunction(check_hdf5_link)
+
+# === main program
+
+set(CMAKE_REQUIRED_LIBRARIES)
+
+# we don't use pkg-config names because some distros pkg-config for HDF5 is broken
+# however at least the paths are often correct
+find_package(PkgConfig)
+if(NOT HDF5_FOUND)
+  if(parallel IN_LIST HDF5_FIND_COMPONENTS)
+    pkg_search_module(pc_hdf5 hdf5-openmpi hdf5-mpich hdf5)
+  else()
+    pkg_search_module(pc_hdf5 hdf5-serial hdf5)
+  endif()
 endif()
+
+set(_lsuf hdf5)
+if(parallel IN_LIST HDF5_FIND_COMPONENTS)
+  list(PREPEND _lsuf openmpi/lib mpich/lib hdf5/openmpi hdf5/mpich)
+else()
+  list(PREPEND _lsuf hdf5/serial)
+endif()
+
+set(_psuf static ${_lsuf})
+if(parallel IN_LIST HDF5_FIND_COMPONENTS)
+  list(PREPEND _psuf openmpi-x86_64 mpich-x86_64)
+endif()
+
+set(_msuf ${_psuf})
+if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
+  list(APPEND _msuf gfortran/modules)
+  if(parallel IN_LIST HDF5_FIND_COMPONENTS)
+    list(PREPEND _msuf gfortran/modules/openmpi gfortran/modules/mpich)
+  endif()
+endif()
+
+set(_binpref /usr/lib64)
+set(_binsuf bin openmpi/bin mpich/bin)
+# Not immediately clear the benefits of this, as we'd have to foreach()
+# a priori names, kind of like we already do with find_library()
+# find_package(hdf5 CONFIG)
+# message(STATUS "hdf5 found ${hdf5_FOUND}")
+
+if(Fortran IN_LIST HDF5_FIND_COMPONENTS)
+  find_hdf5_fortran()
+endif()
+
+if(CXX IN_LIST HDF5_FIND_COMPONENTS)
+  find_hdf5_cxx()
+endif()
+
+# C is always needed
+find_hdf5_c()
+
+# required libraries
+if(HDF5_C_FOUND)
+  detect_config()
+endif(HDF5_C_FOUND)
+
+# --- configure time checks
+# these checks avoid messy, confusing errors at build time
+check_hdf5_link()
 
 set(CMAKE_REQUIRED_LIBRARIES)
 set(CMAKE_REQUIRED_INCLUDES)
@@ -496,6 +517,14 @@ if(HDF5_FOUND)
 
     if(UNIX)
       target_link_libraries(HDF5::HDF5 INTERFACE m)
+    endif()
+
+    if(HDF5_parallel_FOUND)
+      if(HDF5_Fortran_FOUND)
+        target_link_libraries(HDF5::HDF5 INTERFACE MPI::MPI_Fortran MPI::MPI_C)
+      else()
+        target_link_libraries(HDF5::HDF5 INTERFACE MPI::MPI_C)
+      endif()
     endif()
   endif()
 endif()
