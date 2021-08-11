@@ -26,7 +26,8 @@ jobs:
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends ninja-build gfortran libnetcdff-dev
 
-    - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=~
+    - run: cmake --preset multi --install-prefix ~
+
     - run: cmake --build --preset debug
     - run: ctest --preset debug
 
@@ -73,7 +74,8 @@ jobs:
 
     - run: brew install netcdf ninja
 
-    - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=~
+    - run: cmake --preset multi --install-prefix ~
+
     - run: cmake --build --preset debug
     - run: ctest --preset debug
 
