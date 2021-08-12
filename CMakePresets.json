@@ -5,21 +5,15 @@
 {
   "name": "default",
   "binaryDir": "${sourceDir}/build",
+  "installDir": "${sourceDir}/build",
   "cacheVariables": {
-    "CMAKE_BUILD_TYPE": "Release",
-    "CMAKE_INSTALL_PREFIX": "${sourceDir}/build"
+    "CMAKE_BUILD_TYPE": "Release"
   }
 },
 {
   "name": "multi", "inherits": "default",
+  "displayName": "Ninja Multi config",
   "generator": "Ninja Multi-Config"
-},
-{
-  "name": "notest", "inherits": "default",
-  "displayName": "omit self-tests",
-  "cacheVariables": {
-    "BUILD_TESTING": false
-  }
 },
 {
   "name": "build", "inherits": "default",
@@ -33,9 +27,7 @@
   "name": "intel", "inherits": "default",
   "displayName": "Intel oneAPI LLVM",
   "binaryDir": "${sourceDir}/build-intel",
-  "cacheVariables": {
-    "CMAKE_INSTALL_PREFIX": "${sourceDir}/build-intel"
-  },
+  "installDir": "${sourceDir}/build-intel",
   "environment": {
     "CC": "icx",
     "FC": "ifx"
