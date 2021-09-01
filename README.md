@@ -103,7 +103,7 @@ To include nc4fortran as a Meson subproject, in the master project meson.build (
 
 ```meson
 nc4_proj = subproject('nc4fortran')
-nc4_interface = nc4_proj.get_variable('nc4_interface')
+nc4_interface = nc4_proj.get_variable('netcdf_interface')
 
 my_exe = executable('myexe', 'main.f90', dependencies: nc4_interface)
 ```
