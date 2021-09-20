@@ -11,7 +11,7 @@ foreach(t array attributes deflate destructor error exist scalar shape string)
   add_executable(test_${t} test_${t}.f90)
   target_link_libraries(test_${t} PRIVATE nc4fortran::nc4fortran)
   set_target_properties(test_${t} PROPERTIES LABELS unit)
-  if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
+  if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
     target_compile_options(test_${t} PRIVATE -Wno-compare-reals)
   endif()
 
