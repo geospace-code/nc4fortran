@@ -240,10 +240,11 @@ endif()
 
 find_path(HDF5_Fortran_INCLUDE_DIR
   NAMES hdf5.mod
-  HINTS ${hdf5_inc_dirs} ${pc_hdf5_INCLUDE_DIRS}
+  HINTS ${HDF5_C_INCLUDE_DIR}
+  NO_DEFAULT_PATH
   PATH_SUFFIXES ${hdf5_msuf}
-  PATHS ${hdf5_binpref}
-  DOC "HDF5 Fortran modules")
+  DOC "HDF5 Fortran modules"
+)
 
 if(HDF5_Fortran_LIBRARY AND HDF5_Fortran_HL_LIBRARY AND HDF5_Fortran_INCLUDE_DIR)
   set(HDF5_Fortran_LIBRARIES ${HDF5_Fortran_LIBRARIES} PARENT_SCOPE)
@@ -653,14 +654,6 @@ endif()
 # find_package(hdf5 CONFIG)
 # message(STATUS "hdf5 found ${hdf5_FOUND}")
 
-if(Fortran IN_LIST HDF5_FIND_COMPONENTS)
-  find_hdf5_fortran()
-endif()
-
-if(CXX IN_LIST HDF5_FIND_COMPONENTS)
-  find_hdf5_cxx()
-endif()
-
 # C is always needed
 find_hdf5_c()
 
@@ -668,6 +661,14 @@ find_hdf5_c()
 if(HDF5_C_FOUND)
   detect_config()
 endif(HDF5_C_FOUND)
+
+if(HDF5_C_FOUND AND CXX IN_LIST HDF5_FIND_COMPONENTS)
+  find_hdf5_cxx()
+endif()
+
+if(HDF5_C_FOUND AND Fortran IN_LIST HDF5_FIND_COMPONENTS)
+  find_hdf5_fortran()
+endif()
 
 # --- configure time checks
 # these checks avoid messy, confusing errors at build time
