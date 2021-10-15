@@ -3,34 +3,19 @@ include(ExternalProject)
 # due to limitations of NetCDF-C 4.7.4 and NetCDF-Fortran 4.5.3, as per their docs,
 # we MUST use shared libraries or they don't archive/link properly.
 
-if(CMAKE_VERSION VERSION_LESS 3.20)
-  message(FATAL_ERROR "CMake >= 3.20 required for NetCDF4 autobuild")
-endif()
-
 find_package(HDF5 COMPONENTS C Fortran REQUIRED)
 
 set(netcdf_external true CACHE BOOL "autobuild NetCDF")
 
 # need to be sure _ROOT isn't empty, defined is not enough
 if(NOT NetCDF_ROOT)
-  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(NetCDF_ROOT ${PROJECT_BINARY_DIR} CACHE PATH "NetCDF_ROOT")
-  else()
-    set(NetCDF_ROOT ${CMAKE_INSTALL_PREFIX})
-  endif()
+  set(NetCDF_ROOT ${CMAKE_INSTALL_PREFIX})
 endif()
 
 set(NetCDF_INCLUDE_DIRS ${NetCDF_ROOT}/include)
 
 set(NetCDF_C_LIBRARIES ${NetCDF_ROOT}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}netcdf${CMAKE_SHARED_LIBRARY_SUFFIX})
 set(NetCDF_Fortran_LIBRARIES ${NetCDF_ROOT}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_SHARED_LIBRARY_SUFFIX})
-if(MINGW)
-  # libnetcdf.dll.a
-  # not yet working https://github.com/Unidata/netcdf-c/issues/554
-  string(APPEND NetCDF_C_LIBRARIES ".a")
-  string(APPEND NetCDF_Fortran_LIBRARIES ".a")
-endif()
-
 
 # --- NetCDF-C
 
@@ -58,7 +43,8 @@ INACTIVITY_TIMEOUT 30
 CMAKE_GENERATOR ${EXTPROJ_GENERATOR}
 # Shared_libs=on for netcdf-fortran symbol finding bug
 CMAKE_ARGS ${netcdf_c_cmake_args}
-BUILD_BYPRODUCTS ${NetCDF_C_LIBRARIES})
+BUILD_BYPRODUCTS ${NetCDF_C_LIBRARIES}
+)
 
 # --- imported target
 
@@ -96,7 +82,8 @@ CMAKE_GENERATOR ${EXTPROJ_GENERATOR}
 # netCDEF_LIBRARIES and netCDF_INCLUDE_DIR from netcdf-fortran/CMakeLists.txt
 CMAKE_ARGS ${netcdf_fortran_cmake_args}
 BUILD_BYPRODUCTS ${NetCDF_Fortran_LIBRARIES}
-DEPENDS NETCDF_C)
+DEPENDS NETCDF_C
+)
 
 # --- imported target
 

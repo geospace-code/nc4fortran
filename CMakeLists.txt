@@ -59,7 +59,7 @@ add_library(nc4fortran::nc4fortran INTERFACE IMPORTED GLOBAL)
 target_link_libraries(nc4fortran::nc4fortran INTERFACE nc4fortran)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/nc4fortran.mod
-  DESTINATION include)
+  TYPE INCLUDE)
 
 install(TARGETS nc4fortran EXPORT ${PROJECT_NAME}Targets)
 
