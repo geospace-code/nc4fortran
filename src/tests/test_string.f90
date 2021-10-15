@@ -12,8 +12,6 @@ type(netcdf_file) :: h
 
 character(2) :: value
 character(1024) :: val1k
-character(:), allocatable :: final
-integer :: i
 character(*), parameter :: path='test_string.nc'
 
 call h%open(path, action='w')
@@ -26,23 +24,19 @@ call h%close()
 call h%open(path, action='r')
 call h%read('little', value)
 
-if (value /= '42') then
-  write(stderr,*) 'test_string:  read/write verification failure. Value: '// value
-  error stop
-endif
+if (value /= '42') error stop 'test_string:  read/write verification failure. Value: '// value
 
 print *,'test_string_rw: reading too much data'
 !! try reading too much data, then truncating to first C_NULL
 call h%read('little', val1k)
-i = index(val1k, c_null_char)
-final = val1k(:i-1)
 
-if (len(final) /= 2) then
-  write(stderr, *) 'trimming str to c_null did not work, got len() = ', len(final)
-  write(stderr, *) iachar(final(3:3))
+if (len_trim(val1k) /= 2) then
+  write(stderr, *) 'expected len_trim 2, got len_trim = ', len(val1k)
   error stop
 endif
 
 call h%close()
+
+print *, 'OK: test_string'
 
 end program

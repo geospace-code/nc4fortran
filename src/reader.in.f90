@@ -1,12 +1,14 @@
 submodule (nc4fortran:read) reader
 !! This submodule is for reading 0-D..7-D data
 
+use, intrinsic :: iso_c_binding, only : c_null_char
 implicit none (type, external)
 
 contains
 
 module procedure nc_read_scalar
-integer :: varid, ier
+integer :: varid, ier, i
+integer, allocatable :: dims(:)
 
 if(.not.self%is_open) error stop 'nc4fortran:reader file handle not open'
 
@@ -17,15 +19,14 @@ select type (value)
 type is (character(*))
   !! NetCDF4 requires knowing the exact character length as if it were an array without fill values
   !! HDF5 is not this strict; having a longer string variable than disk variable is OK in HDF5, but not NetCDF4
-  charshape : block
-    integer, allocatable :: dims(:)
-    call self%shape(dname, dims)
-    charbuf : block
-      character(len=dims(1)) :: buf
-      ier = nf90_get_var(self%ncid, varid, buf)
-      value = buf
-    end block charbuf
-  end block charshape
+  call self%shape(dname, dims)
+  charbuf : block
+    character(len=dims(1)) :: buf
+    ier = nf90_get_var(self%ncid, varid, buf)
+    i = index(buf, c_null_char) - 1
+    if(i == -1) i = len_trim(buf)
+    value = buf(:i)
+  end block charbuf
 type is (real(real64))
   ier = nf90_get_var(self%ncid, varid, value)
 type is (real(real32))
