@@ -16,7 +16,15 @@ set(NetCDF_INCLUDE_DIRS ${NetCDF_ROOT}/include)
 
 set(NetCDF_C_LIBRARIES ${NetCDF_ROOT}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}netcdf${CMAKE_SHARED_LIBRARY_SUFFIX})
 set(NetCDF_Fortran_LIBRARIES ${NetCDF_ROOT}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_SHARED_LIBRARY_SUFFIX})
-
+if(MINGW)
+  # libnetcdf.dll.a
+  # not yet working https://github.com/Unidata/netcdf-c/issues/554
+  # undefined reference to `nc_create_par_fortran'
+  # undefined reference to `nc_open_par_fortran'
+  # undefined reference to `nc_var_par_access'
+  string(APPEND NetCDF_C_LIBRARIES ".a")
+  string(APPEND NetCDF_Fortran_LIBRARIES ".a")
+endif()
 # --- NetCDF-C
 
 set(netcdf_c_cmake_args
