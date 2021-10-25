@@ -100,3 +100,10 @@ add_library(NetCDF::NetCDF_Fortran INTERFACE IMPORTED GLOBAL)
 target_include_directories(NetCDF::NetCDF_Fortran INTERFACE "${NetCDF_INCLUDE_DIRS}")
 target_link_libraries(NetCDF::NetCDF_Fortran INTERFACE "${NetCDF_Fortran_LIBRARIES}")
 add_dependencies(NetCDF::NetCDF_Fortran NETCDF_FORTRAN)
+
+# --- dynamic shared library
+
+if(UNIX)
+  set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib)
+  set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib)
+endif()
