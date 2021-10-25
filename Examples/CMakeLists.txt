@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.19...3.22)
 
-project(nc4fortranExample LANGUAGES Fortran)
+project(nc4fortranExample
+LANGUAGES Fortran
+)
 
 include(CTest)
 
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../cmake/Modules)
 
-find_package(nc4fortran REQUIRED)
+find_package(nc4fortran CONFIG REQUIRED)
 
 # --- Fortran interface for examples
 add_library(fortran_interface fortran_interface.f90)

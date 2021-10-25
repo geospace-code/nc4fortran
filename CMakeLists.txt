@@ -29,6 +29,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
 include(cmake/options.cmake)
 include(cmake/compilers.cmake)
+include(cmake/libraries.cmake)
 
 # --- find NetCDF4
 
