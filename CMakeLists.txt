@@ -59,17 +59,17 @@ set_target_properties(nc4fortran PROPERTIES
 add_library(nc4fortran::nc4fortran INTERFACE IMPORTED GLOBAL)
 target_link_libraries(nc4fortran::nc4fortran INTERFACE nc4fortran)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/nc4fortran.mod
-  TYPE INCLUDE)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/nc4fortran.mod TYPE INCLUDE)
 
-install(TARGETS nc4fortran EXPORT ${PROJECT_NAME}Targets)
+install(TARGETS nc4fortran EXPORT ${PROJECT_NAME}-targets)
 
 # additional Find*.cmake necessary
 install(FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindHDF5.cmake
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindSZIP.cmake
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindNetCDF.cmake
-  DESTINATION lib/cmake/Modules)
+${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindHDF5.cmake
+${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindSZIP.cmake
+${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindNetCDF.cmake
+DESTINATION cmake
+)
 
 
 add_subdirectory(src)
