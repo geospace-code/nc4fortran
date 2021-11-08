@@ -44,16 +44,16 @@ endif()
 # --- build
 
 add_library(nc4fortran)
-target_include_directories(nc4fortran
-  PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/include  # for IBM XL
-  INTERFACE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
+target_include_directories(nc4fortran PUBLIC
+$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+$<INSTALL_INTERFACE:include>
+)
 target_link_libraries(nc4fortran PUBLIC NetCDF::NetCDF_Fortran)
 set_target_properties(nc4fortran PROPERTIES
-  Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include
-  LABELS core
-  VERSION ${PROJECT_VERSION})
+Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include
+LABELS core
+VERSION ${PROJECT_VERSION}
+)
 
 # GLOBAL needed for FetchContent use
 add_library(nc4fortran::nc4fortran INTERFACE IMPORTED GLOBAL)

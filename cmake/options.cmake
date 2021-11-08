@@ -1,5 +1,3 @@
-
-option(netcdf_external "Build NetCDF4 library")
 option(dev "developer mode")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS true)
