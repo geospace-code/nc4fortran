@@ -1,7 +1,7 @@
 project('nc4fortran', 'fortran',
-  meson_version : '>=0.57.0',
-  version: files('VERSION'),
-  default_options : ['default_library=static', 'buildtype=release', 'warning_level=3'])
+meson_version : '>=0.57.0',
+default_options : ['default_library=static', 'buildtype=release', 'warning_level=3']
+)
 
 fs = import('fs')
 
