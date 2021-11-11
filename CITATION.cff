@@ -4,7 +4,7 @@ authors:
   - family-names: Hirsch
     given-names: Michael
     orcid: https://orcid.org/0000-0002-1637-6526
-title: h5fortran
+title: nc4fortran
 version: 1.4.6
 doi: 10.5281/zenodo.3598941
 date-released: 2021-11-08
