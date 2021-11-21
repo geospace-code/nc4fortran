@@ -35,7 +35,11 @@ include(cmake/libraries.cmake)
 # --- find NetCDF4
 
 if(NOT netcdf_external)
-  find_package(NetCDF COMPONENTS Fortran)
+  if(autobuild)
+    find_package(NetCDF COMPONENTS Fortran)
+  else()
+    find_package(NetCDF COMPONENTS Fortran REQUIRED)
+  endif()
 endif()
 
 if(NOT NetCDF_FOUND OR netcdf_external)

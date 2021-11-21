@@ -9,7 +9,8 @@ on:
 
 jobs:
 
-  meson:
+  linux:
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -20,7 +21,7 @@ jobs:
     - run: pip install meson ninja
     - run: |
         sudo apt update -yq
-        sudo apt install -yq --no-install-recommends gfortran libnetcdff-dev
+        sudo apt install -yq --no-install-recommends libnetcdff-dev
 
     - run: meson setup build
     - run: meson compile -C build

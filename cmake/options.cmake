@@ -1,6 +1,8 @@
-option(dev "developer mode")
+option(autobuild "auto-build NetCDF4 if missing/broken" on)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS true)
+option(ENABLE_COVERAGE "Code coverage tests")
+
+option(dev "developer mode")
 
 set(CMAKE_TLS_VERIFY true)
 

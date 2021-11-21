@@ -1,7 +1,8 @@
 name: ci
 
 env:
-  CTEST_PARALLEL_LEVEL: 3
+  CTEST_PARALLEL_LEVEL: 4
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
   CMAKE_BUILD_TYPE: Release
 
 on:
@@ -39,7 +40,7 @@ jobs:
     - name: configure examples
       run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=${HOME}
     - name: build examples
-      run: cmake --build Examples/build --parallel
+      run: cmake --build Examples/build
     - name: Test examples
       run: ctest --test-dir Examples/build -V
 
@@ -68,6 +69,36 @@ jobs:
       run: cmake --build Examples/build --parallel
     - name: Test examples
       run: ctest --test-dir Examples/build -V
+
+
+  linux-coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: install hdf5
+      run: |
+        sudo apt update -yq
+        sudo apt install -yq --no-install-recommends libnetcdff-dev
+
+    - name: install Gcovr
+      run: pip install gcovr
+
+    - run: cmake --preset coverage
+    - run: cmake --build --preset coverage --parallel
+
+    - name: Code coverage
+      run: cmake --build --preset run-coverage
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: coverage-report-html
+        path: build-coverage/coverage/
 
 
   mac:

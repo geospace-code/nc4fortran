@@ -13,7 +13,7 @@ LABELS core
 
 foreach(t array attributes deflate destructor error exist scalar shape string)
   add_executable(test_${t} test_${t}.f90)
-  target_link_libraries(test_${t} PRIVATE :nc4fortran)
+  target_link_libraries(test_${t} PRIVATE nc4fortran::nc4fortran)
   set_target_properties(test_${t} PROPERTIES LABELS unit)
   target_compile_options(test_${t} PRIVATE "$<$<Fortran_COMPILER_ID:GNU>:-Wno-compare-reals>")
 
@@ -26,3 +26,10 @@ foreach(t array attributes deflate destructor error exist scalar shape string)
   LABELS unit
   )
 endforeach()
+
+if(ENABLE_COVERAGE)
+setup_target_for_coverage_gcovr_html(
+NAME coverage
+EXECUTABLE ${CMAKE_CTEST_COMMAND}
+)
+endif()
