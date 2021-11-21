@@ -1,10 +1,3 @@
-
-set(is_windows .false.)
-if(WIN32)
-  set(is_windows .true.)
-endif()
-configure_file(pathlib.in.f90 pathlib.f90 @ONLY)
-
 file(READ reader_template.in.f90 reader_template)
 configure_file(reader.in.f90 reader.f90 @ONLY)
 
@@ -22,5 +15,4 @@ interface.f90
 read.f90 ${CMAKE_CURRENT_BINARY_DIR}/reader.f90
 write.f90 ${CMAKE_CURRENT_BINARY_DIR}/writer.f90
 attributes.f90
-${CMAKE_CURRENT_BINARY_DIR}/pathlib.f90
 )

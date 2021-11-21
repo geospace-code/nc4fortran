@@ -70,21 +70,6 @@ end type netcdf_file
 
 !> Submodules
 
-interface !< pathlib.f90
-module logical function std_unlink(filename)
-character(*), intent(in) :: filename
-end function std_unlink
-
-module logical function is_absolute_path(path)
-character(*), intent(in) :: path
-end function is_absolute_path
-
-module function get_tempdir()
-character(:), allocatable :: get_tempdir
-end function
-
-end interface
-
 interface !< writer.f90
 module subroutine nc_write_scalar_char(self, dname, value, ierr)
 class(netcdf_file), intent(in) :: self
