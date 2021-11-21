@@ -22,4 +22,5 @@ interface.f90
 read.f90 ${CMAKE_CURRENT_BINARY_DIR}/reader.f90
 write.f90 ${CMAKE_CURRENT_BINARY_DIR}/writer.f90
 attributes.f90
-${CMAKE_CURRENT_BINARY_DIR}/pathlib.f90)
+${CMAKE_CURRENT_BINARY_DIR}/pathlib.f90
+)
