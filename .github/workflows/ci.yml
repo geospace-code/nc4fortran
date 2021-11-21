@@ -72,6 +72,7 @@ jobs:
 
 
   linux-coverage:
+    needs: linux
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -81,7 +82,7 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: install hdf5
+    - name: install prereqs
       run: |
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends libnetcdff-dev
