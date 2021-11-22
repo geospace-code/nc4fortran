@@ -1,7 +1,6 @@
 # Object-oriented Fortran 2008 NetCDF4 interface
 
 [![DOI](https://zenodo.org/badge/229812591.svg)](https://zenodo.org/badge/latestdoi/229812591)
-[![CDash](./archive/cdash.png)](https://my.cdash.org/index.php?project=nc4fortran)
 
 ![ci](https://github.com/geospace-code/nc4fortran/workflows/ci/badge.svg)
 ![ci_meson](https://github.com/geospace-code/nc4fortran/workflows/ci_meson/badge.svg)
