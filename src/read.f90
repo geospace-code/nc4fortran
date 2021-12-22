@@ -17,6 +17,7 @@ ierr = nf90_inq_varid(self%ncid, dname, varid)
 if(ierr/=NF90_NOERR) error stop 'nc4fortran:get_ndims: could not get variable ID for ' // dname
 
 ierr = nf90_inquire_variable(self%ncid, varid, ndims=drank)
+if(ierr/=NF90_NOERR) error stop 'nc4fortran:get_ndims: could not get rank for ' // dname
 
 end procedure get_ndims
 
