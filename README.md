@@ -32,6 +32,8 @@ Tested on systems with NetCDF4 including:
 * Windows Subsystem for Linux
 * Windows Cygwin
 
+See [API](./API.md) for usage.
+
 ## Build
 
 Requirements:
@@ -78,7 +80,7 @@ include(FetchContent)
 
 FetchContent_Declare(nc4fortran_proj
   GIT_REPOSITORY https://github.com/geospace-code/nc4fortran.git
-  GIT_TAG v1.3.0)
+  GIT_TAG v1.5.0)
 
 FetchContent_MakeAvailable(nc4fortran_proj)
 
@@ -113,73 +115,7 @@ and have a file in the master project `subprojects/nc4fortran.wrap` containing:
 [wrap-git]
 directory = nc4fortran
 url = https://github.com/geospace-code/nc4fortran.git
-revision = head
-```
-
-## Usage
-
-All examples assume:
-
-```fortran
-use nc4fortran, only: netcdf_file
-type(netcdf_file) :: hf
-```
-
-* gzip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value between 1 and 9.
-  Shuffle filter is automatically applied for better compression
-* string attributes may be applied to any variable at time of writing or later.
-
-`integer, intent(out) :: ierr` is optional.
-It will be non-zero if error detected.
-This value should be checked, particularly for write operations to avoid missing error conditions.
-If `ierr` is omitted, nc4fortran will `error stop` on error.
-
-### Create new NetCDF file, with variable "value1"
-
-```fortran
-call hf%open('test.nc', action='w')
-
-call hf%write('value1', 123.)
-
-call hf%close()
-```
-
-### Check if variable exists
-
-This will not raise error stop, even if the file isn't opened, but it will print a message to stderr.
-
-```fortran
-logical :: exists
-
-exists = hf%exist('fooname')
-```
-
-### Add/append variable "value1" to existing NetCDF file "test.nc"
-
-* if file `test.nc` exists, add a variable to it
-* if file `test.nc` does not exist, create it and add a variable to it.
-
-```fortran
-call hf%open('test.nc', action='rw')
-
-call hf%write('value1', 123.)
-
-call hf%close()
-```
-
-### Read scalar, 3-D array of unknown size
-
-```fortran
-call ncf%open('test.nc', action='r')
-
-integer, allocatable :: dims(:)
-real, allocatable :: A(:,:,:)
-
-call ncf%shape('foo', dims)
-allocate(A(dims(1), dims(2), dims(3)))
-call ncf%read('foo', A)
-
-call ncf%close()
+revision = v1.5.0
 ```
 
 ## Permissive syntax

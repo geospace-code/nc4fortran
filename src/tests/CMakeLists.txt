@@ -11,19 +11,22 @@ FIXTURES_SETUP nclib
 LABELS core
 )
 
-foreach(t array attributes deflate destructor error exist scalar shape string)
+foreach(t array attributes deflate destructor error exist scalar shape string version)
   add_executable(test_${t} test_${t}.f90)
   target_link_libraries(test_${t} PRIVATE nc4fortran::nc4fortran)
   set_target_properties(test_${t} PROPERTIES LABELS unit)
   target_compile_options(test_${t} PRIVATE "$<$<Fortran_COMPILER_ID:GNU>:-Wno-compare-reals>")
 
-  add_test(NAME ${t}
-  COMMAND test_${t}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  )
+  if(${t} STREQUAL version)
+    add_test(NAME ${t} COMMAND test_${t} ${NetCDF_VERSION})
+  else()
+    add_test(NAME ${t} COMMAND test_${t})
+  endif()
+
   set_tests_properties(${t} PROPERTIES
   FIXTURES_REQUIRED nclib
   LABELS unit
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
 endforeach()
 

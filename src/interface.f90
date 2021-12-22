@@ -12,7 +12,7 @@ use netcdf, only : nf90_create, nf90_open, NF90_WRITE, NF90_CLOBBER, NF90_NETCDF
 
 implicit none (type, external)
 private
-public :: netcdf_file, NF90_MAX_NAME, NF90_NOERR, check_error, is_netcdf, nc_exist
+public :: netcdf_file, NF90_MAX_NAME, NF90_NOERR, check_error, is_netcdf, nc_exist, nc4version
 
 !! at this time, we assume up to 7 dimension NetCDF variable.
 integer, parameter :: NC_MAXDIM = 7
@@ -28,7 +28,6 @@ logical :: verbose = .false.
 logical :: debug = .false.
 logical :: is_open = .false.
 !! will be auto-deleted on close
-character(80) :: libversion
 
 contains
 
@@ -240,9 +239,6 @@ if (present(comp_lvl)) self%comp_lvl = comp_lvl
 if (present(verbose)) self%verbose = verbose
 if (present(debug)) self%debug = debug
 
-!> get library version
-self%libversion = nf90_inq_libvers()
-
 laction = 'rw'
 if(present(action)) laction = action
 
@@ -305,6 +301,13 @@ if (ier /= NF90_NOERR) error stop 'ERROR:finalize: ' // self%filename
 self%is_open = .false.
 
 end subroutine nc_finalize
+
+
+function nc4version()
+!! get NetCDF4 library version
+character(:), allocatable :: nc4version
+nc4version = nf90_inq_libvers()
+end function nc4version
 
 
 subroutine nc_flush(self)
