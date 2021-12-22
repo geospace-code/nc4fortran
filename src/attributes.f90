@@ -28,8 +28,7 @@ class default
 end select
 endif
 
-if (present(ierr)) ierr = ier
-if (check_error(ier, dname) .and. .not. present(ierr)) error stop 'nc4fortran:attributes: failed to write' // attrname
+if (check_error(ier, dname)) error stop 'nc4fortran:attributes: failed to write' // attrname
 
 end procedure write_attribute
 
@@ -56,8 +55,7 @@ class default
 end select
 endif
 
-if (present(ierr)) ierr = ier
-if (check_error(ier, dname) .and. .not. present(ierr)) error stop 'nc4fortran:attributes: failed to read' // attrname
+if (check_error(ier, dname)) error stop 'nc4fortran:attributes: failed to read' // attrname
 
 end procedure read_attribute
 

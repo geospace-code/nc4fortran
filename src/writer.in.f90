@@ -7,212 +7,82 @@ implicit none (type, external)
 
 contains
 
-module procedure nc_write_scalar_char
+
+module procedure nc_write_scalar
 integer :: varid, ier, lenid
 
-if(.not.self%is_open) error stop 'nc4fortran:writer: file handle not open'
-
-!! uses string prefill method
-!! https://www.unidata.ucar.edu/software/netcdf/docs-fortran/f90-variables.html#f90-reading-and-writing-character-string-values
-
-ier = nf90_def_dim(self%ncid, dname // "StrLen", len(value) + 1, lenid)
-if(ier == NF90_NOERR) ier = nf90_def_var(self%ncid, dname, NF90_CHAR, dimids=lenid, varid=varid)
-
-if(ier == NF90_NOERR) ier = nf90_enddef(self%ncid)  !< prefill
-if(ier == NF90_NOERR) ier = nf90_put_var(self%ncid, varid, value)
-
-if (present(ierr)) ierr = ier
-if (check_error(ier, dname) .and. .not. present(ierr)) error stop 'nc4fortran:write could not write ' // dname
-
-end procedure nc_write_scalar_char
-
-module procedure nc_write_scalar_r32
-integer :: varid, ier
-
-if(.not.self%is_open) error stop 'nc4fortran:write: file handle not open for ' // dname
+if(.not.self%is_open) error stop 'nc4fortran:write: file handle not open for ' // dname // ' in ' // self%filename
 
 if (self%exist(dname)) then
   ier = nf90_inq_varid(self%ncid, dname, varid)
 else
-  ier = nf90_def_var(self%ncid, dname, NF90_FLOAT, varid=varid)
+  select type (value)
+  type is (real(real32))
+    ier = nf90_def_var(self%ncid, dname, NF90_FLOAT, varid=varid)
+  type is (real(real64))
+    ier = nf90_def_var(self%ncid, dname, NF90_DOUBLE, varid=varid)
+  type is (integer(int32))
+    ier = nf90_def_var(self%ncid, dname, NF90_INT, varid=varid)
+  type is (integer(int64))
+    ier = nf90_def_var(self%ncid, dname, NF90_INT64, varid=varid)
+  type is (character(*))
+    !! string prefill method
+    !! https://www.unidata.ucar.edu/software/netcdf/docs-fortran/f90-variables.html#f90-reading-and-writing-character-string-values
+    ier = nf90_def_dim(self%ncid, dname // "StrLen", len(value) + 1, lenid)
+    if(ier == NF90_NOERR) ier = nf90_def_var(self%ncid, dname, NF90_CHAR, dimids=lenid, varid=varid)
+    if(ier == NF90_NOERR) ier = nf90_enddef(self%ncid)  !< prefill
+  class default
+    error stop "unkown type for " // dname // " in " // self%filename
+  end select
 endif
+if (check_error(ier, dname)) error stop 'nc4fortran:write: setup write ' // dname // ' in ' // self%filename
 
-if(ier == NF90_NOERR) ier = nf90_put_var(self%ncid, varid, value)
+select type (value)
+type is (real(real32))
+  ier = nf90_put_var(self%ncid, varid, value)
+type is (real(real64))
+  ier = nf90_put_var(self%ncid, varid, value)
+type is (integer(int32))
+  ier = nf90_put_var(self%ncid, varid, value)
+type is (integer(int64))
+  ier = nf90_put_var(self%ncid, varid, value)
+type is (character(*))
+  ier = nf90_put_var(self%ncid, varid, value)
+class default
+  error stop "unkown type for " // dname // " in " // self%filename
+end select
 
-if (present(ierr)) ierr = ier
-if (check_error(ier, dname) .and. .not. present(ierr)) error stop 'nc4fortran:write: could not write ' // dname
+if (check_error(ier, dname)) error stop 'nc4fortran:write: write ' // dname // ' in ' // self%filename
 
-end procedure nc_write_scalar_r32
+end procedure nc_write_scalar
 
-module procedure nc_write_scalar_r64
-integer :: varid, ier
+module procedure nc_write_1d
+@writer_template@
+end procedure nc_write_1d
 
-if(.not.self%is_open) error stop 'nc4fortran:write: file handle not open for ' // dname
+module procedure nc_write_2d
+@writer_template@
+end procedure nc_write_2d
 
-if (self%exist(dname)) then
-  ier = nf90_inq_varid(self%ncid, dname, varid)
-else
-  ier = nf90_def_var(self%ncid, dname, NF90_DOUBLE, varid=varid)
-endif
+module procedure nc_write_3d
+@writer_template@
+end procedure nc_write_3d
 
-if(ier == NF90_NOERR) ier = nf90_put_var(self%ncid, varid, value)
+module procedure nc_write_4d
+@writer_template@
+end procedure nc_write_4d
 
-if (present(ierr)) ierr = ier
-if (check_error(ier, dname) .and. .not. present(ierr)) error stop 'nc4fortran:write: could not write ' // dname
+module procedure nc_write_5d
+@writer_template@
+end procedure nc_write_5d
 
-end procedure nc_write_scalar_r64
+module procedure nc_write_6d
+@writer_template@
+end procedure nc_write_6d
 
-
-module procedure nc_write_scalar_i32
-integer :: varid, ier
-
-if(.not.self%is_open) error stop 'nc4fortran:write: file handle not open for ' // dname
-
-if (self%exist(dname)) then
-  ier = nf90_inq_varid(self%ncid, dname, varid)
-else
-  ier = nf90_def_var(self%ncid, dname, NF90_INT, varid=varid)
-endif
-
-if(ier == NF90_NOERR) ier = nf90_put_var(self%ncid, varid, value)
-
-if (present(ierr)) ierr = ier
-if (check_error(ier, dname) .and. .not. present(ierr)) error stop 'nc4fortran:write: could not write ' // dname
-
-end procedure nc_write_scalar_i32
-
-
-module procedure nc_write_scalar_i64
-integer :: varid, ier
-
-if(.not.self%is_open) error stop 'nc4fortran:write: file handle not open for ' // dname
-
-if (self%exist(dname)) then
-  ier = nf90_inq_varid(self%ncid, dname, varid)
-else
-  ier = nf90_def_var(self%ncid, dname, NF90_INT64, varid=varid)
-endif
-
-if(ier == NF90_NOERR) ier = nf90_put_var(self%ncid, varid, value)
-
-if (present(ierr)) ierr = ier
-if (check_error(ier, dname) .and. .not. present(ierr)) error stop 'nc4fortran:write: could not write ' // dname
-
-end procedure nc_write_scalar_i64
-
-
-module procedure nc_write_1d_r32
-@writer_template_r32@
-end procedure nc_write_1d_r32
-
-module procedure nc_write_1d_r64
-@writer_template_r64@
-end procedure nc_write_1d_r64
-
-module procedure nc_write_1d_i32
-@writer_template_i32@
-end procedure nc_write_1d_i32
-
-module procedure nc_write_1d_i64
-@writer_template_i64@
-end procedure nc_write_1d_i64
-
-
-module procedure nc_write_2d_r32
-@writer_template_r32@
-end procedure nc_write_2d_r32
-
-module procedure nc_write_2d_r64
-@writer_template_r64@
-end procedure nc_write_2d_r64
-
-module procedure nc_write_2d_i32
-@writer_template_i32@
-end procedure nc_write_2d_i32
-
-module procedure nc_write_2d_i64
-@writer_template_i64@
-end procedure nc_write_2d_i64
-
-module procedure nc_write_3d_r32
-@writer_template_r32@
-end procedure nc_write_3d_r32
-
-module procedure nc_write_3d_r64
-@writer_template_r64@
-end procedure nc_write_3d_r64
-
-module procedure nc_write_3d_i32
-@writer_template_i32@
-end procedure nc_write_3d_i32
-
-module procedure nc_write_3d_i64
-@writer_template_i64@
-end procedure nc_write_3d_i64
-
-module procedure nc_write_4d_r32
-@writer_template_r32@
-end procedure nc_write_4d_r32
-
-module procedure nc_write_4d_r64
-@writer_template_r64@
-end procedure nc_write_4d_r64
-
-module procedure nc_write_4d_i32
-@writer_template_i32@
-end procedure nc_write_4d_i32
-
-module procedure nc_write_4d_i64
-@writer_template_i64@
-end procedure nc_write_4d_i64
-
-module procedure nc_write_5d_r32
-@writer_template_r32@
-end procedure nc_write_5d_r32
-
-module procedure nc_write_5d_r64
-@writer_template_r64@
-end procedure nc_write_5d_r64
-
-module procedure nc_write_5d_i32
-@writer_template_i32@
-end procedure nc_write_5d_i32
-
-module procedure nc_write_5d_i64
-@writer_template_i64@
-end procedure nc_write_5d_i64
-
-module procedure nc_write_6d_r32
-@writer_template_r32@
-end procedure nc_write_6d_r32
-
-module procedure nc_write_6d_r64
-@writer_template_r64@
-end procedure nc_write_6d_r64
-
-module procedure nc_write_6d_i32
-@writer_template_i32@
-end procedure nc_write_6d_i32
-
-module procedure nc_write_6d_i64
-@writer_template_i64@
-end procedure nc_write_6d_i64
-
-module procedure nc_write_7d_r32
-@writer_template_r32@
-end procedure nc_write_7d_r32
-
-module procedure nc_write_7d_r64
-@writer_template_r64@
-end procedure nc_write_7d_r64
-
-module procedure nc_write_7d_i32
-@writer_template_i32@
-end procedure nc_write_7d_i32
-
-module procedure nc_write_7d_i64
-@writer_template_i64@
-end procedure nc_write_7d_i64
+module procedure nc_write_7d
+@writer_template@
+end procedure nc_write_7d
 
 
 end submodule writer

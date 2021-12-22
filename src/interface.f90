@@ -41,25 +41,11 @@ procedure, public :: initialize => nc_initialize, open => nc_initialize, &
 
 !> generic procedures mapped over type / rank
 generic, public :: write => &
-  nc_write_scalar_r32, nc_write_scalar_r64, nc_write_scalar_i32, nc_write_scalar_i64, nc_write_scalar_char, &
-  nc_write_1d_r32, nc_write_1d_r64, nc_write_1d_i32, nc_write_1d_i64, &
-  nc_write_2d_r32, nc_write_2d_r64, nc_write_2d_i32, nc_write_2d_i64, &
-  nc_write_3d_r32, nc_write_3d_r64, nc_write_3d_i32, nc_write_3d_i64, &
-  nc_write_4d_r32, nc_write_4d_r64, nc_write_4d_i32, nc_write_4d_i64, &
-  nc_write_5d_r32, nc_write_5d_r64, nc_write_5d_i32, nc_write_5d_i64, &
-  nc_write_6d_r32, nc_write_6d_r64, nc_write_6d_i32, nc_write_6d_i64, &
-  nc_write_7d_r32, nc_write_7d_r64, nc_write_7d_i32, nc_write_7d_i64
+  nc_write_scalar, nc_write_1d, nc_write_2d, nc_write_3d, nc_write_4d, nc_write_5d, nc_write_6d, nc_write_7d
 
 generic, public :: read => nc_read_scalar, nc_read_1d, nc_read_2d, nc_read_3d, nc_read_4d, nc_read_5d, nc_read_6d, nc_read_7d
 
-procedure, private :: nc_write_scalar_r32, nc_write_scalar_r64, nc_write_scalar_i32, nc_write_scalar_i64, nc_write_scalar_char, &
-  nc_write_1d_r32, nc_write_1d_r64, nc_write_1d_i32, nc_write_1d_i64, &
-  nc_write_2d_r32, nc_write_2d_r64, nc_write_2d_i32, nc_write_2d_i64, &
-  nc_write_3d_r32, nc_write_3d_r64, nc_write_3d_i32, nc_write_3d_i64, &
-  nc_write_4d_r32, nc_write_4d_r64, nc_write_4d_i32, nc_write_4d_i64, &
-  nc_write_5d_r32, nc_write_5d_r64, nc_write_5d_i32, nc_write_5d_i64, &
-  nc_write_6d_r32, nc_write_6d_r64, nc_write_6d_i32, nc_write_6d_i64, &
-  nc_write_7d_r32, nc_write_7d_r64, nc_write_7d_i32, nc_write_7d_i64, &
+procedure, private :: nc_write_scalar, nc_write_1d, nc_write_2d, nc_write_3d, nc_write_4d, nc_write_5d, nc_write_6d, nc_write_7d, &
   nc_read_scalar, nc_read_1d, nc_read_2d, nc_read_3d, nc_read_4d, nc_read_5d, nc_read_6d, nc_read_7d, &
   def_dims
 
@@ -71,267 +57,60 @@ end type netcdf_file
 !> Submodules
 
 interface !< writer.f90
-module subroutine nc_write_scalar_char(self, dname, value, ierr)
+module subroutine nc_write_scalar(self, dname, value)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
-character(*), intent(in) :: value
-integer, intent(out), optional :: ierr
-end subroutine nc_write_scalar_char
+class(*), intent(in) :: value
+end subroutine nc_write_scalar
 
-module subroutine nc_write_scalar_r32(self, dname, value, ierr)
+module subroutine nc_write_1d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
-real(real32), intent(in) :: value
-integer, intent(out), optional :: ierr
-end subroutine nc_write_scalar_r32
-
-module subroutine nc_write_scalar_r64(self, dname, value, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-real(real64), intent(in) :: value
-integer, intent(out), optional :: ierr
-end subroutine nc_write_scalar_r64
-
-module subroutine nc_write_scalar_i32(self, dname, value, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-integer(int32), intent(in) :: value
-integer, intent(out), optional :: ierr
-end subroutine nc_write_scalar_i32
-
-module subroutine nc_write_scalar_i64(self, dname, value, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-integer(int64), intent(in) :: value
-integer, intent(out), optional :: ierr
-end subroutine nc_write_scalar_i64
-
-module subroutine nc_write_1d_r32(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-real(real32), intent(in) :: value(:)
+class(*), intent(in) :: value(:)
 character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_1d_r32
+end subroutine nc_write_1d
 
-module subroutine nc_write_1d_r64(self, dname, value, dims, ierr)
+module subroutine nc_write_2d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
-real(real64), intent(in) :: value(:)
+class(*), intent(in) :: value(:,:)
 character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_1d_r64
+end subroutine nc_write_2d
 
-module subroutine nc_write_1d_i32(self, dname, value, dims, ierr)
+module subroutine nc_write_3d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
-integer(int32), intent(in) :: value(:)
+class(*), intent(in) :: value(:,:,:)
 character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_1d_i32
+end subroutine nc_write_3d
 
-module subroutine nc_write_1d_i64(self, dname, value, dims, ierr)
+module subroutine nc_write_4d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
-integer(int64), intent(in) :: value(:)
+class(*), intent(in) :: value(:,:,:,:)
 character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_1d_i64
+end subroutine nc_write_4d
 
-module subroutine nc_write_2d_r32(self, dname, value, dims, ierr)
+module subroutine nc_write_5d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
-real(real32), intent(in) :: value(:,:)
+class(*), intent(in) :: value(:,:,:,:,:)
 character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_2d_r32
+end subroutine nc_write_5d
 
-module subroutine nc_write_2d_r64(self, dname, value, dims, ierr)
+module subroutine nc_write_6d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
-real(real64), intent(in) :: value(:,:)
+class(*), intent(in) :: value(:,:,:,:,:,:)
 character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_2d_r64
+end subroutine nc_write_6d
 
-module subroutine nc_write_2d_i32(self, dname, value, dims, ierr)
+module subroutine nc_write_7d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
-integer(int32), intent(in) :: value(:,:)
+class(*), intent(in) :: value(:,:,:,:,:,:,:)
 character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_2d_i32
-
-module subroutine nc_write_2d_i64(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-integer(int64), intent(in) :: value(:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_2d_i64
-
-module subroutine nc_write_3d_r32(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-real(real32), intent(in) :: value(:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_3d_r32
-
-module subroutine nc_write_3d_r64(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-real(real64), intent(in) :: value(:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_3d_r64
-
-module subroutine nc_write_3d_i32(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-integer(int32), intent(in) :: value(:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_3d_i32
-
-module subroutine nc_write_3d_i64(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-integer(int64), intent(in) :: value(:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_3d_i64
-
-module subroutine nc_write_4d_r32(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-real(real32), intent(in) :: value(:,:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_4d_r32
-
-module subroutine nc_write_4d_r64(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-real(real64), intent(in) :: value(:,:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_4d_r64
-
-module subroutine nc_write_4d_i32(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-integer(int32), intent(in) :: value(:,:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_4d_i32
-
-module subroutine nc_write_4d_i64(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-integer(int64), intent(in) :: value(:,:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_4d_i64
-
-
-module subroutine nc_write_5d_r32(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-real(real32), intent(in) :: value(:,:,:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_5d_r32
-
-module subroutine nc_write_5d_r64(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-real(real64), intent(in) :: value(:,:,:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_5d_r64
-
-module subroutine nc_write_5d_i32(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-integer(int32), intent(in) :: value(:,:,:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_5d_i32
-
-module subroutine nc_write_5d_i64(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-integer(int64), intent(in) :: value(:,:,:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_5d_i64
-
-
-module subroutine nc_write_6d_r32(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-real(real32), intent(in) :: value(:,:,:,:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_6d_r32
-
-module subroutine nc_write_6d_r64(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-real(real64), intent(in) :: value(:,:,:,:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_6d_r64
-
-module subroutine nc_write_6d_i32(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-integer(int32), intent(in) :: value(:,:,:,:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_6d_i32
-
-module subroutine nc_write_6d_i64(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-integer(int64), intent(in) :: value(:,:,:,:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_6d_i64
-
-
-module subroutine nc_write_7d_r32(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-real(real32), intent(in) :: value(:,:,:,:,:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_7d_r32
-
-module subroutine nc_write_7d_r64(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-real(real64), intent(in) :: value(:,:,:,:,:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_7d_r64
-
-module subroutine nc_write_7d_i32(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-integer(int32), intent(in) :: value(:,:,:,:,:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_7d_i32
-
-module subroutine nc_write_7d_i64(self, dname, value, dims, ierr)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-integer(int64), intent(in) :: value(:,:,:,:,:,:,:)
-character(*), intent(in), optional :: dims(:)
-integer, intent(out), optional :: ierr
-end subroutine nc_write_7d_i64
+end subroutine nc_write_7d
 
 end interface
 
@@ -361,100 +140,88 @@ end function nc_exist
 end interface
 
 interface !< reader.f90
-module subroutine nc_read_scalar(self, dname, value, ierr)
+module subroutine nc_read_scalar(self, dname, value)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value
 !! inout for character
-integer, intent(out), optional :: ierr
 end subroutine nc_read_scalar
 
-module subroutine nc_read_1d(self, dname, value, ierr)
+module subroutine nc_read_1d(self, dname, value)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:)
-integer, intent(out), optional :: ierr
 end subroutine nc_read_1d
 
-module subroutine nc_read_2d(self, dname, value, ierr)
+module subroutine nc_read_2d(self, dname, value)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:)
-integer, intent(out), optional :: ierr
 end subroutine nc_read_2d
 
-module subroutine nc_read_3d(self, dname, value, ierr)
+module subroutine nc_read_3d(self, dname, value)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:)
-integer, intent(out), optional :: ierr
 end subroutine nc_read_3d
 
-module subroutine nc_read_4d(self, dname, value, ierr)
+module subroutine nc_read_4d(self, dname, value)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:,:)
-integer, intent(out), optional :: ierr
 end subroutine nc_read_4d
 
-module subroutine nc_read_5d(self, dname, value, ierr)
+module subroutine nc_read_5d(self, dname, value)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:,:,:)
-integer, intent(out), optional :: ierr
 end subroutine nc_read_5d
 
-module subroutine nc_read_6d(self, dname, value, ierr)
+module subroutine nc_read_6d(self, dname, value)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:,:,:,:)
-integer, intent(out), optional :: ierr
 end subroutine nc_read_6d
 
-module subroutine nc_read_7d(self, dname, value, ierr)
+module subroutine nc_read_7d(self, dname, value)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:,:,:,:,:)
-integer, intent(out), optional :: ierr
 end subroutine nc_read_7d
 
 
-module subroutine def_dims(self, dname, dimnames, dims, dimids, ierr)
+module subroutine def_dims(self, dname, dimnames, dims, dimids)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 character(*), intent(in), optional :: dimnames(:)
 integer, intent(in) :: dims(:)
-integer, intent(out) :: dimids(size(dims)), ierr
+integer, intent(out) :: dimids(size(dims))
 end subroutine def_dims
 end interface
 
 
 interface !< attributes.f90
-module subroutine write_attribute(self, dname, attrname, value, ierr)
+module subroutine write_attribute(self, dname, attrname, value)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname, attrname
 class(*), intent(in) :: value
-integer, intent(out), optional :: ierr
 end subroutine write_attribute
 
-module subroutine read_attribute(self, dname, attrname, value, ierr)
+module subroutine read_attribute(self, dname, attrname, value)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname, attrname
 class(*), intent(inout) ::  value
 !! inout for character
-integer, intent(out), optional :: ierr
 end subroutine read_attribute
 end interface
 
 contains
 
-subroutine nc_initialize(self,filename,ierr, status,action,comp_lvl,verbose,debug)
+subroutine nc_initialize(self, filename, action, comp_lvl, verbose, debug)
 !! Opens NetCDF file
 
 class(netcdf_file), intent(inout) :: self
 character(*), intent(in) :: filename
-integer, intent(out), optional :: ierr
-character(*), intent(in), optional :: status !< DEPRECATED
 character(*), intent(in), optional :: action
 integer, intent(in), optional :: comp_lvl
 logical, intent(in), optional :: verbose, debug
@@ -475,8 +242,6 @@ if (present(debug)) self%debug = debug
 
 !> get library version
 self%libversion = nf90_inq_libvers()
-
-if(present(status)) write(stderr,*) 'nc4fortran:WARNING: status is deprecated. use action instead.'
 
 laction = 'rw'
 if(present(action)) laction = action
@@ -500,15 +265,12 @@ case default
 end select
 
 
-if (present(ierr)) ierr = ier
 if (ier == NF90_NOERR) then
   self%is_open = .true.
   return
 endif
 
-write(stderr,*) 'nc4fortran:ERROR: initialize ' // filename // ' could not be created'
-if (present(ierr)) return
-error stop
+error stop 'nc4fortran:ERROR: initialize ' // filename // ' could not be created'
 
 end subroutine nc_initialize
 
@@ -527,9 +289,8 @@ call self%close()
 end subroutine destructor
 
 
-subroutine nc_finalize(self, ierr)
+subroutine nc_finalize(self)
 class(netcdf_file), intent(inout) :: self
-integer, intent(out), optional :: ierr
 
 integer :: ier
 
@@ -539,28 +300,21 @@ if(.not. self%is_open) then
 endif
 
 ier = nf90_close(self%ncid)
-if (present(ierr)) ierr = ier
-if (ier /= NF90_NOERR) then
-  write(stderr,*) 'ERROR:finalize: ' // self%filename
-  if (present(ierr)) return
-  error stop
-endif
+if (ier /= NF90_NOERR) error stop 'ERROR:finalize: ' // self%filename
 
 self%is_open = .false.
 
 end subroutine nc_finalize
 
 
-subroutine nc_flush(self, ierr)
+subroutine nc_flush(self)
 
 class(netcdf_file), intent(in) :: self
-integer, intent(out), optional :: ierr
 integer :: ier
 
 ier = nf90_sync(self%ncid)
 
-if (present(ierr)) ierr = ier
-if (check_error(ier, "") .and. .not. present(ierr)) error stop
+if (check_error(ier, "")) error stop
 
 end subroutine nc_flush
 

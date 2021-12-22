@@ -40,8 +40,7 @@ class default
 end select
 endif
 
-if (present(ierr)) ierr = ier
-if (check_error(ier, dname) .and. .not. present(ierr)) error stop 'nc4fortran:read failed ' // dname
+if (check_error(ier, dname)) error stop 'nc4fortran:read failed ' // dname // ' in ' // self%filename
 
 end procedure nc_read_scalar
 

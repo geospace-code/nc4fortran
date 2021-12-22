@@ -24,7 +24,7 @@ integer(int32), dimension(4,4) :: i2, i2t
 integer(int64), dimension(4,4) :: i2t64
 real(real32), allocatable :: rr2(:,:)
 real(real32)  ::  nant, r1(4), r2(4,4), B(6,6)
-integer :: i, ierr
+integer :: i
 integer(int32) :: i2_8(8,8)
 
 nan = ieee_value(1.0, ieee_quiet_nan)
@@ -49,14 +49,6 @@ call h%write('int64-2d', int(i2, int64))
 call h%write('real32-2d', r2)
 call h%write('nan', nan)
 
-!> test writing wrong size
-call h%write('int32-1d', [-1], ierr=ierr)
-if(ierr==0) error stop 'test_write_array: did not error for write array shape mismatch'
-
-!> test writing wrong rank
-call h%write('int32-1d', i2, ierr=ierr)
-if(ierr==0) error stop 'test_write_array: did not error for write array rank mismatch'
-
 call h%close()
 
 !! read
@@ -80,8 +72,7 @@ if (.not.all(i2_8(2:5,3:6) == i2)) error stop 'read into larger array fail'
 !> check error for reading array dimension mismatch
 
 !> check that 1D disk into 2D raises error
-call h%read('int32-1d', i2, ierr)
-if (ierr==0) error stop 'failed to error on read rank mismatch'
+call h%read('int32-1d', i2)
 
 !> real
 call h%shape('real32-2d',dims)

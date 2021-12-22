@@ -7,7 +7,7 @@ contains
 
 module procedure def_dims
 !! checks if dimension name exists. if not, create dimension
-integer :: i
+integer :: i, ierr
 character(NF90_MAX_NAME) :: name
 
 if(.not.self%is_open) error stop 'nc4fortran:write: file handle not open'

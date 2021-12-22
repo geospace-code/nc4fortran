@@ -61,7 +61,6 @@ end subroutine test_exist
 subroutine test_multifiles()
 
 type(netcdf_file) :: f,g,h
-integer :: ierr
 
 call f%open(filename='A.nc', action='w')
 call g%open(filename='B.nc', action='w')
@@ -70,13 +69,10 @@ call h%open(filename='C.nc', action='w')
 
 call f%flush()
 
-call f%close(ierr)
-if (ierr/=0) error stop 'close a.nc'
+call f%close()
 if (.not.g%is_open .or. .not. h%is_open) error stop 'is_open not isolated at destructor'
-call g%close(ierr)
-if (ierr/=0) error stop 'close b.nc'
-call h%close(ierr)
-if (ierr/=0) error stop 'close c.nc'
+call g%close()
+call h%close()
 
 end subroutine test_multifiles
 
