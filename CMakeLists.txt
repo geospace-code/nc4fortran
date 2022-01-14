@@ -71,6 +71,7 @@ install(TARGETS nc4fortran EXPORT ${PROJECT_NAME}-targets)
 # additional Find*.cmake necessary
 install(FILES
 ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindHDF5.cmake
+${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/check_hdf5_mpi.f90
 ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindSZIP.cmake
 ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindNetCDF.cmake
 DESTINATION cmake
