@@ -1,13 +1,18 @@
 cmake_minimum_required(VERSION 3.19...3.22)
 
 project(nc4fortranExample
-LANGUAGES Fortran
+LANGUAGES C Fortran
 )
 
 include(CTest)
 
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR} CACHE PATH "Install top-level directory" FORCE)
+endif()
 
-find_package(nc4fortran CONFIG REQUIRED)
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../cmake/Modules)
+
+include(${PROJECT_SOURCE_DIR}/../cmake/nc4fortran.cmake)
 
 # --- Fortran interface for examples
 add_library(fortran_interface fortran_interface.f90)
