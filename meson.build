@@ -35,5 +35,5 @@ netcdf_interface = declare_dependency(link_with: oonc, dependencies: netcdf)
 
 # --- testing
 if not meson.is_subproject()
-  subdir('src/tests')
+  subdir('tests')
 endif
