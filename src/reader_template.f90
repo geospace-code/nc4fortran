@@ -7,9 +7,8 @@ if (check_error(ier, dname)) error stop 'nc4fortran:read inquire_id ' // dname /
 
 ier = nf90_inquire_variable(self%ncid, varid, ndims=drank)
 if(drank /= rank(value)) then
-  ier = NF90_EDIMSIZE
-  write(stderr,*) 'ERROR: ' // dname // ' rank ', drank, ' /= variable rank ',rank(value)
-  return
+  write(stderr,*) 'ERROR:nc4fortran:read ' // dname // ' rank ', drank, ' /= variable rank ',rank(value)
+  error stop
 endif
 if (check_error(ier, dname)) error stop 'nc4fortran:read inquire ' // dname // ' in ' // self%filename
 

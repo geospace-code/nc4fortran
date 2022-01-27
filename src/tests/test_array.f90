@@ -69,11 +69,6 @@ i2_8 = 0
 call h%read('int32-2d', i2_8(2:5,3:6))
 if (.not.all(i2_8(2:5,3:6) == i2)) error stop 'read into larger array fail'
 
-!> check error for reading array dimension mismatch
-
-!> check that 1D disk into 2D raises error
-call h%read('int32-1d', i2)
-
 !> real
 call h%shape('real32-2d',dims)
 allocate(rr2(dims(1), dims(2)))

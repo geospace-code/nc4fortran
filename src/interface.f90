@@ -66,49 +66,49 @@ module subroutine nc_write_1d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:)
-character(*), intent(in), optional :: dims(:)
+character(*), intent(in), optional :: dims(1)
 end subroutine nc_write_1d
 
 module subroutine nc_write_2d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:)
-character(*), intent(in), optional :: dims(:)
+character(*), intent(in), optional :: dims(2)
 end subroutine nc_write_2d
 
 module subroutine nc_write_3d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:)
-character(*), intent(in), optional :: dims(:)
+character(*), intent(in), optional :: dims(3)
 end subroutine nc_write_3d
 
 module subroutine nc_write_4d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:)
-character(*), intent(in), optional :: dims(:)
+character(*), intent(in), optional :: dims(4)
 end subroutine nc_write_4d
 
 module subroutine nc_write_5d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:)
-character(*), intent(in), optional :: dims(:)
+character(*), intent(in), optional :: dims(5)
 end subroutine nc_write_5d
 
 module subroutine nc_write_6d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:)
-character(*), intent(in), optional :: dims(:)
+character(*), intent(in), optional :: dims(6)
 end subroutine nc_write_6d
 
 module subroutine nc_write_7d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:,:)
-character(*), intent(in), optional :: dims(:)
+character(*), intent(in), optional :: dims(7)
 end subroutine nc_write_7d
 
 end interface

@@ -39,7 +39,7 @@ call h%write('x', 42)
 call h%close()
 if(.not.is_netcdf(fn)) error stop 'file does not exist'
 
-call h%open(fn)
+call h%open(fn, "r")
 if (.not.h%is_open) error stop 'file is open'
 if (.not. h%exist('x')) error stop 'x exists'
 

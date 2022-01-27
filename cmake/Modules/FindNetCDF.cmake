@@ -98,18 +98,20 @@ if(PkgConfig_FOUND AND NOT NetCDF_Fortran_LIBRARY)
 endif()
 
 find_path(NetCDF_Fortran_INCLUDE_DIR
-  names netcdf.mod
-  HINTS ${pc_ncf_INCLUDE_DIRS}
-  DOC "NetCDF Fortran Include")
+names netcdf.mod
+HINTS ${pc_ncf_INCLUDE_DIRS}
+DOC "NetCDF Fortran Include"
+)
 
 if(NOT NetCDF_Fortran_INCLUDE_DIR)
   return()
 endif()
 
 find_library(NetCDF_Fortran_LIBRARY
-  NAMES netcdff
-  HINTS ${pc_ncf_LIBRARY_DIRS} ${pc_ncf_LIBDIR}
-  DOC "NetCDF Fortran library")
+NAMES netcdff
+HINTS ${pc_ncf_LIBRARY_DIRS} ${pc_ncf_LIBDIR}
+DOC "NetCDF Fortran library"
+)
 
 if(NOT NetCDF_Fortran_LIBRARY)
   return()
@@ -163,8 +165,10 @@ mark_as_advanced(NetCDF_C_INCLUDE_DIR NetCDF_Fortran_INCLUDE_DIR NetCDF_C_LIBRAR
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(NetCDF
-  REQUIRED_VARS _ncdf_req
-  HANDLE_COMPONENTS)
+REQUIRED_VARS _ncdf_req
+HANDLE_COMPONENTS
+HANDLE_VERSION_RANGE
+)
 
 if(NetCDF_FOUND)
   set(NetCDF_C_INCLUDE_DIRS ${NetCDF_C_INCLUDE_DIR})
