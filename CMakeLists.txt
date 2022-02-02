@@ -20,31 +20,15 @@ if(NOT DEFINED ${PROJECT_NAME}_BUILD_TESTING)
   set(${PROJECT_NAME}_BUILD_TESTING ${BUILD_TESTING})
 endif()
 
-if(CMAKE_GENERATOR STREQUAL "Ninja Multi-Config")
-  set(EXTPROJ_GENERATOR "Ninja")
-else()
-  set(EXTPROJ_GENERATOR ${CMAKE_GENERATOR})
-endif()
-
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
 include(cmake/options.cmake)
 include(cmake/compilers.cmake)
 include(cmake/libraries.cmake)
 
-# --- find NetCDF4
+# --- find or build NetCDF4
 
-if(NOT netcdf_external)
-  if(autobuild)
-    find_package(NetCDF COMPONENTS Fortran)
-  else()
-    find_package(NetCDF COMPONENTS Fortran REQUIRED)
-  endif()
-endif()
-
-if(NOT NetCDF_FOUND OR netcdf_external)
-  include(cmake/netcdf.cmake)
-endif()
+include(cmake/netcdf.cmake)
 
 # --- build
 

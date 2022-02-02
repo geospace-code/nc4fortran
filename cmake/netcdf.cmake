@@ -3,6 +3,18 @@ include(ExternalProject)
 # due to limitations of NetCDF-C 4.7.4 and NetCDF-Fortran 4.5.3, as per their docs,
 # we MUST use shared libraries or they don't archive/link properly.
 
+if(NOT netcdf_external)
+  if(autobuild)
+    find_package(NetCDF COMPONENTS Fortran)
+  else()
+    find_package(NetCDF COMPONENTS Fortran REQUIRED)
+  endif()
+
+  if(NetCDF_FOUND)
+    return()
+  endif()
+endif()
+
 find_package(HDF5 COMPONENTS C Fortran REQUIRED)
 
 set(netcdf_external true CACHE BOOL "autobuild NetCDF")
@@ -12,18 +24,16 @@ if(NOT NetCDF_ROOT)
   set(NetCDF_ROOT ${CMAKE_INSTALL_PREFIX})
 endif()
 
-set(NetCDF_INCLUDE_DIRS ${NetCDF_ROOT}/include)
+cmake_path(SET NetCDF_C_INCLUDE_DIRS ${NetCDF_ROOT}/include)
 
-set(NetCDF_C_LIBRARIES ${NetCDF_ROOT}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}netcdf${CMAKE_SHARED_LIBRARY_SUFFIX})
-set(NetCDF_Fortran_LIBRARIES ${NetCDF_ROOT}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_SHARED_LIBRARY_SUFFIX})
-if(MINGW)
-  # libnetcdf.dll.a
-  # not yet working https://github.com/Unidata/netcdf-c/issues/554
-  # undefined reference to `nc_create_par_fortran'
-  # undefined reference to `nc_open_par_fortran'
-  # undefined reference to `nc_var_par_access'
-  string(APPEND NetCDF_C_LIBRARIES ".a")
-  string(APPEND NetCDF_Fortran_LIBRARIES ".a")
+if(WIN32)
+  set(NetCDF_C_LIBRARIES ${NetCDF_ROOT}/bin/${CMAKE_SHARED_LIBRARY_PREFIX}netcdf${CMAKE_SHARED_LIBRARY_SUFFIX})
+  set(NetCDF_Fortran_LIBRARIES ${NetCDF_ROOT}/bin/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_SHARED_LIBRARY_SUFFIX})
+  set(NetCDF_C_IMPLIB ${NetCDF_ROOT}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}netcdf${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX})
+  set(NetCDF_Fortran_IMPLIB ${NetCDF_ROOT}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX})
+else()
+  set(NetCDF_C_LIBRARIES ${NetCDF_ROOT}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}netcdf${CMAKE_SHARED_LIBRARY_SUFFIX})
+  set(NetCDF_Fortran_LIBRARIES ${NetCDF_ROOT}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_SHARED_LIBRARY_SUFFIX})
 endif()
 # --- NetCDF-C
 
@@ -41,8 +51,7 @@ set(netcdf_c_cmake_args
 -DENABLE_DAP:BOOL=OFF
 -DENABLE_DAP2:BOOL=OFF
 -DENABLE_DAP4:BOOL=OFF
--DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
--DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER}
+-DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
 )
 
 ExternalProject_Add(NETCDF_C
@@ -58,13 +67,16 @@ BUILD_BYPRODUCTS ${NetCDF_C_LIBRARIES}
 
 # --- imported target
 
-file(MAKE_DIRECTORY ${NetCDF_INCLUDE_DIRS})
+file(MAKE_DIRECTORY ${NetCDF_C_INCLUDE_DIRS})
 # avoid race condition
 
-# this GLOBAL is required to be visible via other project's FetchContent of h5fortran
-add_library(NetCDF::NetCDF_C INTERFACE IMPORTED GLOBAL)
-target_include_directories(NetCDF::NetCDF_C INTERFACE "${NetCDF_INCLUDE_DIRS}")
-target_link_libraries(NetCDF::NetCDF_C INTERFACE "${NetCDF_C_LIBRARIES}")
+# this GLOBAL is required to be visible via other project's FetchContent
+add_library(NetCDF::NetCDF_C SHARED IMPORTED GLOBAL)
+set_target_properties(NetCDF::NetCDF_C PROPERTIES
+INTERFACE_INCLUDE_DIRECTORIES ${NetCDF_C_INCLUDE_DIRS}
+IMPORTED_LOCATION ${NetCDF_C_LIBRARIES}
+IMPORTED_IMPLIB "${NetCDF_C_IMPLIB}"
+)
 add_dependencies(NetCDF::NetCDF_C NETCDF_C)
 
 # -- external deps
@@ -72,14 +84,18 @@ target_link_libraries(NetCDF::NetCDF_C INTERFACE HDF5::HDF5)
 
 # --- NetCDF-Fortran
 
+cmake_path(SET NetCDF_Fortran_INCLUDE_DIRS ${NetCDF_ROOT}/include)
+
 set(netcdf_fortran_cmake_args
 -DnetCDF_LIBRARIES:FILEPATH=${NetCDF_C_LIBRARIES}
--DnetCDF_INCLUDE_DIR:PATH=${NetCDF_INCLUDE_DIRS}
+-DnetCDF_INCLUDE_DIR:PATH=${NetCDF_C_INCLUDE_DIRS}
 -DCMAKE_INSTALL_PREFIX:PATH=${NetCDF_ROOT}
 -DCMAKE_BUILD_TYPE:STRING=Release
 -DBUILD_SHARED_LIBS:BOOL=ON
 -DENABLE_TESTS:BOOL=OFF
 -DBUILD_EXAMPLES:BOOL=OFF
+-DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+-DCMAKE_Fortran_COMPILER:FILEPATH=${CMAKE_Fortran_COMPILER}
 )
 
 ExternalProject_Add(NETCDF_FORTRAN
@@ -97,10 +113,17 @@ DEPENDS NETCDF_C
 
 # --- imported target
 
-# this GLOBAL is required to be visible via other project's FetchContent of h5fortran
-add_library(NetCDF::NetCDF_Fortran INTERFACE IMPORTED GLOBAL)
-target_include_directories(NetCDF::NetCDF_Fortran INTERFACE "${NetCDF_INCLUDE_DIRS}")
-target_link_libraries(NetCDF::NetCDF_Fortran INTERFACE "${NetCDF_Fortran_LIBRARIES}")
+# this GLOBAL is required to be visible via other project's FetchContent
+add_library(NetCDF::NetCDF_Fortran SHARED IMPORTED GLOBAL)
+
+set_target_properties(NetCDF::NetCDF_Fortran PROPERTIES
+INTERFACE_INCLUDE_DIRECTORIES ${NetCDF_Fortran_INCLUDE_DIRS}
+IMPORTED_LOCATION ${NetCDF_Fortran_LIBRARIES}
+)
+if(WIN32)
+  set_target_properties(NetCDF::NetCDF_Fortran PROPERTIES IMPORTED_IMPLIB ${NetCDF_Fortran_IMPLIB})
+endif()
+
 add_dependencies(NetCDF::NetCDF_Fortran NETCDF_FORTRAN)
 
 # --- dynamic shared library
