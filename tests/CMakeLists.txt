@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.21...3.22)
+
 set_directory_properties(PROPERTIES LABELS nc4fortran)
 
 add_executable(test_minimal test_minimal.f90)
@@ -30,9 +32,18 @@ foreach(t array attributes deflate destructor error exist scalar shape string ve
   )
 endforeach()
 
+
 if(ENABLE_COVERAGE)
 setup_target_for_coverage_gcovr_html(
 NAME coverage
 EXECUTABLE ${CMAKE_CTEST_COMMAND}
 )
+endif()
+
+# --- Windows shared DLLs
+if(WIN32)
+  add_custom_command(TARGET test_minimal POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:test_minimal> $<TARGET_FILE_DIR:test_minimal>
+  COMMAND_EXPAND_LISTS
+  )
 endif()

@@ -1,8 +1,8 @@
-# Object-oriented Fortran 2008 NetCDF4 interface
+# Object-oriented Fortran NetCDF4 interface
 
 [![DOI](https://zenodo.org/badge/229812591.svg)](https://zenodo.org/badge/latestdoi/229812591)
-
 ![ci](https://github.com/geospace-code/nc4fortran/workflows/ci/badge.svg)
+[![ci_windows](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_windows.yml/badge.svg)](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_windows.yml)
 ![ci_meson](https://github.com/geospace-code/nc4fortran/workflows/ci_meson/badge.svg)
 
 Simple, robust, thin, object-oriented NetCDF4 polymorphic read/write interface.
@@ -46,11 +46,6 @@ Requirements:
   * Windows Cygwin `libnetcdf-fortran-devel`
 
 Note that some precompiled NetCDF4 libraries include C / C++ without Fortran.
-Platforms that currently do **not** have Fortran NetCDF4 libraries, and thus will **not** work with nc4fortran unless you compile NetCDF library for Fortran include:
-
-* Cygwin
-* Conda
-* MSYS2
 
 Build this NetCDF OO Fortran interface with Meson or CMake.
 The library `libnc4fortran.a` is built, link it into your program as usual.
