@@ -1,4 +1,4 @@
-set(names netcdfC netcdfFortran)
+set(names netcdfC netcdfFortran hdf5 zlib)
 
 file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json _libj)
 
