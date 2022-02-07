@@ -177,6 +177,14 @@ if(NetCDF_FOUND)
   set(NetCDF_C_INCLUDE_DIRS ${NetCDF_C_INCLUDE_DIR})
   set(NetCDF_C_LIBRARIES ${NetCDF_C_LIBRARY})
 
+  if(NOT TARGET NetCDF::NetCDF_C)
+    add_library(NetCDF::NetCDF_C INTERFACE IMPORTED)
+    set_target_properties(NetCDF::NetCDF_C PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "${NetCDF_C_INCLUDE_DIR}"
+    INTERFACE_LINK_LIBRARIES "${NetCDF_C_LIBRARY}"
+    )
+  endif()
+
   if(NetCDF_Fortran_FOUND)
     set(NetCDF_Fortran_INCLUDE_DIRS ${NetCDF_Fortran_INCLUDE_DIR})
     set(NetCDF_Fortran_LIBRARIES ${NetCDF_Fortran_LIBRARY})
@@ -186,14 +194,9 @@ if(NetCDF_FOUND)
       INTERFACE_INCLUDE_DIRECTORIES "${NetCDF_Fortran_INCLUDE_DIR}"
       INTERFACE_LINK_LIBRARIES "${NetCDF_Fortran_LIBRARY}"
       )
+      target_link_libraries(NetCDF::NetCDF_Fortran INTERFACE NetCDF::NetCDF_C)
     endif()
   endif()
 
-  if(NOT TARGET NetCDF::NetCDF_C)
-    add_library(NetCDF::NetCDF_C INTERFACE IMPORTED)
-    set_target_properties(NetCDF::NetCDF_C PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES "${NetCDF_C_INCLUDE_DIR}"
-    INTERFACE_LINK_LIBRARIES "${NetCDF_C_LIBRARY}"
-    )
-  endif()
+
 endif()

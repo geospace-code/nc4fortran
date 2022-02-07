@@ -22,15 +22,14 @@ Also:
 * read/write **character** variables.
 * read/write character, int, float, double attributes
 
-Mismatched datatypes are coerced as per standard Fortran rules.
+Datatypes are coerced as per standard Fortran rules.
 For example, reading a float NetCDF4 variable into an integer Fortran variable:  42.3 => 42
 
 Tested on systems with NetCDF4 including:
 
 * MacOS
 * Ubuntu 18.04 / 20.04
-* Windows Subsystem for Linux
-* Windows Cygwin
+* Windows
 
 See [API](./API.md) for usage.
 
@@ -74,8 +73,8 @@ To use nc4fortran as a CMake ExternalProject do like:
 include(FetchContent)
 
 FetchContent_Declare(nc4fortran_proj
-  GIT_REPOSITORY https://github.com/geospace-code/nc4fortran.git
-  GIT_TAG v1.5.0)
+GIT_REPOSITORY https://github.com/geospace-code/nc4fortran.git
+)
 
 FetchContent_MakeAvailable(nc4fortran_proj)
 
@@ -110,18 +109,4 @@ and have a file in the master project `subprojects/nc4fortran.wrap` containing:
 [wrap-git]
 directory = nc4fortran
 url = https://github.com/geospace-code/nc4fortran.git
-revision = v1.5.0
 ```
-
-## Permissive syntax
-
-We make the ncf%open(..., action=...) like Fortran open()
-
-* overwrite (truncate) existing file: open with `action='w'`
-* append to existing file or create file: `action='rw'`
-
-## Notes
-
-* The first character of the filename should be a character, NOT whitespace to avoid file open/creation errors.
-* Using compilers like PGI or Flang may require first compiling the NetCDF library yourself.
-* Polymorphic array rank is implemented by explicit code internally. We could have used pointers, but the code is simple enough to avoid the risk associated with explicit array pointers. Also, `select rank` support requires Gfortran-10 or Intel Fortran 2020, so we didn't want to make too-new compiler restriction.

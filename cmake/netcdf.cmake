@@ -157,6 +157,8 @@ if(WIN32)
   set_target_properties(NetCDF::NetCDF_Fortran PROPERTIES IMPORTED_IMPLIB ${NetCDF_Fortran_IMPLIB})
 endif()
 
+target_link_libraries(NetCDF::NetCDF_Fortran INTERFACE NetCDF::NetCDF_C)
+
 add_dependencies(NetCDF::NetCDF_Fortran NETCDF_FORTRAN)
 
 # --- dynamic shared library
