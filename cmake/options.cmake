@@ -2,15 +2,11 @@ option(autobuild "auto-build NetCDF4 if missing/broken" on)
 
 option(ENABLE_COVERAGE "Code coverage tests")
 
-option(dev "developer mode")
-
 set(CMAKE_TLS_VERIFY true)
 
-if(dev)
+cmake_path(SET CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/Modules)
 
-else()
-  set_directory_properties(PROPERTIES EP_UPDATE_DISCONNECTED true)
-endif()
+set_directory_properties(PROPERTIES EP_UPDATE_DISCONNECTED true)
 
 if(CMAKE_GENERATOR STREQUAL "Ninja Multi-Config")
   set(EXTPROJ_GENERATOR "Ninja")
