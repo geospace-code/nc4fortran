@@ -47,20 +47,11 @@ jobs:
 
     - run: cmake --install build
 
-    - name: configure examples (static)
-      run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=${HOME}
-    - name: build Examples (static)
-      run: cmake --build Examples/build
-    - name: Test Examples (static)
-      run: ctest --test-dir Examples/build -V
-
-   # shared build (saving time rather than use new CI image)
-    - run: cmake -B build-shared -DBUILD_SHARED_LIBS:BOOL=true --install-prefix=${HOME}/shared
-    - run: cmake --build build-shared
-    - run: ctest --test-dir build-shared --preset default
-    - run: cmake --install build-shared
-
-    - name: configure examples (shared)
-      run: cmake -S Examples -B Examples/build-shared -Dnc4fortran_ROOT=${HOME}/shared
-    - name: build Examples (shared)
-      run: cmake --build Examples/build-shared
+# NetCDF-C packaging issue with HDF5--ignores CMAKE_MODULE_PATH and uses broken factory FindHDF5
+# and can't seem to override
+    # - name: configure examples
+    #   run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=${HOME}
+    # - name: build Examples
+    #   run: cmake --build Examples/build
+    # - name: Test Examples
+    #   run: ctest --test-dir Examples/build -V
