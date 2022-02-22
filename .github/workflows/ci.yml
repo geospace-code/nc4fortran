@@ -19,6 +19,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
+    strategy:
+      matrix:
+        shared: [true, false]
+
     steps:
     - uses: actions/checkout@v2
 
@@ -27,7 +31,7 @@ jobs:
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends ninja-build libnetcdff-dev
 
-    - run: cmake --preset multi --install-prefix=${HOME}
+    - run: cmake --preset multi --install-prefix=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
     - run: cmake --build --preset debug
     - run: ctest --preset debug
@@ -38,37 +42,7 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=${HOME}
-    - name: build examples
-      run: cmake --build Examples/build
-    - name: Test examples
-      run: ctest --test-dir Examples/build -V
-
-
-  linux-shared:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: install libs
-      run: |
-        sudo apt update -yq
-        sudo apt install -yq --no-install-recommends ninja-build libnetcdff-dev
-
-    - run: cmake --preset multi --install-prefix=${HOME} -DBUILD_SHARED_LIBS:BOOL=ON
-
-    - run: cmake --build --preset debug
-    - run: ctest --preset debug
-
-    - run: cmake --build --preset release
-    - run: ctest --preset release
-
-    - run: cmake --install build
-
-    - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=${HOME}
+      run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - name: build examples
       run: cmake --build Examples/build
     - name: Test examples
@@ -102,6 +76,7 @@ jobs:
 
 
   linux-coverage:
+    if: github.event_name == 'release'
     needs: linux
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -140,12 +115,16 @@ jobs:
       HOMEBREW_NO_INSTALL_CLEANUP: 1
       FC: gfortran-11
 
+    strategy:
+      matrix:
+        shared: [true, false]
+
     steps:
     - uses: actions/checkout@v2
 
     - run: brew install netcdf ninja
 
-    - run: cmake --preset multi --install-prefix=${HOME}
+    - run: cmake --preset multi --install-prefix=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
     - run: cmake --build --preset debug
     - run: ctest --preset debug
@@ -155,40 +134,12 @@ jobs:
 
     - run: cmake --install build
 
-    - run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=${HOME}
+    - run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - run: cmake --build Examples/build --parallel
     - run: ctest --test-dir Examples/build -V
-
-
-  mac-shared:
-    needs: linux-shared
-    runs-on: macos-latest
-    timeout-minutes: 20
-    env:
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
-      FC: gfortran-11
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - run: brew install netcdf ninja
-
-    - run: cmake --preset multi --install-prefix=${HOME} -DBUILD_SHARED_LIBS:BOOL=ON
-
-    - run: cmake --build --preset debug
-    - run: ctest --preset debug
-
-    - run: cmake --build --preset release
-    - run: ctest --preset release
-
-    - run: cmake --install build
-
-    - run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=${HOME}
-    - run: cmake --build Examples/build --parallel
-    - run: ctest --test-dir Examples/build -V
-
 
   mac-build:
+    if: github.event_name == 'release'
     needs: mac
     runs-on: macos-latest
     timeout-minutes: 30
