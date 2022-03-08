@@ -3,6 +3,7 @@
 [![DOI](https://zenodo.org/badge/229812591.svg)](https://zenodo.org/badge/latestdoi/229812591)
 ![ci](https://github.com/geospace-code/nc4fortran/workflows/ci/badge.svg)
 [![ci_windows](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_windows.yml/badge.svg)](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_windows.yml)
+[![intel-oneapi](https://github.com/geospace-code/nc4fortran/actions/workflows/intel-oneapi.yml/badge.svg)](https://github.com/geospace-code/nc4fortran/actions/workflows/intel-oneapi.yml)
 ![ci_meson](https://github.com/geospace-code/nc4fortran/workflows/ci_meson/badge.svg)
 
 Simple, robust, thin, object-oriented NetCDF4 polymorphic read/write interface.
