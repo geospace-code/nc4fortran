@@ -11,7 +11,8 @@ FIXTURES_SETUP nclib
 LABELS core
 )
 
-foreach(t array attributes deflate destructor error exist scalar shape string version)
+set(test_names array attributes deflate destructor error exist scalar shape string version)
+foreach(t IN LISTS test_names)
   add_executable(test_${t} test_${t}.f90)
   target_link_libraries(test_${t} PRIVATE nc4fortran::nc4fortran)
   set_target_properties(test_${t} PROPERTIES LABELS unit)
@@ -39,9 +40,8 @@ EXECUTABLE ${CMAKE_CTEST_COMMAND}
 endif()
 
 # --- Windows shared DLLs
-if(WIN32)
-  add_custom_command(TARGET test_minimal POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:test_minimal> $<TARGET_FILE_DIR:test_minimal>
-  COMMAND_EXPAND_LISTS
+if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
+  set_tests_properties(minimal ${test_names} PROPERTIES
+  ENVIRONMENT_MODIFICATION "PATH=path_list_append:${NetCDF_Fortran_INCLUDE_DIRS}/../bin"
   )
 endif()

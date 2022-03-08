@@ -130,10 +130,3 @@ target_include_directories(NetCDF::NetCDF_Fortran INTERFACE ${NetCDF_Fortran_INC
 target_link_libraries(NetCDF::NetCDF_Fortran INTERFACE ${NetCDF_Fortran_LIBRARIES} NetCDF::NetCDF_C)
 
 add_dependencies(NetCDF::NetCDF_Fortran NETCDF_FORTRAN)
-
-# --- dynamic shared library
-
-if(UNIX)
-  cmake_path(SET CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib)
-  cmake_path(SET CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib)
-endif()
