@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.21...3.23)
-
 set_directory_properties(PROPERTIES LABELS nc4fortran)
 
 add_executable(test_minimal test_minimal.f90)

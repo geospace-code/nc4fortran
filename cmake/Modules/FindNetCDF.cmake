@@ -44,23 +44,19 @@ include(CheckSourceCompiles)
 
 function(netcdf_c)
 
-if(PkgConfig_FOUND AND NOT NetCDF_C_LIBRARY)
-  pkg_search_module(pc_nc netcdf)
-endif()
-
 find_path(NetCDF_C_INCLUDE_DIR
-  NAMES netcdf.h
-  HINTS ${pc_nc_INCLUDE_DIRS}
-  DOC "NetCDF C include directory")
+NAMES netcdf.h
+DOC "NetCDF C include directory"
+)
 
 if(NOT NetCDF_C_INCLUDE_DIR)
   return()
 endif()
 
 find_library(NetCDF_C_LIBRARY
-  NAMES netcdf
-  HINTS ${pc_nc_LIBRARY_DIRS} ${pc_nc_LIBDIR}
-  DOC "NetCDF C library")
+NAMES netcdf
+DOC "NetCDF C library"
+)
 
 if(NOT NetCDF_C_LIBRARY)
   return()
@@ -78,28 +74,24 @@ int main(void){
 printf(\"%s\", nc_inq_libvers());
 return 0;
 }
-" NetCDF_C_links)
+"
+NetCDF_C_links
+)
 
 if(NOT NetCDF_C_links)
   return()
 endif()
 
 set(NetCDF_C_FOUND true PARENT_SCOPE)
-set(NetCDF_C_INCLUDE_DIR ${NetCDF_C_INCLUDE_DIR} PARENT_SCOPE)
-set(NetCDF_C_LIBRARY ${NetCDF_C_LIBRARY} PARENT_SCOPE)
 
 endfunction(netcdf_c)
 
 
 function(netcdf_fortran)
 
-if(PkgConfig_FOUND AND NOT NetCDF_Fortran_LIBRARY)
-  pkg_search_module(pc_ncf netcdf-fortran netcdf)
-endif()
-
 find_path(NetCDF_Fortran_INCLUDE_DIR
 NAMES netcdf.mod
-HINTS ${NetCDF_C_INCLUDE_DIR} ${pc_ncf_INCLUDE_DIRS}
+HINTS ${NetCDF_C_INCLUDE_DIR}
 DOC "NetCDF Fortran Include"
 )
 
@@ -111,7 +103,7 @@ cmake_path(GET NetCDF_C_LIBRARY PARENT_PATH NetCDF_LIBDIR)
 
 find_library(NetCDF_Fortran_LIBRARY
 NAMES netcdff
-HINTS ${NetCDF_LIBDIR} ${pc_ncf_LIBRARY_DIRS} ${pc_ncf_LIBDIR}
+HINTS ${NetCDF_LIBDIR}
 DOC "NetCDF Fortran library"
 )
 
@@ -123,35 +115,26 @@ set(CMAKE_REQUIRED_FLAGS)
 set(CMAKE_REQUIRED_INCLUDES ${NetCDF_Fortran_INCLUDE_DIR})
 set(CMAKE_REQUIRED_LIBRARIES ${NetCDF_Fortran_LIBRARY})
 
-check_source_compiles(Fortran "use netcdf; end" NetCDF_Fortran_links)
+check_source_compiles(Fortran "program a
+use netcdf
+implicit none
+end program"
+NetCDF_Fortran_links
+)
 
 if(NOT NetCDF_Fortran_links)
   return()
 endif()
 
 set(NetCDF_Fortran_FOUND true PARENT_SCOPE)
-set(NetCDF_Fortran_INCLUDE_DIR ${NetCDF_Fortran_INCLUDE_DIR} PARENT_SCOPE)
-set(NetCDF_Fortran_LIBRARY ${NetCDF_Fortran_LIBRARY} PARENT_SCOPE)
 
 endfunction(netcdf_fortran)
 
 #============================================================
 # main program
 
-# 1. CMake-built NetCDF.
-find_package(netCDF CONFIG QUIET)
-if(netCDF_FOUND)
-  set(NetCDF_C_FOUND "${netCDF_FOUND}")
-  set(NetCDF_C_INCLUDE_DIR "${netCDF_INCLUDE_DIR}")
-  set(NetCDF_C_LIBRARY "${netCDF_LIBRARIES}")
-  set(NetCDF_VERSION "${NetCDFVersion}")
-endif(netCDF_FOUND)
+netcdf_c()
 
-# 2. manual search for Fortran (and C if needed) using optional pkg-config
-find_package(PkgConfig)
-if(NOT NetCDF_C_FOUND)
-  netcdf_c()
-endif()
 set(_ncdf_req ${NetCDF_C_LIBRARY})
 
 if(Fortran IN_LIST NetCDF_FIND_COMPONENTS)
@@ -168,9 +151,7 @@ mark_as_advanced(NetCDF_C_INCLUDE_DIR NetCDF_Fortran_INCLUDE_DIR NetCDF_C_LIBRAR
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(NetCDF
 REQUIRED_VARS _ncdf_req
-VERSION_VAR NetCDF_VERSION
 HANDLE_COMPONENTS
-HANDLE_VERSION_RANGE
 )
 
 if(NetCDF_FOUND)
