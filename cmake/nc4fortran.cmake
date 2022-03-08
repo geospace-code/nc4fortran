@@ -44,15 +44,9 @@ CONFIGURE_HANDLED_BY_BUILD ON
 
 file(MAKE_DIRECTORY ${nc4fortran_INCLUDE_DIRS})
 
-if(BUILD_SHARED_LIBS)
-  add_library(nc4fortran::nc4fortran SHARED IMPORTED)
-else()
-  add_library(nc4fortran::nc4fortran STATIC IMPORTED)
-endif()
-
-set_target_properties(nc4fortran::nc4fortran PROPERTIES IMPORTED_LOCATION ${nc4fortran_LIBRARIES})
+add_library(nc4fortran::nc4fortran INTERFACE IMPORTED GLOBAL)
+target_link_libraries(nc4fortran::nc4fortran INTERFACE ${nc4fortran_LIBRARIES} NetCDF::NetCDF_Fortran)
 target_include_directories(nc4fortran::nc4fortran INTERFACE ${nc4fortran_INCLUDE_DIRS})
-target_link_libraries(nc4fortran::nc4fortran INTERFACE NetCDF::NetCDF_Fortran)
 
 # race condition for linking without this
 add_dependencies(nc4fortran::nc4fortran NC4FORTRAN)

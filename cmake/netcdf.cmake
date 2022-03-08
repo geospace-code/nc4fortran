@@ -79,12 +79,9 @@ file(MAKE_DIRECTORY ${NetCDF_C_INCLUDE_DIRS})
 # avoid race condition
 
 # this GLOBAL is required to be visible via other project's FetchContent
-add_library(NetCDF::NetCDF_C SHARED IMPORTED GLOBAL)
-
-set_target_properties(NetCDF::NetCDF_C PROPERTIES
-INTERFACE_INCLUDE_DIRECTORIES ${NetCDF_C_INCLUDE_DIRS}
-IMPORTED_LOCATION ${NetCDF_C_LIBRARIES}
-)
+add_library(NetCDF::NetCDF_C INTERFACE IMPORTED GLOBAL)
+target_include_directories(NetCDF::NetCDF_C INTERFACE ${NetCDF_C_INCLUDE_DIRS})
+target_link_libraries(NetCDF::NetCDF_C INTERFACE ${NetCDF_C_LIBRARIES})
 
 add_dependencies(NetCDF::NetCDF_C NETCDF_C)
 
@@ -128,14 +125,9 @@ DEPENDS NETCDF_C
 # --- imported target
 
 # this GLOBAL is required to be visible via other project's FetchContent
-add_library(NetCDF::NetCDF_Fortran SHARED IMPORTED GLOBAL)
-
-set_target_properties(NetCDF::NetCDF_Fortran PROPERTIES
-INTERFACE_INCLUDE_DIRECTORIES ${NetCDF_Fortran_INCLUDE_DIRS}
-IMPORTED_LOCATION ${NetCDF_Fortran_LIBRARIES}
-)
-
-target_link_libraries(NetCDF::NetCDF_Fortran INTERFACE NetCDF::NetCDF_C)
+add_library(NetCDF::NetCDF_Fortran INTERFACE IMPORTED GLOBAL)
+target_include_directories(NetCDF::NetCDF_Fortran INTERFACE ${NetCDF_Fortran_INCLUDE_DIRS})
+target_link_libraries(NetCDF::NetCDF_Fortran INTERFACE ${NetCDF_Fortran_LIBRARIES} NetCDF::NetCDF_C)
 
 add_dependencies(NetCDF::NetCDF_Fortran NETCDF_FORTRAN)
 
