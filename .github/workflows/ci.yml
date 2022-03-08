@@ -2,8 +2,8 @@ name: ci
 
 env:
   CTEST_PARALLEL_LEVEL: 4
-  CMAKE_BUILD_PARALLEL_LEVEL: 4
   CMAKE_BUILD_TYPE: Release
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
 
 on:
   push:
@@ -15,23 +15,28 @@ on:
 
 jobs:
 
-  linux:
-    runs-on: ubuntu-latest
+  base:
+    runs-on: ${{ matrix.img.os }}
     timeout-minutes: 15
 
     strategy:
       matrix:
         shared: [true, false]
+        img: [
+          {os: ubuntu-latest, fc: gfortran, cmd: sudo apt update && sudo apt install --no-install-recommends ninja-build libnetcdff-dev},
+          {os: macos-latest, fc: gfortran-11, cmd: brew install netcdf ninja }
+        ]
+
+    env:
+      FC: ${{ matrix.img.fc }}
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: install libs
-      run: |
-        sudo apt update -yq
-        sudo apt install -yq --no-install-recommends ninja-build libnetcdff-dev
+    - name: install system libs
+      run: ${{ matrix.img.cmd }}
 
-    - run: cmake --preset multi --install-prefix=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+    - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
     - run: cmake --build --preset debug
     - run: ctest --preset debug
@@ -42,7 +47,7 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - name: build examples
       run: cmake --build Examples/build
     - name: Test examples
@@ -50,7 +55,7 @@ jobs:
 
 
   linux-build:
-    needs: linux
+    needs: base
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -59,16 +64,16 @@ jobs:
 
     - name: install libs
       run: |
-        sudo apt update -yq
-        sudo apt install -yq --no-install-recommends libhdf5-dev
+        sudo apt update
+        sudo apt install --no-install-recommends libhdf5-dev
 
-    - run: cmake --preset build -B build --install-prefix=${HOME}
-    - run: cmake --build build
+    - run: cmake --preset build -B build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
+    - run: cmake --build build --parallel
     - run: ctest --test-dir build --preset default
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=${HOME}
+      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
     - name: build examples
       run: cmake --build Examples/build --parallel
     - name: Test examples
@@ -77,7 +82,7 @@ jobs:
 
   linux-coverage:
     if: github.event_name == 'release'
-    needs: linux
+    needs: base
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -89,8 +94,8 @@ jobs:
 
     - name: install prereqs
       run: |
-        sudo apt update -yq
-        sudo apt install -yq --no-install-recommends libnetcdff-dev
+        sudo apt update
+        sudo apt install --no-install-recommends libnetcdff-dev
 
     - name: install Gcovr
       run: pip install gcovr
@@ -107,44 +112,13 @@ jobs:
         path: build-coverage/coverage/
 
 
-  mac:
-    needs: linux
-    runs-on: macos-latest
-    timeout-minutes: 20
-    env:
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
-      FC: gfortran-11
-
-    strategy:
-      matrix:
-        shared: [true, false]
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - run: brew install netcdf ninja
-
-    - run: cmake --preset multi --install-prefix=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
-
-    - run: cmake --build --preset debug
-    - run: ctest --preset debug
-
-    - run: cmake --build --preset release
-    - run: ctest --preset release
-
-    - run: cmake --install build
-
-    - run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
-    - run: cmake --build Examples/build --parallel
-    - run: ctest --test-dir Examples/build -V
 
   mac-build:
     if: github.event_name == 'release'
-    needs: mac
+    needs: base
     runs-on: macos-latest
     timeout-minutes: 30
     env:
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
       FC: gfortran-11
 
     steps:
