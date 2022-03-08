@@ -33,13 +33,6 @@ cmake_path(SET NetCDF_C_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include)
 if(WIN32)
   cmake_path(SET NetCDF_C_LIBRARIES ${CMAKE_INSTALL_PREFIX}/bin/${CMAKE_SHARED_LIBRARY_PREFIX}netcdf${CMAKE_SHARED_LIBRARY_SUFFIX})
   cmake_path(SET NetCDF_Fortran_LIBRARIES ${CMAKE_INSTALL_PREFIX}/bin/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_SHARED_LIBRARY_SUFFIX})
-  if(MSVC)
-    cmake_path(SET NetCDF_C_IMPLIB ${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}netcdf${CMAKE_STATIC_LIBRARY_SUFFIX})
-    cmake_path(SET NetCDF_Fortran_IMPLIB ${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_STATIC_LIBRARY_SUFFIX})
-  else()
-    cmake_path(SET NetCDF_C_IMPLIB ${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}netcdf${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX})
-    cmake_path(SET NetCDF_Fortran_IMPLIB ${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX})
-  endif()
 else()
   cmake_path(SET NetCDF_C_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}netcdf${CMAKE_SHARED_LIBRARY_SUFFIX})
   cmake_path(SET NetCDF_Fortran_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_SHARED_LIBRARY_SUFFIX})
@@ -65,6 +58,9 @@ set(netcdf_c_cmake_args
 -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
 )
 
+string(JSON netcdfC_url GET ${json} netcdfC url)
+string(JSON netcdfC_sha256 GET ${json} netcdfC sha256)
+
 ExternalProject_Add(NETCDF_C
 URL ${netcdfC_url}
 URL_HASH SHA256=${netcdfC_sha256}
@@ -73,7 +69,7 @@ INACTIVITY_TIMEOUT 30
 CMAKE_GENERATOR ${EXTPROJ_GENERATOR}
 # Shared_libs=on for netcdf-fortran symbol finding bug
 CMAKE_ARGS ${netcdf_c_cmake_args}
-BUILD_BYPRODUCTS ${NetCDF_C_LIBRARIES} ${NetCDF_C_IMPLIB}
+BUILD_BYPRODUCTS ${NetCDF_C_LIBRARIES}
 DEPENDS HDF5::HDF5
 )
 
@@ -89,9 +85,6 @@ set_target_properties(NetCDF::NetCDF_C PROPERTIES
 INTERFACE_INCLUDE_DIRECTORIES ${NetCDF_C_INCLUDE_DIRS}
 IMPORTED_LOCATION ${NetCDF_C_LIBRARIES}
 )
-if(WIN32)
-  set_target_properties(NetCDF::NetCDF_C PROPERTIES IMPORTED_IMPLIB ${NetCDF_C_IMPLIB})
-endif()
 
 add_dependencies(NetCDF::NetCDF_C NETCDF_C)
 
@@ -116,6 +109,9 @@ set(netcdf_fortran_cmake_args
 -DCMAKE_Fortran_COMPILER:FILEPATH=${CMAKE_Fortran_COMPILER}
 )
 
+string(JSON netcdfFortran_url GET ${json} netcdfFortran url)
+string(JSON netcdfFortran_sha256 GET ${json} netcdfFortran sha256)
+
 ExternalProject_Add(NETCDF_FORTRAN
 URL ${netcdfFortran_url}
 URL_HASH SHA256=${netcdfFortran_sha256}
@@ -125,7 +121,7 @@ CMAKE_GENERATOR ${EXTPROJ_GENERATOR}
 # Shared_libs=on for netcdf-fortran symbol finding bug
 # netCDEF_LIBRARIES and netCDF_INCLUDE_DIR from netcdf-fortran/CMakeLists.txt
 CMAKE_ARGS ${netcdf_fortran_cmake_args}
-BUILD_BYPRODUCTS ${NetCDF_Fortran_LIBRARIES} ${NetCDF_Fortran_IMPLIB}
+BUILD_BYPRODUCTS ${NetCDF_Fortran_LIBRARIES}
 DEPENDS NETCDF_C
 )
 
@@ -138,9 +134,6 @@ set_target_properties(NetCDF::NetCDF_Fortran PROPERTIES
 INTERFACE_INCLUDE_DIRECTORIES ${NetCDF_Fortran_INCLUDE_DIRS}
 IMPORTED_LOCATION ${NetCDF_Fortran_LIBRARIES}
 )
-if(WIN32)
-  set_target_properties(NetCDF::NetCDF_Fortran PROPERTIES IMPORTED_IMPLIB ${NetCDF_Fortran_IMPLIB})
-endif()
 
 target_link_libraries(NetCDF::NetCDF_Fortran INTERFACE NetCDF::NetCDF_C)
 

@@ -11,13 +11,13 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   cmake -B build -DCMAKE_INSTALL_PREFIX=~/mylibs")
 endif()
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/Modules/)
+cmake_path(SET CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/Modules/)
 
 
 # --- commence NetCDF build/install
-include(${PROJECT_SOURCE_DIR}/../cmake/libraries.cmake)
-
 set_directory_properties(PROPERTIES EP_UPDATE_DISCONNECTED true)
+
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/libraries.json json)
 
 message(STATUS "Build / install NetCDF to ${CMAKE_INSTALL_PREFIX}")
 

@@ -22,7 +22,6 @@ endif()
 
 include(cmake/options.cmake)
 include(cmake/compilers.cmake)
-include(cmake/libraries.cmake)
 
 # --- find or build NetCDF4
 
