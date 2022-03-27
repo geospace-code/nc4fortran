@@ -3,8 +3,6 @@ project(NetCDF_build
 LANGUAGES C Fortran
 )
 
-set(autobuild on)
-
 # --- system checks
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   message(FATAL_ERROR "please specify where to install NetCDF under, like

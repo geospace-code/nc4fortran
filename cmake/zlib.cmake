@@ -4,7 +4,6 @@
 include(ExternalProject)
 
 
-
 set(ZLIB_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include)
 
 if(BUILD_SHARED_LIBS)
@@ -42,13 +41,3 @@ BUILD_BYPRODUCTS ${ZLIB_LIBRARIES}
 CONFIGURE_HANDLED_BY_BUILD ON
 INACTIVITY_TIMEOUT 15
 )
-
-# --- imported target
-
-file(MAKE_DIRECTORY ${ZLIB_INCLUDE_DIRS})
-# avoid race condition
-
-add_library(ZLIB::ZLIB INTERFACE IMPORTED GLOBAL)
-add_dependencies(ZLIB::ZLIB ZLIB)  # to avoid include directory race condition
-target_link_libraries(ZLIB::ZLIB INTERFACE ${ZLIB_LIBRARIES})
-target_include_directories(ZLIB::ZLIB INTERFACE ${ZLIB_INCLUDE_DIRS})

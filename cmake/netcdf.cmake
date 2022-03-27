@@ -3,30 +3,10 @@ include(ExternalProject)
 # due to limitations of NetCDF-C 4.7.4 and NetCDF-Fortran 4.5.3, as per their docs,
 # we MUST use shared libraries or they don't archive/link properly.
 
-if(NOT hdf5_external)
-  if(autobuild)
-    find_package(HDF5 COMPONENTS C Fortran)
-  endif()
-  if(NOT (HDF5_FOUND OR TARGET HDF5::HDF5))
-    include(${CMAKE_CURRENT_LIST_DIR}/hdf5.cmake)
-  endif()
-else()
-  find_package(HDF5 COMPONENTS C Fortran REQUIRED)
+find_package(HDF5 COMPONENTS C Fortran)
+if(NOT HDF5_FOUND)
+  include(${CMAKE_CURRENT_LIST_DIR}/hdf5.cmake)
 endif()
-
-if(NOT netcdf_external)
-  if(autobuild)
-    find_package(NetCDF COMPONENTS Fortran)
-  else()
-    find_package(NetCDF COMPONENTS Fortran REQUIRED)
-  endif()
-endif()
-
-if(NetCDF_FOUND)
-  return()
-endif()
-
-set(netcdf_external true CACHE BOOL "autobuild NetCDF")
 
 cmake_path(SET NetCDF_C_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include)
 

@@ -1,5 +1,3 @@
-option(autobuild "auto-build NetCDF4 if missing/broken" on)
-
 option(ENABLE_COVERAGE "Code coverage tests")
 
 set(CMAKE_TLS_VERIFY true)
@@ -9,8 +7,6 @@ message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION}  CMAKE ${CMAKE_VERSION}")
 cmake_path(SET CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/Modules)
 
 file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
-
-set_directory_properties(PROPERTIES EP_UPDATE_DISCONNECTED true)
 
 if(CMAKE_GENERATOR STREQUAL "Ninja Multi-Config")
   set(EXTPROJ_GENERATOR "Ninja")

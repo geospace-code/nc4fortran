@@ -23,9 +23,19 @@ endif()
 include(cmake/options.cmake)
 include(cmake/compilers.cmake)
 
-# --- find or build NetCDF4
+find_package(NetCDF COMPONENTS C Fortran)
+if(NOT NetCDF_FOUND)
+message(FATAL_ERROR "NetCDF not found or working on the system. First build:
 
-include(cmake/netcdf.cmake)
+cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=~/mylibs
+cmake --build scripts/build
+
+Then build nc4fortran:
+
+cmake -B build -DCMAKE_PREFIX_PATH=~/mylibs
+cmake --build build
+")
+endif()
 
 # --- build
 
