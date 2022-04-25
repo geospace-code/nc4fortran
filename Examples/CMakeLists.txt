@@ -4,15 +4,9 @@ project(nc4fortranExample
 LANGUAGES C Fortran
 )
 
-include(CTest)
+enable_testing()
 
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR} CACHE PATH "Install top-level directory" FORCE)
-endif()
-
-cmake_path(SET CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../cmake/Modules)
-
-include(${PROJECT_SOURCE_DIR}/../cmake/nc4fortran.cmake)
+find_package(nc4fortran CONFIG REQUIRED)
 
 # --- Fortran interface for examples
 add_library(fortran_interface fortran_interface.f90)

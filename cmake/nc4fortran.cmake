@@ -1,18 +1,6 @@
 include(ExternalProject)
 
-if(NOT nc4fortran_external)
-  find_package(nc4fortran CONFIG)
-
-  if(nc4fortran_FOUND)
-    message(STATUS: "nc4fortran found: ${nc4fortran_DIR}")
-    return()
-  endif()
-endif()
-
-set(nc4fortran_external true CACHE BOOL "Build nc4fortran")
-
 find_package(NetCDF REQUIRED COMPONENTS Fortran)
-
 
 set(nc4fortran_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include)
 

@@ -77,8 +77,3 @@ endif()
 
 include(cmake/pkgconf.cmake)
 include(cmake/install.cmake)
-
-include(FeatureSummary)
-# set_package_properties(NetCDF PROPERTIES URL "https://www.unidata.ucar.edu/software/netcdf/" DESCRIPTION "fast, versatile file I/O format")
-add_feature_info(BuildNetCDF netcdf_external "build NetCDF libraries")
-feature_summary(WHAT ENABLED_FEATURES)
