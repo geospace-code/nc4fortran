@@ -47,7 +47,6 @@ URL ${netcdfC_url}
 URL_HASH SHA256=${netcdfC_sha256}
 CONFIGURE_HANDLED_BY_BUILD TRUE
 INACTIVITY_TIMEOUT 30
-CMAKE_GENERATOR ${EXTPROJ_GENERATOR}
 # Shared_libs=on for netcdf-fortran symbol finding bug
 CMAKE_ARGS ${netcdf_c_cmake_args}
 BUILD_BYPRODUCTS ${NetCDF_C_LIBRARIES}
@@ -96,7 +95,6 @@ URL ${netcdfFortran_url}
 URL_HASH SHA256=${netcdfFortran_sha256}
 CONFIGURE_HANDLED_BY_BUILD ON
 INACTIVITY_TIMEOUT 30
-CMAKE_GENERATOR ${EXTPROJ_GENERATOR}
 # Shared_libs=on for netcdf-fortran symbol finding bug
 # netCDEF_LIBRARIES and netCDF_INCLUDE_DIR from netcdf-fortran/CMakeLists.txt
 CMAKE_ARGS ${netcdf_fortran_cmake_args}

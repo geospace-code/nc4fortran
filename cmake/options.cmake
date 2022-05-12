@@ -8,12 +8,6 @@ cmake_path(SET CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/Modules)
 
 file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
 
-if(CMAKE_GENERATOR STREQUAL "Ninja Multi-Config")
-  set(EXTPROJ_GENERATOR "Ninja")
-else()
-  set(EXTPROJ_GENERATOR ${CMAKE_GENERATOR})
-endif()
-
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   # will not take effect without FORCE
   # CMAKE_BINARY_DIR in case it's used from FetchContent
