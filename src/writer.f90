@@ -57,31 +57,31 @@ if (check_error(ier, dname)) error stop 'nc4fortran:write: write ' // dname // '
 end procedure nc_write_scalar
 
 module procedure nc_write_1d
-@writer_template@
+include "writer_template.inc"
 end procedure nc_write_1d
 
 module procedure nc_write_2d
-@writer_template@
+include "writer_template.inc"
 end procedure nc_write_2d
 
 module procedure nc_write_3d
-@writer_template@
+include "writer_template.inc"
 end procedure nc_write_3d
 
 module procedure nc_write_4d
-@writer_template@
+include "writer_template.inc"
 end procedure nc_write_4d
 
 module procedure nc_write_5d
-@writer_template@
+include "writer_template.inc"
 end procedure nc_write_5d
 
 module procedure nc_write_6d
-@writer_template@
+include "writer_template.inc"
 end procedure nc_write_6d
 
 module procedure nc_write_7d
-@writer_template@
+include "writer_template.inc"
 end procedure nc_write_7d
 
 

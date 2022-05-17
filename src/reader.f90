@@ -46,37 +46,37 @@ end procedure nc_read_scalar
 
 
 module procedure nc_read_1d
-@reader_template@
+include "reader_template.inc"
 end procedure nc_read_1d
 
 
 module procedure nc_read_2d
-@reader_template@
+include "reader_template.inc"
 end procedure nc_read_2d
 
 
 module procedure nc_read_3d
-@reader_template@
+include "reader_template.inc"
 end procedure nc_read_3d
 
 
 module procedure nc_read_4d
-@reader_template@
+include "reader_template.inc"
 end procedure nc_read_4d
 
 
 module procedure nc_read_5d
-@reader_template@
+include "reader_template.inc"
 end procedure nc_read_5d
 
 
 module procedure nc_read_6d
-@reader_template@
+include "reader_template.inc"
 end procedure nc_read_6d
 
 
 module procedure nc_read_7d
-@reader_template@
+include "reader_template.inc"
 end procedure nc_read_7d
 
 
