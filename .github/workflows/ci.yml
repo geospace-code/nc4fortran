@@ -47,11 +47,11 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - name: build examples
-      run: cmake --build Examples/build
+      run: cmake --build example/build
     - name: Test examples
-      run: ctest --test-dir Examples/build -V
+      run: ctest --test-dir example/build -V
 
 
   linux-build:
@@ -68,7 +68,7 @@ jobs:
         sudo apt install --no-install-recommends libhdf5-dev
 
     - name: Configure NetCDF4
-      run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
 
     - name: Build/install NetCDF4
       run: cmake --build scripts/build --parallel
@@ -81,11 +81,11 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
     - name: build examples
-      run: cmake --build Examples/build --parallel
+      run: cmake --build example/build --parallel
     - name: Test examples
-      run: ctest --test-dir Examples/build -V
+      run: ctest --test-dir example/build -V
 
 
   linux-coverage:
@@ -136,7 +136,7 @@ jobs:
       run: brew install hdf5
 
     - name: Configure NetCDF4
-      run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
 
     - name: Build/install NetCDF4
       run: cmake --build scripts/build --parallel
@@ -149,8 +149,8 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=${{ runner.temp }}
+      run: cmake -S example -B example/build -Dnc4fortran_ROOT=${{ runner.temp }}
     - name: build examples
-      run: cmake --build Examples/build --parallel
+      run: cmake --build example/build --parallel
     - name: Test examples
-      run: ctest --test-dir Examples/build -V
+      run: ctest --test-dir example/build -V

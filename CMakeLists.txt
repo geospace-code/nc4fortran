@@ -72,7 +72,7 @@ DESTINATION cmake
 add_subdirectory(src)
 
 if(${PROJECT_NAME}_BUILD_TESTING)
-  add_subdirectory(tests)
+  add_subdirectory(test)
 endif()
 
 include(cmake/pkgconf.cmake)

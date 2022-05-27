@@ -31,7 +31,7 @@ jobs:
           mingw-w64-x86_64-hdf5
 
     - name: Put MSYS2_MinGW64 on PATH
-      run: echo "D:/a/_temp/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      run: echo "${{ runner.temp }}/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - uses: actions/checkout@v2
 
@@ -55,8 +55,8 @@ jobs:
 # NetCDF-C packaging issue with HDF5--ignores CMAKE_MODULE_PATH and uses broken factory FindHDF5
 # and can't seem to override
     # - name: configure examples
-    #   run: cmake -S Examples -B Examples/build -Dnc4fortran_ROOT=${HOME}
+    #   run: cmake -S example -B example/build -Dnc4fortran_ROOT=${HOME}
     # - name: build Examples
-    #   run: cmake --build Examples/build
+    #   run: cmake --build example/build
     # - name: Test Examples
-    #   run: ctest --test-dir Examples/build -V
+    #   run: ctest --test-dir example/build -V

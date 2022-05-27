@@ -1,6 +1,5 @@
 project('nc4fortran', 'fortran',
-meson_version : '>=0.57.0',
-default_options : ['default_library=static', 'buildtype=release', 'warning_level=3']
+meson_version : '>=0.57.0'
 )
 
 fs = import('fs')
@@ -34,6 +33,4 @@ oonc = library('nc4fortran',
 netcdf_interface = declare_dependency(link_with: oonc, dependencies: netcdf)
 
 # --- testing
-if not meson.is_subproject()
-  subdir('tests')
-endif
+subdir('test')

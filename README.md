@@ -3,6 +3,7 @@
 [![DOI](https://zenodo.org/badge/229812591.svg)](https://zenodo.org/badge/latestdoi/229812591)
 ![ci](https://github.com/geospace-code/nc4fortran/workflows/ci/badge.svg)
 [![ci_windows](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_windows.yml/badge.svg)](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_windows.yml)
+[![ci_fpm](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_fpm.yml/badge.svg)](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_fpm.yml)
 ![ci_meson](https://github.com/geospace-code/nc4fortran/workflows/ci_meson/badge.svg)
 
 Simple, robust, thin, object-oriented NetCDF4 polymorphic read/write interface.
@@ -28,7 +29,7 @@ For example, reading a float NetCDF4 variable into an integer Fortran variable: 
 Tested on systems with NetCDF4 including:
 
 * MacOS
-* Ubuntu 18.04 / 20.04
+* Linux
 * Windows
 
 See [API](./API.md) for usage.
@@ -82,6 +83,14 @@ FetchContent_MakeAvailable(nc4fortran_proj)
 # whatever your program is
 add_executable(myProj main.f90)
 target_link_libraries(myProj nc4fortran::nc4fortran)
+```
+
+### Fortran Package Manager (fpm)
+
+```sh
+fpm build
+fpm test
+fpm install
 ```
 
 ### Meson
