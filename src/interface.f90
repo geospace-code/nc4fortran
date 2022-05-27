@@ -32,8 +32,7 @@ logical :: is_open = .false.
 contains
 
 !> methods used directly without type/rank agnosticism
-procedure, public :: initialize => nc_initialize, open => nc_initialize, &
-  finalize => nc_finalize, close => nc_finalize, &
+procedure, public :: open => nc_open, close => nc_close, &
   shape => get_shape, ndims => get_ndims, write_attribute, read_attribute, flush=>nc_flush, &
   exist=>nc_check_exist, exists=>nc_check_exist, &
   is_chunked, is_contig, chunks=>get_chunk
@@ -55,67 +54,89 @@ end type netcdf_file
 
 !> Submodules
 
+interface !< write.f90
+
+module subroutine def_dims(self, dname, dimnames, dims, dimids)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+character(*), intent(in), optional :: dimnames(:)
+integer, intent(in) :: dims(:)
+integer, intent(out) :: dimids(size(dims))
+end subroutine
+
+module subroutine nc_flush(self)
+class(netcdf_file), intent(in) :: self
+end subroutine
+
+end interface
+
+
 interface !< writer.f90
 module subroutine nc_write_scalar(self, dname, value)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value
-end subroutine nc_write_scalar
+end subroutine
 
 module subroutine nc_write_1d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:)
 character(*), intent(in), optional :: dims(1)
-end subroutine nc_write_1d
+end subroutine
 
 module subroutine nc_write_2d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:)
 character(*), intent(in), optional :: dims(2)
-end subroutine nc_write_2d
+end subroutine
 
 module subroutine nc_write_3d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:)
 character(*), intent(in), optional :: dims(3)
-end subroutine nc_write_3d
+end subroutine
 
 module subroutine nc_write_4d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:)
 character(*), intent(in), optional :: dims(4)
-end subroutine nc_write_4d
+end subroutine
 
 module subroutine nc_write_5d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:)
 character(*), intent(in), optional :: dims(5)
-end subroutine nc_write_5d
+end subroutine
 
 module subroutine nc_write_6d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:)
 character(*), intent(in), optional :: dims(6)
-end subroutine nc_write_6d
+end subroutine
 
 module subroutine nc_write_7d(self, dname, value, dims)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:,:)
 character(*), intent(in), optional :: dims(7)
-end subroutine nc_write_7d
+end subroutine
 
 end interface
 
 
 interface  !< read.f90
 
+module subroutine get_chunk(self, dname, chunk_size)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+integer, intent(out) :: chunk_size(:)
+end subroutine
 module integer function get_ndims(self, dname) result (drank)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
@@ -126,7 +147,7 @@ class(netcdf_file), intent(in)  :: self
 character(*), intent(in)         :: dname
 integer, intent(out), allocatable :: dims(:)
 character(NF90_MAX_NAME), intent(out), allocatable, optional :: dimnames(:)
-end subroutine get_shape
+end subroutine
 
 module logical function nc_check_exist(self, dname) result(exists)
 class(netcdf_file), intent(in) :: self
@@ -144,58 +165,50 @@ class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value
 !! inout for character
-end subroutine nc_read_scalar
+end subroutine
 
 module subroutine nc_read_1d(self, dname, value)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:)
-end subroutine nc_read_1d
+end subroutine
 
 module subroutine nc_read_2d(self, dname, value)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:)
-end subroutine nc_read_2d
+end subroutine
 
 module subroutine nc_read_3d(self, dname, value)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:)
-end subroutine nc_read_3d
+end subroutine
 
 module subroutine nc_read_4d(self, dname, value)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:,:)
-end subroutine nc_read_4d
+end subroutine
 
 module subroutine nc_read_5d(self, dname, value)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:,:,:)
-end subroutine nc_read_5d
+end subroutine
 
 module subroutine nc_read_6d(self, dname, value)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:,:,:,:)
-end subroutine nc_read_6d
+end subroutine
 
 module subroutine nc_read_7d(self, dname, value)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:,:,:,:,:)
-end subroutine nc_read_7d
+end subroutine
 
-
-module subroutine def_dims(self, dname, dimnames, dims, dimids)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-character(*), intent(in), optional :: dimnames(:)
-integer, intent(in) :: dims(:)
-integer, intent(out) :: dimids(size(dims))
-end subroutine def_dims
 end interface
 
 
@@ -204,19 +217,21 @@ module subroutine write_attribute(self, dname, attrname, value)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname, attrname
 class(*), intent(in) :: value
-end subroutine write_attribute
+end subroutine
 
 module subroutine read_attribute(self, dname, attrname, value)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname, attrname
 class(*), intent(inout) ::  value
 !! inout for character
-end subroutine read_attribute
+end subroutine
+
 end interface
 
-contains
 
-subroutine nc_initialize(self, filename, action, comp_lvl, verbose, debug)
+interface !< utils.f90
+
+module subroutine nc_open(self, filename, action, comp_lvl, verbose, debug)
 !! Opens NetCDF file
 
 class(netcdf_file), intent(inout) :: self
@@ -224,219 +239,43 @@ character(*), intent(in) :: filename
 character(*), intent(in), optional :: action
 integer, intent(in), optional :: comp_lvl
 logical, intent(in), optional :: verbose, debug
+end subroutine
 
-character(:), allocatable :: laction
-integer :: ier
-
-if (self%is_open) then
-  write(stderr,*) 'WARNING:nc4fortran:initialize file handle already open to: '// filename
-  return
-endif
-
-self%filename = filename
-
-if (present(comp_lvl)) self%comp_lvl = comp_lvl
-if (present(verbose)) self%verbose = verbose
-if (present(debug)) self%debug = debug
-
-laction = 'rw'
-if(present(action)) laction = action
-
-select case(laction)
-case('r')
-  ier = nf90_open(self%filename, NF90_NOWRITE, self%ncid)
-case('r+')
-  ier = nf90_open(self%filename, NF90_NETCDF4, self%ncid)
-case('rw', 'a')
-  if(is_netcdf(filename)) then
-    !! NF90_WRITE is necessary to be in true read/write mode
-    ier = nf90_open(self%filename, ior(NF90_WRITE, NF90_NETCDF4), self%ncid)
-  else
-    ier = nf90_create(self%filename, ior(NF90_CLOBBER, NF90_NETCDF4), self%ncid)
-  endif
-case('w')
-  ier = nf90_create(self%filename, ior(NF90_CLOBBER, NF90_NETCDF4), self%ncid)
-case default
-  error stop 'nc4fortran: Unsupported action -> ' // laction
-end select
-
-
-if (ier == NF90_NOERR) then
-  self%is_open = .true.
-  return
-endif
-
-error stop 'nc4fortran:ERROR: initialize ' // filename // ' could not be created'
-
-end subroutine nc_initialize
-
-
-subroutine destructor(self)
+module subroutine destructor(self)
 !! Close file and handle if user forgets to do so
-
 type(netcdf_file), intent(inout) :: self
+end subroutine
 
-if (.not. self%is_open) return
-
-print *, "auto-closing " // self%filename
-
-call self%close()
-
-end subroutine destructor
-
-
-subroutine nc_finalize(self)
+module subroutine nc_close(self)
 class(netcdf_file), intent(inout) :: self
+end subroutine
 
-integer :: ier
-
-if(.not. self%is_open) then
-  write(stderr,*) 'WARNING:nc4fortran:finalize file handle is not open'
-  return
-endif
-
-ier = nf90_close(self%ncid)
-if (ier /= NF90_NOERR) error stop 'ERROR:finalize: ' // self%filename
-
-self%is_open = .false.
-
-end subroutine nc_finalize
-
-
-function nc4version()
+module function nc4version()
 !! get NetCDF4 library version
 character(:), allocatable :: nc4version
-nc4version = nf90_inq_libvers()
-end function nc4version
+end function
 
-
-subroutine nc_flush(self)
-
-class(netcdf_file), intent(in) :: self
-integer :: ier
-
-ier = nf90_sync(self%ncid)
-
-if (check_error(ier, "")) error stop
-
-end subroutine nc_flush
-
-
-logical function is_contig(self, dname)
+module logical function is_chunked(self, dname)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
-integer :: ier, varid
+end function
 
-ier = nf90_inq_varid(self%ncid, dname, varid)
-if (ier/=NF90_NOERR) error stop 'nc4fortran:is_contig: cannot find variable: ' // dname
-
-ier = nf90_inquire_variable(self%ncid, varid, contiguous=is_contig)
-if (ier/=NF90_NOERR) error stop 'nc4fortran:is_contig: cannot get variable properties' // dname
-
-end function is_contig
-
-
-logical function is_chunked(self, dname)
+module logical function is_contig(self, dname)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
-integer :: ier, varid
+end function
 
-ier = nf90_inq_varid(self%ncid, dname, varid)
-if (ier/=NF90_NOERR) error stop 'nc4fortran:is_chunked: cannot find variable: ' // dname
-
-ier = nf90_inquire_variable(self%ncid, varid, contiguous=is_chunked)
-if (ier/=NF90_NOERR) error stop 'nc4fortran:is_chunked: cannot get variable properties' // dname
-
-is_chunked = .not.is_chunked
-end function is_chunked
-
-
-subroutine get_chunk(self, dname, chunk_size)
-class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dname
-integer, intent(out) :: chunk_size(:)
-logical :: contig
-integer :: i, varid
-
-chunk_size = -1
-
-i = nf90_inq_varid(self%ncid, dname, varid)
-if (i/=NF90_NOERR) error stop 'nc4fortran:chunk: cannot find variable: ' // dname
-
-i = nf90_inquire_variable(self%ncid, varid, contiguous=contig)
-if (i/=NF90_NOERR) error stop 'nc4fortran:chunk: cannot get variable properties' // dname
-
-if(contig) return
-i = nf90_inquire_variable(self%ncid, varid, chunksizes=chunk_size)
-if (i/=NF90_NOERR) error stop 'nc4fortran:chunk: cannot get variable properties' // dname
-
-end subroutine get_chunk
-
-
-logical function is_netcdf(filename)
+module logical function is_netcdf(filename)
 !! is this file NetCDF4?
-
 character(*), intent(in) :: filename
-integer :: ierr, ncid
+end function
 
-inquire(file=filename, exist=is_netcdf)
-!! avoid warning/error messages
-if (.not. is_netcdf) return
-
-ierr = nf90_open(filename, NF90_NOWRITE, ncid)
-is_netcdf = ierr == 0
-
-ierr = nf90_close(ncid)
-
-end function is_netcdf
-
-
-logical function check_error(code, dname)
+module logical function check_error(code, dname)
 integer, intent(in) :: code
 character(*), intent(in) :: dname
-character(:), allocatable :: m
+end function
 
-check_error = .true.
-
-select case (code)
-case (NF90_NOERR)
-  check_error = .false.
-case (NF90_EHDFERR)
-  m = 'ERROR: ' // dname // ' an error was reported by the HDF5 layer.'
-case (NF90_EBADNAME)
-  m = 'ERROR: ' // dname // ' Name contains illegal characters.'
-case (NF90_EBADTYPE)
-  m = 'ERROR: ' // dname // ' specified type is not a valid netCDF type'
-case (NF90_EDIMSIZE)
-  m = 'ERROR: ' // dname // ' bad dimension size'
-case (NF90_EBADDIM)
-  m = 'ERROR: ' // dname // ' invalid dimension ID or Name'
-case (NF90_EBADGRPID)
-  m = 'ERROR: ' // dname // ' bad group ID in ncid'
-case (NF90_EBADID)
-  m = 'ERROR: ' // dname // ' Bad group id or ncid invalid'
-case (NF90_ENOTVAR)
-  m = 'ERROR: ' // dname // ' variable not found'
-case (NF90_ENOTNC)
-  m = 'ERROR: ' // dname // ' not a NetCDF file'
-case (NF90_ENAMEINUSE)
-  m = 'ERROR: ' // dname // ' That name is in use. Compound type names must be unique in the data file.'
-case (NF90_ECHAR)
-  m = 'ERROR: ' // dname // ' attempt to convert between text & numbers'
-case (NF90_EEDGE)
-  m = 'ERROR: ' // dname // ' edge + start exceeds dimension bound'
-case (NF90_ESTRIDE)
-  m = 'ERROR: ' // dname // ' illegal stride'
-case (NF90_EINDEFINE)
-  m = 'ERROR: ' // dname // ' operation not allowed in define mode'
-case default
-  write(stderr,'(/,A,I8)') 'ERROR: ' // dname // ' unknown error',code
-  m = ''
-end select
-
-if(check_error) write(stderr,'(/,A)') m
-
-end function check_error
+end interface
 
 
 end module nc4fortran

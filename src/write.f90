@@ -6,6 +6,15 @@ implicit none (type, external)
 
 contains
 
+
+module procedure nc_flush
+integer :: ier
+
+ier = nf90_sync(self%ncid)
+if (check_error(ier, "")) error stop
+end procedure nc_flush
+
+
 module procedure def_dims
 !! checks if dimension name exists. if not, create dimension
 integer :: i, ierr

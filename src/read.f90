@@ -7,6 +7,26 @@ implicit none (type, external)
 contains
 
 
+module procedure get_chunk
+
+logical :: contig
+integer :: i, varid
+
+chunk_size = -1
+
+i = nf90_inq_varid(self%ncid, dname, varid)
+if (i/=NF90_NOERR) error stop 'nc4fortran:chunk: cannot find variable: ' // dname
+
+i = nf90_inquire_variable(self%ncid, varid, contiguous=contig)
+if (i/=NF90_NOERR) error stop 'nc4fortran:chunk: cannot get variable properties' // dname
+
+if(contig) return
+i = nf90_inquire_variable(self%ncid, varid, chunksizes=chunk_size)
+if (i/=NF90_NOERR) error stop 'nc4fortran:chunk: cannot get variable properties' // dname
+
+end procedure get_chunk
+
+
 module procedure get_ndims
 integer :: varid, ierr
 
