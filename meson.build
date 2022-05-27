@@ -1,5 +1,6 @@
 project('nc4fortran', 'fortran',
-meson_version : '>=0.57.0'
+meson_version : '>=0.57.0',
+version : '1.6.1'
 )
 
 fs = import('fs')
