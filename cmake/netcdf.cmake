@@ -59,6 +59,16 @@ DEPENDS HDF5::HDF5
 
 # --- NetCDF-Fortran
 
+# NetCDF-Fortran needs these for its checks of NetCDF-C, but doesn't set them.
+find_package(ZLIB)
+find_package(Threads)
+
+set(CMAKE_REQUIRED_LIBRARIES
+${ZLIB_LIBRARIES}
+${CMAKE_THREAD_LIBS_INIT}
+${CMAKE_DL_LIBS}
+)
+
 cmake_path(SET NetCDF_Fortran_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include)
 
 set(netcdf_fortran_cmake_args
@@ -86,6 +96,7 @@ GIT_SHALLOW true
 CONFIGURE_HANDLED_BY_BUILD ON
 INACTIVITY_TIMEOUT 60
 CMAKE_ARGS ${netcdf_fortran_cmake_args}
+CMAKE_CACHE_ARGS -DCMAKE_REQUIRED_LIBRARIES:STRING=${CMAKE_REQUIRED_LIBRARIES}
 BUILD_BYPRODUCTS ${NetCDF_Fortran_LIBRARIES}
 DEPENDS NETCDF_C
 )
