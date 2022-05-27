@@ -62,9 +62,24 @@ if(NOT NetCDF_C_LIBRARY)
   return()
 endif()
 
+find_package(ZLIB)
+
 set(CMAKE_REQUIRED_FLAGS)
 set(CMAKE_REQUIRED_INCLUDES ${NetCDF_C_INCLUDE_DIR})
+
 set(CMAKE_REQUIRED_LIBRARIES ${NetCDF_C_LIBRARY})
+if(ZLIB_FOUND)
+  list(APPEND CMAKE_REQUIRED_LIBRARIES ${ZLIB_LIBRARIES})
+endif()
+
+list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS})
+
+find_package(Threads)
+list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
+
+if(UNIX)
+  list(APPEND CMAKE_REQUIRED_LIBRARIES m)
+endif()
 
 check_source_compiles(C
 "#include <netcdf.h>
@@ -83,6 +98,7 @@ if(NOT NetCDF_C_links)
 endif()
 
 set(NetCDF_C_FOUND true PARENT_SCOPE)
+set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} PARENT_SCOPE)
 
 endfunction(netcdf_c)
 
@@ -113,7 +129,7 @@ endif()
 
 set(CMAKE_REQUIRED_FLAGS)
 set(CMAKE_REQUIRED_INCLUDES ${NetCDF_Fortran_INCLUDE_DIR})
-set(CMAKE_REQUIRED_LIBRARIES ${NetCDF_Fortran_LIBRARY})
+list(PREPEND CMAKE_REQUIRED_LIBRARIES ${NetCDF_Fortran_LIBRARY})
 
 check_source_compiles(Fortran "program a
 use netcdf
