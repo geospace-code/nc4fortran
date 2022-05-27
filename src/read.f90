@@ -1,5 +1,6 @@
 submodule (nc4fortran) read
-!! This submodule is for reading NetCDF via submodules
+
+use, intrinsic :: iso_c_binding, only : c_null_char
 
 implicit none (type, external)
 
