@@ -6,11 +6,11 @@ ier = nf90_inq_varid(self%ncid, dname, varid)
 if (check_error(ier, dname)) error stop 'nc4fortran:read inquire_id ' // dname // ' in ' // self%filename
 
 ier = nf90_inquire_variable(self%ncid, varid, ndims=drank)
+if (check_error(ier, dname)) error stop 'nc4fortran:read inquire ' // dname // ' in ' // self%filename
 if(drank /= rank(value)) then
   write(stderr,*) 'ERROR:nc4fortran:read ' // dname // ' rank ', drank, ' /= variable rank ',rank(value)
   error stop
 endif
-if (check_error(ier, dname)) error stop 'nc4fortran:read inquire ' // dname // ' in ' // self%filename
 
 select type (value)
 type is (real(real64))
