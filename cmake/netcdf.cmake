@@ -40,13 +40,14 @@ set(netcdf_c_cmake_args
 )
 
 string(JSON netcdfC_url GET ${json} netcdfC url)
-string(JSON netcdfC_sha256 GET ${json} netcdfC sha256)
+string(JSON netcdfC_tag GET ${json} netcdfC tag)
 
 ExternalProject_Add(NETCDF_C
-URL ${netcdfC_url}
-URL_HASH SHA256=${netcdfC_sha256}
+GIT_REPOSITORY ${netcdfC_url}
+GIT_TAG ${netcdfC_tag}
+GIT_SHALLOW true
 CONFIGURE_HANDLED_BY_BUILD TRUE
-INACTIVITY_TIMEOUT 30
+INACTIVITY_TIMEOUT 60
 # Shared_libs=on for netcdf-fortran symbol finding bug
 CMAKE_ARGS ${netcdf_c_cmake_args}
 BUILD_BYPRODUCTS ${NetCDF_C_LIBRARIES}
@@ -88,13 +89,14 @@ set(netcdf_fortran_cmake_args
 )
 
 string(JSON netcdfFortran_url GET ${json} netcdfFortran url)
-string(JSON netcdfFortran_sha256 GET ${json} netcdfFortran sha256)
+string(JSON netcdfFortran_tag GET ${json} netcdfFortran tag)
 
 ExternalProject_Add(NETCDF_FORTRAN
-URL ${netcdfFortran_url}
-URL_HASH SHA256=${netcdfFortran_sha256}
+GIT_REPOSITORY ${netcdfFortran_url}
+GIT_TAG ${netcdfFortran_tag}
+GIT_SHALLOW true
 CONFIGURE_HANDLED_BY_BUILD ON
-INACTIVITY_TIMEOUT 30
+INACTIVITY_TIMEOUT 60
 # Shared_libs=on for netcdf-fortran symbol finding bug
 # netCDEF_LIBRARIES and netCDF_INCLUDE_DIR from netcdf-fortran/CMakeLists.txt
 CMAKE_ARGS ${netcdf_fortran_cmake_args}

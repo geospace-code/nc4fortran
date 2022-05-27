@@ -30,13 +30,14 @@ set(zlib_cmake_args
 )
 
 string(JSON zlib_url GET ${json} zlib url)
-string(JSON zlib_sha256 GET ${json} zlib sha256)
+string(JSON zlib_tag GET ${json} zlib tag)
 
 ExternalProject_Add(ZLIB
-URL ${zlib_url}
-URL_HASH SHA256=${zlib_sha256}
+GIT_REPOSITORY ${zlib_url}
+GIT_TAG ${zlib_tag}
+GIT_SHALLOW true
 CMAKE_ARGS ${zlib_cmake_args}
 BUILD_BYPRODUCTS ${ZLIB_LIBRARIES}
 CONFIGURE_HANDLED_BY_BUILD ON
-INACTIVITY_TIMEOUT 15
+INACTIVITY_TIMEOUT 60
 )

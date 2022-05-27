@@ -44,13 +44,16 @@ if(MPI_ROOT)
 endif()
 
 string(JSON hdf5_url GET ${json} hdf5 url)
-string(JSON hdf5_sha256 GET ${json} hdf5 sha256)
+if(NOT hdf5_tag)
+  string(JSON hdf5_tag GET ${json} hdf5 tag)
+endif()
 
 ExternalProject_Add(HDF5
-URL ${hdf5_url}
-URL_HASH SHA256=${hdf5_sha256}
+GIT_REPOSITORY ${hdf5_url}
+GIT_TAG ${hdf5_tag}
+GIT_SHALLOW true
 CMAKE_ARGS ${hdf5_cmake_args}
 DEPENDS ZLIB
 CONFIGURE_HANDLED_BY_BUILD ON
-INACTIVITY_TIMEOUT 15
+INACTIVITY_TIMEOUT 60
 )
