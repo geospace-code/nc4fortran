@@ -62,8 +62,6 @@ if(NOT NetCDF_C_LIBRARY)
   return()
 endif()
 
-find_package(ZLIB)
-
 set(CMAKE_REQUIRED_FLAGS)
 set(CMAKE_REQUIRED_INCLUDES ${NetCDF_C_INCLUDE_DIR})
 
@@ -72,10 +70,7 @@ if(ZLIB_FOUND)
   list(APPEND CMAKE_REQUIRED_LIBRARIES ${ZLIB_LIBRARIES})
 endif()
 
-list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS})
-
-find_package(Threads)
-list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
+list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 
 if(UNIX)
   list(APPEND CMAKE_REQUIRED_LIBRARIES m)
@@ -149,6 +144,10 @@ endfunction(netcdf_fortran)
 #============================================================
 # main program
 
+find_package(ZLIB)
+find_package(Threads)
+# top scope so can be reused
+
 netcdf_c()
 
 set(_ncdf_req ${NetCDF_C_LIBRARY})
@@ -182,6 +181,7 @@ if(NetCDF_FOUND)
     )
 
     target_link_libraries(NetCDF::NetCDF_C INTERFACE
+    $<$<BOOL:${ZLIB_FOUND}>:${ZLIB_LIBRARIES}>
     ${CMAKE_THREAD_LIBS_INIT}
     ${CMAKE_DL_LIBS}
     $<$<BOOL:${UNIX}>:m>
@@ -199,6 +199,7 @@ if(NetCDF_FOUND)
       )
 
       target_link_libraries(NetCDF::NetCDF_Fortran INTERFACE
+      $<$<BOOL:${ZLIB_FOUND}>:${ZLIB_LIBRARIES}>
       ${CMAKE_THREAD_LIBS_INIT}
       ${CMAKE_DL_LIBS}
       $<$<BOOL:${UNIX}>:m>
