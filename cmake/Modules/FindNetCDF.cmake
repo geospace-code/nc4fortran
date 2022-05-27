@@ -180,6 +180,12 @@ if(NetCDF_FOUND)
     INTERFACE_INCLUDE_DIRECTORIES "${NetCDF_C_INCLUDE_DIR}"
     INTERFACE_LINK_LIBRARIES "${NetCDF_C_LIBRARY}"
     )
+
+    target_link_libraries(NetCDF::NetCDF_C INTERFACE
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${CMAKE_DL_LIBS}
+    $<$<BOOL:${UNIX}>:m>
+    )
   endif()
 
   if(NetCDF_Fortran_FOUND)
@@ -190,6 +196,12 @@ if(NetCDF_FOUND)
       set_target_properties(NetCDF::NetCDF_Fortran PROPERTIES
       INTERFACE_INCLUDE_DIRECTORIES "${NetCDF_Fortran_INCLUDE_DIR}"
       INTERFACE_LINK_LIBRARIES "${NetCDF_Fortran_LIBRARY}"
+      )
+
+      target_link_libraries(NetCDF::NetCDF_Fortran INTERFACE
+      ${CMAKE_THREAD_LIBS_INIT}
+      ${CMAKE_DL_LIBS}
+      $<$<BOOL:${UNIX}>:m>
       )
       target_link_libraries(NetCDF::NetCDF_Fortran INTERFACE NetCDF::NetCDF_C)
     endif()
