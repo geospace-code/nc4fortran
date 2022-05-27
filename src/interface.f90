@@ -32,7 +32,7 @@ logical :: is_open = .false.
 contains
 
 !> methods used directly without type/rank agnosticism
-procedure, public :: open => nc_open, close => nc_close, &
+procedure, public :: open => nc_open, close => nc_close, create => nc_create, &
   shape => get_shape, ndims => get_ndims, write_attribute, read_attribute, flush=>nc_flush, &
   exist=>nc_check_exist, exists=>nc_check_exist, &
   is_chunked, is_contig, chunks=>get_chunk
@@ -55,6 +55,16 @@ end type netcdf_file
 !> Submodules
 
 interface !< write.f90
+
+module subroutine nc_create(self, dset_name, dtype, dims, dim_names, fill_value, varid)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dset_name
+integer, intent(in) :: dtype
+integer, intent(in) :: dims(:)
+character(*), intent(in), optional :: dim_names(:)
+class(*), intent(in), optional :: fill_value
+integer, intent(out), optional :: varid
+end subroutine
 
 module subroutine def_dims(self, dname, dimnames, dims, dimids)
 class(netcdf_file), intent(in) :: self

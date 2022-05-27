@@ -6,7 +6,7 @@ test('minimal', test_minimal,
   priority: 100,
   timeout: 10)
 
-foreach t : ['array', 'attributes', 'deflate', 'destructor', 'error', 'exist', 'scalar', 'shape', 'string', 'version']
+foreach t : ['array', 'attributes', 'deflate', 'destructor', 'error', 'exist', 'fill', 'scalar', 'shape', 'string', 'version']
 
   e = executable('test_'+t, 'test_' + t + '.f90', dependencies: netcdf_interface, fortran_args: quiet)
   if t == 'shape'

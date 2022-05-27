@@ -1,6 +1,4 @@
-integer :: varid, dimids(rank(value)), ier, dtype
-
-call self%def_dims(dname, dimnames=dims, dims=shape(value), dimids=dimids)
+integer :: varid, ier, dtype
 
 select type (value)
 type is (real(real32))
@@ -12,16 +10,10 @@ type is (integer(int32))
 type is (integer(int64))
   dtype = NF90_INT64
 class default
-  error stop "unsupported type for variable: " // dname
+  error stop "ERROR:nc4fortran:write: unsupported type for variable: " // dname
 end select
 
-if(self%comp_lvl >= 1 .and. self%comp_lvl <= 9) then
-  ier = nf90_def_var(self%ncid, dname, dtype, dimids=dimids, varid=varid, &
-    shuffle=.true., fletcher32=.true., deflate_level=self%comp_lvl)
-else
-  ier = nf90_def_var(self%ncid, dname, dtype, dimids=dimids, varid=varid)
-end if
-if (check_error(ier, dname)) error stop 'nc4fortran:write def ' // dname // ' in ' // self%filename
+call nc_create(self, dname, dtype, dims=shape(value), dim_names=dims, varid=varid)
 
 select type (value)
 type is (real(real32))
@@ -36,4 +28,4 @@ class default
   ier = NF90_EBADTYPE
 end select
 
-if (check_error(ier, dname)) error stop 'nc4fortran:write write ' // dname // ' in ' // self%filename
+if (check_error(ier, dname)) error stop 'ERROR:nc4fortran:write:  ' // dname // ' in ' // self%filename

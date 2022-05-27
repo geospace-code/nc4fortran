@@ -28,7 +28,7 @@ else
     if(ier == NF90_NOERR) ier = nf90_def_var(self%ncid, dname, NF90_CHAR, dimids=lenid, varid=varid)
     if(ier == NF90_NOERR) ier = nf90_enddef(self%ncid)  !< prefill
   class default
-    error stop "unkown type for " // dname // " in " // self%filename
+    error stop "ERROR:nc4fortran:write: unknown type for " // dname // " in " // self%filename
   end select
 endif
 if (check_error(ier, dname)) error stop 'nc4fortran:write: setup write ' // dname // ' in ' // self%filename
@@ -45,7 +45,7 @@ type is (integer(int64))
 type is (character(*))
   ier = nf90_put_var(self%ncid, varid, value)
 class default
-  error stop "unkown type for " // dname // " in " // self%filename
+  error stop "ERROR:nc4fortran:write: unknown type for " // dname // " in " // self%filename
 end select
 
 if (check_error(ier, dname)) error stop 'nc4fortran:write: write ' // dname // ' in ' // self%filename
