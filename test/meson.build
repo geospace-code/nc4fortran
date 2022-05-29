@@ -11,7 +11,7 @@ foreach t : ['array', 'attributes',
 'destructor', 'error', 'exist', 'fill', 'scalar', 'shape', 'string', 'version']
 
   e = executable('test_'+t, 'test_' + t + '.f90', dependencies: netcdf_interface, fortran_args: quiet)
-  if t == ['shape', 'deflate_write'].contains(t)
+  if ['shape', 'deflate_write'].contains(t)
     par = false
     pri = 50
   elif ['deflate_read', 'deflate_props'].contains(t)
