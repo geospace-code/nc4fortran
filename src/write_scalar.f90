@@ -8,23 +8,23 @@ module procedure nc_write_scalar
 integer :: varid, ier, lenid
 
 if (self%exist(dname)) then
-  ier = nf90_inq_varid(self%ncid, dname, varid)
+  ier = nf90_inq_varid(self%file_id, dname, varid)
 else
   select type (value)
   type is (real(real32))
-    ier = nf90_def_var(self%ncid, dname, NF90_FLOAT, varid=varid)
+    ier = nf90_def_var(self%file_id, dname, NF90_FLOAT, varid=varid)
   type is (real(real64))
-    ier = nf90_def_var(self%ncid, dname, NF90_DOUBLE, varid=varid)
+    ier = nf90_def_var(self%file_id, dname, NF90_DOUBLE, varid=varid)
   type is (integer(int32))
-    ier = nf90_def_var(self%ncid, dname, NF90_INT, varid=varid)
+    ier = nf90_def_var(self%file_id, dname, NF90_INT, varid=varid)
   type is (integer(int64))
-    ier = nf90_def_var(self%ncid, dname, NF90_INT64, varid=varid)
+    ier = nf90_def_var(self%file_id, dname, NF90_INT64, varid=varid)
   type is (character(*))
     !! string prefill method
     !! https://www.unidata.ucar.edu/software/netcdf/docs-fortran/f90-variables.html#f90-reading-and-writing-character-string-values
-    ier = nf90_def_dim(self%ncid, dname // "StrLen", len(value) + 1, lenid)
-    if(ier == NF90_NOERR) ier = nf90_def_var(self%ncid, dname, NF90_CHAR, dimids=lenid, varid=varid)
-    if(ier == NF90_NOERR) ier = nf90_enddef(self%ncid)  !< prefill
+    ier = nf90_def_dim(self%file_id, dname // "StrLen", len(value) + 1, lenid)
+    if(ier == NF90_NOERR) ier = nf90_def_var(self%file_id, dname, NF90_CHAR, dimids=lenid, varid=varid)
+    if(ier == NF90_NOERR) ier = nf90_enddef(self%file_id)  !< prefill
   class default
     error stop "ERROR:nc4fortran:write: unknown type for " // dname // " in " // self%filename
   end select
@@ -33,15 +33,15 @@ if (check_error(ier, dname)) error stop 'nc4fortran:write: setup write ' // dnam
 
 select type (value)
 type is (real(real32))
-  ier = nf90_put_var(self%ncid, varid, value)
+  ier = nf90_put_var(self%file_id, varid, value)
 type is (real(real64))
-  ier = nf90_put_var(self%ncid, varid, value)
+  ier = nf90_put_var(self%file_id, varid, value)
 type is (integer(int32))
-  ier = nf90_put_var(self%ncid, varid, value)
+  ier = nf90_put_var(self%file_id, varid, value)
 type is (integer(int64))
-  ier = nf90_put_var(self%ncid, varid, value)
+  ier = nf90_put_var(self%file_id, varid, value)
 type is (character(*))
-  ier = nf90_put_var(self%ncid, varid, value)
+  ier = nf90_put_var(self%file_id, varid, value)
 class default
   error stop "ERROR:nc4fortran:write: unknown type for " // dname // " in " // self%filename
 end select

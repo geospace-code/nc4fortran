@@ -14,14 +14,14 @@ integer :: i, varid
 
 chunk_size = -1
 
-i = nf90_inq_varid(self%ncid, dname, varid)
+i = nf90_inq_varid(self%file_id, dname, varid)
 if (i/=NF90_NOERR) error stop 'ERROR:nc4fortran:chunk: cannot find variable: ' // dname
 
-i = nf90_inquire_variable(self%ncid, varid, contiguous=contig)
+i = nf90_inquire_variable(self%file_id, varid, contiguous=contig)
 if (i/=NF90_NOERR) error stop 'ERROR:nc4fortran:chunk: cannot get variable properties' // dname
 
 if(contig) return
-i = nf90_inquire_variable(self%ncid, varid, chunksizes=chunk_size)
+i = nf90_inquire_variable(self%file_id, varid, chunksizes=chunk_size)
 if (i/=NF90_NOERR) error stop 'ERROR:nc4fortran:chunk: cannot get variable properties' // dname
 
 end procedure get_chunk
@@ -34,14 +34,14 @@ integer :: i, varid, deflate_level
 
 get_deflate = .false.
 
-i = nf90_inq_varid(self%ncid, dname, varid)
+i = nf90_inq_varid(self%file_id, dname, varid)
 if (i/=NF90_NOERR) error stop 'ERROR:nc4fortran:get_deflate: cannot find variable: ' // dname
 
-i = nf90_inquire_variable(self%ncid, varid, contiguous=contig)
+i = nf90_inquire_variable(self%file_id, varid, contiguous=contig)
 if (i/=NF90_NOERR) error stop 'ERROR:nc4fortran:get_deflate: cannot get variable properties' // dname
 
 if(contig) return
-i = nf90_inquire_variable(self%ncid, varid, deflate_level=deflate_level)
+i = nf90_inquire_variable(self%file_id, varid, deflate_level=deflate_level)
 if (i/=NF90_NOERR) error stop 'ERROR:nc4fortran:get_deflate: cannot get variable properties' // dname
 
 get_deflate = deflate_level /= 0
@@ -56,10 +56,10 @@ if(.not.self%is_open) error stop 'ERROR:nc4fortran:read: file handle not open'
 
 drank = -1
 
-ierr = nf90_inq_varid(self%ncid, dname, varid)
+ierr = nf90_inq_varid(self%file_id, dname, varid)
 if(ierr/=NF90_NOERR) error stop 'ERROR:nc4fortran:get_ndim: could not get variable ID for ' // dname
 
-ierr = nf90_inquire_variable(self%ncid, varid, ndims=drank)
+ierr = nf90_inquire_variable(self%file_id, varid, ndims=drank)
 if(ierr/=NF90_NOERR) error stop 'ERROR:nc4fortran:get_ndim: could not get rank for ' // dname
 
 end procedure get_ndim
@@ -75,19 +75,19 @@ N = self%ndim(dname)
 
 allocate(dimids(N), dims(N))
 
-ier = nf90_inq_varid(self%ncid, dname, varid)
+ier = nf90_inq_varid(self%file_id, dname, varid)
 if(check_error(ier, dname)) error stop 'ERROR:nc4fortran:get_shape: could not get variable ID for: ' // dname
 
-ier = nf90_inquire_variable(self%ncid, varid, dimids = dimids)
+ier = nf90_inquire_variable(self%file_id, varid, dimids = dimids)
 if(check_error(ier, dname)) error stop 'ERROR:nc4fortran:get_shape: could not get dimension IDs for: ' // dname
 
 if (present(dimnames)) allocate(tempnames(N))
 
 do i = 1,N
   if(present(dimnames)) then
-    ier = nf90_inquire_dimension(self%ncid, dimid=dimids(i), name=tempnames(i), len=dims(i))
+    ier = nf90_inquire_dimension(self%file_id, dimid=dimids(i), name=tempnames(i), len=dims(i))
   else
-    ier = nf90_inquire_dimension(self%ncid, dimid=dimids(i), len=dims(i))
+    ier = nf90_inquire_dimension(self%file_id, dimid=dimids(i), len=dims(i))
   endif
   if(ier/=NF90_NOERR) error stop 'ERROR:nc4fortran:get_shape: querying dimension size'
 enddo
@@ -107,7 +107,7 @@ exists = .false.
 
 if(.not.self%is_open) error stop 'ERROR:nc4fortran:exist: file handle not open '
 
-ierr = nf90_inq_varid(self%ncid, dname, varid)
+ierr = nf90_inq_varid(self%file_id, dname, varid)
 
 select case (ierr)
 case (NF90_NOERR)

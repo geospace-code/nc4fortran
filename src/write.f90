@@ -13,26 +13,18 @@ integer :: var_id, dimids(size(dims)), ier
 
 call def_dims(self, dset_name, dimnames=dim_names, dims=dims, dimids=dimids)
 
-if(self%comp_lvl >= 1 .and. self%comp_lvl <= 9) then
-  if(present(chunk_size)) then
-    ier = nf90_def_var(self%ncid, dset_name, dtype, dimids=dimids, varid=var_id, &
-      shuffle=.true., fletcher32=.true., deflate_level=self%comp_lvl, chunksizes=chunk_size)
-  else
-    ier = nf90_def_var(self%ncid, dset_name, dtype, dimids=dimids, varid=var_id, &
-      shuffle=.true., fletcher32=.true., deflate_level=self%comp_lvl)
-  endif
+if(present(chunk_size)) then
+  ier = nf90_def_var(self%file_id, dset_name, dtype, dimids=dimids, varid=var_id, &
+    shuffle=.true., fletcher32=.true., deflate_level=self%comp_lvl, chunksizes=chunk_size)
 else
-  if(present(chunk_size)) then
-    ier = nf90_def_var(self%ncid, dset_name, dtype, dimids=dimids, varid=var_id, chunksizes=chunk_size)
-  else
-    ier = nf90_def_var(self%ncid, dset_name, dtype, dimids=dimids, varid=var_id)
-  endif
-end if
+  ier = nf90_def_var(self%file_id, dset_name, dtype, dimids=dimids, varid=var_id, &
+    shuffle=.true., fletcher32=.true., deflate_level=self%comp_lvl)
+endif
 if (check_error(ier, dset_name)) error stop 'ERROR:nc4fortran:write def ' // dset_name // ' in ' // self%filename
 
-if(present(fill_value)) call filler(self%ncid, var_id, dtype, fill_value)
+if(present(fill_value)) call filler(self%file_id, var_id, dtype, fill_value)
 
-ier = nf90_enddef(self%ncid)
+ier = nf90_enddef(self%file_id)
 if (check_error(ier, dset_name)) error stop 'ERROR:nc4fortran:write end_def ' // dset_name // ' in ' // self%filename
 
 if(present(varid)) varid = var_id
@@ -97,7 +89,7 @@ end subroutine filler
 module procedure nc_flush
 integer :: ier
 
-ier = nf90_sync(self%ncid)
+ier = nf90_sync(self%file_id)
 if (check_error(ier, "")) error stop
 end procedure nc_flush
 
@@ -111,16 +103,16 @@ if(.not.self%is_open) error stop 'ERROR:nc4fortran:write:def_dims: file handle n
 
 do i=1,size(dims)
   if (present(dimnames)) then
-    ierr = nf90_inq_dimid(self%ncid, dimnames(i), dimids(i))
+    ierr = nf90_inq_dimid(self%file_id, dimnames(i), dimids(i))
     if(ierr==NF90_NOERR) cycle
     !! dimension already exists
   endif
   !! create new dimension
   if(present(dimnames)) then
-    ierr = nf90_def_dim(self%ncid, dimnames(i), dims(i), dimids(i))
+    ierr = nf90_def_dim(self%file_id, dimnames(i), dims(i), dimids(i))
   else
     write(name,'(A,A4,I1)') dname,"_dim",i
-    ierr = nf90_def_dim(self%ncid, trim(name), dims(i), dimids(i))
+    ierr = nf90_def_dim(self%file_id, trim(name), dims(i), dimids(i))
     ! print *,trim(name)
   endif
   if (check_error(ierr, dname)) error stop "ERROR:nc4fortran:write def_dim " // dname // " in " // self%filename

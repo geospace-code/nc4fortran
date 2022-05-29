@@ -21,7 +21,7 @@ integer, parameter :: NC_MAXDIM = 7
 type :: netcdf_file
 
 character(:), allocatable  :: filename
-integer :: ncid   !< location identifier
+integer :: file_id   !< location identifier
 
 integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
 logical :: verbose = .false.
@@ -201,46 +201,53 @@ class(*), intent(inout)      :: value
 !! inout for character
 end subroutine
 
-module subroutine nc_read_1d(self, dname, value)
+module subroutine nc_read_1d(self, dname, value, istart, iend)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:)
+integer, intent(in), dimension(1), optional :: istart, iend
 end subroutine
 
-module subroutine nc_read_2d(self, dname, value)
+module subroutine nc_read_2d(self, dname, value, istart, iend)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:)
+integer, intent(in), dimension(2), optional :: istart, iend
 end subroutine
 
-module subroutine nc_read_3d(self, dname, value)
+module subroutine nc_read_3d(self, dname, value, istart, iend)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:)
+integer, intent(in), dimension(3), optional :: istart, iend
 end subroutine
 
-module subroutine nc_read_4d(self, dname, value)
+module subroutine nc_read_4d(self, dname, value, istart, iend)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:,:)
+integer, intent(in), dimension(4), optional :: istart, iend
 end subroutine
 
-module subroutine nc_read_5d(self, dname, value)
+module subroutine nc_read_5d(self, dname, value, istart, iend)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:,:,:)
+integer, intent(in), dimension(5), optional :: istart, iend
 end subroutine
 
-module subroutine nc_read_6d(self, dname, value)
+module subroutine nc_read_6d(self, dname, value, istart, iend)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:,:,:,:)
+integer, intent(in), dimension(6), optional :: istart, iend
 end subroutine
 
-module subroutine nc_read_7d(self, dname, value)
+module subroutine nc_read_7d(self, dname, value, istart, iend)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:,:,:,:,:)
+integer, intent(in), dimension(7), optional :: istart, iend
 end subroutine
 
 end interface

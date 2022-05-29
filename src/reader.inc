@@ -2,10 +2,10 @@ integer :: varid, ier, drank
 
 if(.not.self%is_open) error stop 'nc4fortran:reader file handle not open'
 
-ier = nf90_inq_varid(self%ncid, dname, varid)
+ier = nf90_inq_varid(self%file_id, dname, varid)
 if (check_error(ier, dname)) error stop 'nc4fortran:read inquire_id ' // dname // ' in ' // self%filename
 
-ier = nf90_inquire_variable(self%ncid, varid, ndims=drank)
+ier = nf90_inquire_variable(self%file_id, varid, ndims=drank)
 if (check_error(ier, dname)) error stop 'nc4fortran:read inquire ' // dname // ' in ' // self%filename
 if(drank /= rank(value)) then
   write(stderr,*) 'ERROR:nc4fortran:read ' // dname // ' rank ', drank, ' /= variable rank ',rank(value)
@@ -14,13 +14,13 @@ endif
 
 select type (value)
 type is (real(real64))
-  ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%file_id, varid, value)
 type is (real(real32))
-  ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%file_id, varid, value)
 type is (integer(int64))
-  ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%file_id, varid, value)
 type is (integer(int32))
-  ier = nf90_get_var(self%ncid, varid, value)
+  ier = nf90_get_var(self%file_id, varid, value)
 class default
   ier = NF90_EBADTYPE
 end select

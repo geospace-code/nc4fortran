@@ -2,7 +2,7 @@ integer :: varid, ier, dtype
 integer, dimension(rank(value)) :: i0, i1
 
 if (self%exist(dname)) then
-  ier = nf90_inq_varid(self%ncid, dname, varid)
+  ier = nf90_inq_varid(self%file_id, dname, varid)
 else
   select type (value)
   type is (real(real32))
@@ -28,13 +28,13 @@ if(present(iend)) i1 = iend
 
 select type (value)
 type is (real(real32))
-  ier = nf90_put_var(self%ncid, varid, value, start=istart)
+  ier = nf90_put_var(self%file_id, varid, value, start=istart)
 type is (real(real64))
-  ier = nf90_put_var(self%ncid, varid, value, start=istart)
+  ier = nf90_put_var(self%file_id, varid, value, start=istart)
 type is (integer(int32))
-  ier = nf90_put_var(self%ncid, varid, value, start=istart)
+  ier = nf90_put_var(self%file_id, varid, value, start=istart)
 type is (integer(int64))
-  ier = nf90_put_var(self%ncid, varid, value, start=istart)
+  ier = nf90_put_var(self%file_id, varid, value, start=istart)
 class default
   ier = NF90_EBADTYPE
 end select
