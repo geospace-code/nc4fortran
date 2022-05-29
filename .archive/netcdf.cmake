@@ -6,7 +6,9 @@ include(GNUInstallDirs)
 # we MUST use shared libraries or they don't archive/link properly.
 
 find_package(HDF5 COMPONENTS C Fortran)
-if(NOT HDF5_FOUND)
+if(HDF5_FOUND)
+  add_custom_target(HDF5)
+else()
   include(${CMAKE_CURRENT_LIST_DIR}/hdf5.cmake)
 endif()
 
