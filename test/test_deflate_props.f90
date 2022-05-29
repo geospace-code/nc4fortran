@@ -32,8 +32,8 @@ integer :: chunks(2)
 
 inquire(file=fn, size=fsize)
 
-crat = (N(1) * N(2) * 32 / 8) / fsize
-print '(A,F6.2,A,f7.1)','#1 filesize (Mbytes): ',fsize/1e6, '  compression ratio:',crat
+crat = (N(1) * N(2) * 32 / 8) / real(fsize)
+print '(A,F6.2,A,f7.1)','#1 filesize (Mbytes): ',real(fsize)/1e6, '  compression ratio:',crat
 if(crat < MIN_COMP) error stop '2D low compression'
 
 call h%open(fn1, action='r')
