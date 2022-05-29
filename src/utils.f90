@@ -1,5 +1,7 @@
 submodule (nc4fortran) utils
 
+use netcdf, only : NF90_STRERROR
+
 implicit none (type, external)
 
 contains
@@ -28,7 +30,7 @@ select case(laction)
 case('r')
   ier = nf90_open(self%filename, NF90_NOWRITE, self%file_id)
 case('r+')
-  ier = nf90_open(self%filename, NF90_NETCDF4, self%file_id)
+  ier = nf90_open(self%filename, NF90_WRITE, self%file_id)
 case('rw', 'a')
   if(is_netcdf(filename)) then
     !! NF90_WRITE is necessary to be in true read/write mode
@@ -122,47 +124,10 @@ end procedure is_netcdf
 
 
 module procedure check_error
-character(:), allocatable :: m
 
-check_error = .true.
+check_error = code /= NF90_NOERR
 
-select case (code)
-case (NF90_NOERR)
-  check_error = .false.
-case (NF90_EHDFERR)
-  m = 'ERROR: ' // dname // ' an error was reported by the HDF5 layer.'
-case (NF90_EBADNAME)
-  m = 'ERROR: ' // dname // ' Name contains illegal characters.'
-case (NF90_EBADTYPE)
-  m = 'ERROR: ' // dname // ' specified type is not a valid netCDF type'
-case (NF90_EDIMSIZE)
-  m = 'ERROR: ' // dname // ' bad dimension size'
-case (NF90_EBADDIM)
-  m = 'ERROR: ' // dname // ' invalid dimension ID or Name'
-case (NF90_EBADGRPID)
-  m = 'ERROR: ' // dname // ' bad group ID in file_id'
-case (NF90_EBADID)
-  m = 'ERROR: ' // dname // ' Bad group id or file_id invalid'
-case (NF90_ENOTVAR)
-  m = 'ERROR: ' // dname // ' variable not found'
-case (NF90_ENOTNC)
-  m = 'ERROR: ' // dname // ' not a NetCDF file'
-case (NF90_ENAMEINUSE)
-  m = 'ERROR: ' // dname // ' That name is in use. Compound type names must be unique in the data file.'
-case (NF90_ECHAR)
-  m = 'ERROR: ' // dname // ' attempt to convert between text & numbers'
-case (NF90_EEDGE)
-  m = 'ERROR: ' // dname // ' edge + start exceeds dimension bound'
-case (NF90_ESTRIDE)
-  m = 'ERROR: ' // dname // ' illegal stride'
-case (NF90_EINDEFINE)
-  m = 'ERROR: ' // dname // ' operation not allowed in define mode'
-case default
-  write(stderr,'(/,A,I8)') 'ERROR: ' // dname // ' unknown error',code
-  m = ''
-end select
-
-if(check_error) write(stderr,'(/,A)') m
+if(check_error) write(stderr,'(/,A)') "ERROR:nc4fortran:" // NF90_STRERROR(code)
 
 end procedure check_error
 

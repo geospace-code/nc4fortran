@@ -20,13 +20,13 @@ endif
 
 select type (value)
 type is (real(real64))
-  ier = nf90_get_var(self%file_id, varid, value, start=istart, count=i)
+  ier = nf90_get_var(self%file_id, varid, value, start=istart, count=i, stride=stride)
 type is (real(real32))
-  ier = nf90_get_var(self%file_id, varid, value, start=istart, count=i)
+  ier = nf90_get_var(self%file_id, varid, value, start=istart, count=i, stride=stride)
 type is (integer(int64))
-  ier = nf90_get_var(self%file_id, varid, value, start=istart, count=i)
+  ier = nf90_get_var(self%file_id, varid, value, start=istart, count=i, stride=stride)
 type is (integer(int32))
-  ier = nf90_get_var(self%file_id, varid, value, start=istart, count=i)
+  ier = nf90_get_var(self%file_id, varid, value, start=istart, count=i, stride=stride)
 class default
   ier = NF90_EBADTYPE
 end select

@@ -78,10 +78,10 @@ class(*), intent(in), optional :: fill_value
 integer, intent(out), optional :: varid
 end subroutine
 
-module subroutine def_dims(self, dname, dimnames, dims, dimids)
+module subroutine def_dims(self, dname, dim_names, dims, dimids)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
-character(*), intent(in), optional :: dimnames(:)
+character(*), intent(in), optional :: dim_names(:)
 integer, intent(in) :: dims(:)
 integer, intent(out) :: dimids(size(dims))
 end subroutine
@@ -100,66 +100,66 @@ character(*), intent(in) :: dname
 class(*), intent(in) :: value
 end subroutine
 
-module subroutine nc_write_1d(self, dname, value, dims, istart, iend, chunk_size)
+module subroutine nc_write_1d(self, dname, value, dims, istart, iend, stride, chunk_size)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:)
 character(*), intent(in), optional :: dims(1)
-integer, intent(in), dimension(1), optional :: istart, iend
+integer, intent(in), dimension(1), optional :: istart, iend, stride
 integer, intent(in), dimension(1), optional :: chunk_size
 end subroutine
 
-module subroutine nc_write_2d(self, dname, value, dims, istart, iend, chunk_size)
+module subroutine nc_write_2d(self, dname, value, dims, istart, iend, stride, chunk_size)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:)
 character(*), intent(in), optional :: dims(2)
-integer, intent(in), dimension(2), optional :: istart, iend
+integer, intent(in), dimension(2), optional :: istart, iend, stride
 integer, intent(in), dimension(2), optional :: chunk_size
 end subroutine
 
-module subroutine nc_write_3d(self, dname, value, dims, istart, iend, chunk_size)
+module subroutine nc_write_3d(self, dname, value, dims, istart, iend, stride, chunk_size)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:)
 character(*), intent(in), optional :: dims(3)
-integer, intent(in), dimension(3), optional :: istart, iend
+integer, intent(in), dimension(3), optional :: istart, iend, stride
 integer, intent(in), dimension(3), optional :: chunk_size
 end subroutine
 
-module subroutine nc_write_4d(self, dname, value, dims, istart, iend, chunk_size)
+module subroutine nc_write_4d(self, dname, value, dims, istart, iend, stride, chunk_size)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:)
 character(*), intent(in), optional :: dims(4)
-integer, intent(in), dimension(4), optional :: istart, iend
+integer, intent(in), dimension(4), optional :: istart, iend, stride
 integer, intent(in), dimension(4), optional :: chunk_size
 end subroutine
 
-module subroutine nc_write_5d(self, dname, value, dims, istart, iend, chunk_size)
+module subroutine nc_write_5d(self, dname, value, dims, istart, iend, stride, chunk_size)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:)
 character(*), intent(in), optional :: dims(5)
-integer, intent(in), dimension(5), optional :: istart, iend
+integer, intent(in), dimension(5), optional :: istart, iend, stride
 integer, intent(in), dimension(5), optional :: chunk_size
 end subroutine
 
-module subroutine nc_write_6d(self, dname, value, dims, istart, iend, chunk_size)
+module subroutine nc_write_6d(self, dname, value, dims, istart, iend, stride, chunk_size)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:)
 character(*), intent(in), optional :: dims(6)
-integer, intent(in), dimension(6), optional :: istart, iend
+integer, intent(in), dimension(6), optional :: istart, iend, stride
 integer, intent(in), dimension(6), optional :: chunk_size
 end subroutine
 
-module subroutine nc_write_7d(self, dname, value, dims, istart, iend, chunk_size)
+module subroutine nc_write_7d(self, dname, value, dims, istart, iend, stride, chunk_size)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:,:)
 character(*), intent(in), optional :: dims(7)
-integer, intent(in), dimension(7), optional :: istart, iend
+integer, intent(in), dimension(7), optional :: istart, iend, stride
 integer, intent(in), dimension(7), optional :: chunk_size
 end subroutine
 
@@ -208,53 +208,53 @@ class(*), intent(inout)      :: value
 !! inout for character
 end subroutine
 
-module subroutine nc_read_1d(self, dname, value, istart, iend)
+module subroutine nc_read_1d(self, dname, value, istart, iend, stride)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:)
-integer, intent(in), dimension(1), optional :: istart, iend
+integer, intent(in), dimension(1), optional :: istart, iend, stride
 end subroutine
 
-module subroutine nc_read_2d(self, dname, value, istart, iend)
+module subroutine nc_read_2d(self, dname, value, istart, iend, stride)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:)
-integer, intent(in), dimension(2), optional :: istart, iend
+integer, intent(in), dimension(2), optional :: istart, iend, stride
 end subroutine
 
-module subroutine nc_read_3d(self, dname, value, istart, iend)
+module subroutine nc_read_3d(self, dname, value, istart, iend, stride)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:)
-integer, intent(in), dimension(3), optional :: istart, iend
+integer, intent(in), dimension(3), optional :: istart, iend, stride
 end subroutine
 
-module subroutine nc_read_4d(self, dname, value, istart, iend)
+module subroutine nc_read_4d(self, dname, value, istart, iend, stride)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:,:)
-integer, intent(in), dimension(4), optional :: istart, iend
+integer, intent(in), dimension(4), optional :: istart, iend, stride
 end subroutine
 
-module subroutine nc_read_5d(self, dname, value, istart, iend)
+module subroutine nc_read_5d(self, dname, value, istart, iend, stride)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:,:,:)
-integer, intent(in), dimension(5), optional :: istart, iend
+integer, intent(in), dimension(5), optional :: istart, iend, stride
 end subroutine
 
-module subroutine nc_read_6d(self, dname, value, istart, iend)
+module subroutine nc_read_6d(self, dname, value, istart, iend, stride)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:,:,:,:)
-integer, intent(in), dimension(6), optional :: istart, iend
+integer, intent(in), dimension(6), optional :: istart, iend, stride
 end subroutine
 
-module subroutine nc_read_7d(self, dname, value, istart, iend)
+module subroutine nc_read_7d(self, dname, value, istart, iend, stride)
 class(netcdf_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value(:,:,:,:,:,:,:)
-integer, intent(in), dimension(7), optional :: istart, iend
+integer, intent(in), dimension(7), optional :: istart, iend, stride
 end subroutine
 
 end interface

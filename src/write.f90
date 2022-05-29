@@ -11,7 +11,7 @@ module procedure nc_create
 
 integer :: var_id, dimids(size(dims)), ier
 
-call def_dims(self, dset_name, dimnames=dim_names, dims=dims, dimids=dimids)
+call def_dims(self, dset_name, dim_names, dims=dims, dimids=dimids)
 
 if(present(chunk_size)) then
   ier = nf90_def_var(self%file_id, dset_name, dtype, dimids=dimids, varid=var_id, &
@@ -102,19 +102,20 @@ character(NF90_MAX_NAME) :: name
 if(.not.self%is_open) error stop 'ERROR:nc4fortran:write:def_dims: file handle not open'
 
 do i=1,size(dims)
-  if (present(dimnames)) then
-    ierr = nf90_inq_dimid(self%file_id, dimnames(i), dimids(i))
+  if(present(dim_names)) then
+    ierr = nf90_inq_dimid(self%file_id, dim_names(i), dimids(i))
     if(ierr==NF90_NOERR) cycle
     !! dimension already exists
   endif
-  !! create new dimension
-  if(present(dimnames)) then
-    ierr = nf90_def_dim(self%file_id, dimnames(i), dims(i), dimids(i))
+
+  !> create new dimension
+  if(present(dim_names)) then
+    ierr = nf90_def_dim(self%file_id, dim_names(i), dims(i), dimids(i))
   else
     write(name,'(A,A4,I1)') dname,"_dim",i
     ierr = nf90_def_dim(self%file_id, trim(name), dims(i), dimids(i))
-    ! print *,trim(name)
   endif
+  if(self%debug) print '(a,i1,a)', "TRACE:def_dims: dimension ", i, " name: " // trim(name)
   if (check_error(ierr, dname)) error stop "ERROR:nc4fortran:write def_dim " // dname // " in " // self%filename
 end do
 
