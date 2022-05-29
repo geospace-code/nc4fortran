@@ -5,17 +5,43 @@ use, intrinsic:: iso_fortran_env, only: real64, stdout=>output_unit, stderr=>err
 
 implicit none (type, external)
 
-type(netcdf_file) :: h
-character(*), parameter :: path = 'test_shape.nc'
-integer, allocatable :: dims(:)
-character(NF90_MAX_NAME), allocatable :: dimnames(:)
+character(*), parameter :: fn = 'test_shape.nc'
 
+
+call test_shape_write(fn)
+
+call test_shape_read(fn)
+print *, "OK: test_shape"
+
+
+contains
+
+
+subroutine test_shape_write(fn)
+
+character(*), intent(in) :: fn
+
+type(netcdf_file) :: h
 integer :: d2(3,4), d7(2,1,3,4,7,6,5)
 
-call h%open(path, action='w')
+call h%open(fn, action='w')
 call h%write('d2', d2)
 call h%write('d7', d7, dims=['x','y','z', 'p','q','r','s'])
+call h%close()
 
+end subroutine test_shape_write
+
+
+subroutine test_shape_read(fn)
+
+character(*), intent(in) :: fn
+
+type(netcdf_file) :: h
+character(NF90_MAX_NAME), allocatable :: dimnames(:)
+integer, allocatable :: dims(:)
+integer :: d2(3,4), d7(2,1,3,4,7,6,5)
+
+call h%open(fn, action='r')
 call h%shape('d2', dims)
 if (h%ndim('d2') /= size(dims)) error stop 'rank /= size(dims)'
 if (any(dims /= shape(d2))) error stop '2-D: file shape not match variable shape'
@@ -25,5 +51,7 @@ if (h%ndim('d7') /= size(dims)) error stop 'rank /= size(dims)'
 if (any(dims /= shape(d7))) error stop '7-D: file shape not match variable shape'
 
 call h%close()
+
+end subroutine test_shape_read
 
 end program
