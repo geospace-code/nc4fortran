@@ -11,7 +11,9 @@ FIXTURES_SETUP nclib
 LABELS core
 )
 
-set(test_names array attributes deflate destructor error exist fill scalar shape string version)
+set(test_names array attributes
+deflate_write deflate_read deflate_props
+destructor error exist fill scalar shape string version)
 foreach(t IN LISTS test_names)
   add_executable(test_${t} test_${t}.f90)
   target_link_libraries(test_${t} PRIVATE nc4fortran::nc4fortran)
@@ -30,6 +32,15 @@ foreach(t IN LISTS test_names)
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
 endforeach()
+
+set_tests_properties(deflate_write PROPERTIES
+FIXTURES_SETUP deflate_files
+)
+
+set_tests_properties(deflate_props deflate_read PROPERTIES
+FIXTURES_REQUIRED deflate_files
+REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/deflate1.nc
+)
 
 
 if(ENABLE_COVERAGE)

@@ -7,8 +7,6 @@ contains
 module procedure nc_write_scalar
 integer :: varid, ier, lenid
 
-if(.not.self%is_open) error stop 'nc4fortran:write: file handle not open for ' // dname // ' in ' // self%filename
-
 if (self%exist(dname)) then
   ier = nf90_inq_varid(self%ncid, dname, varid)
 else

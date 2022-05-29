@@ -6,3 +6,50 @@ version = "1.6.1"
 [build]
 external-modules = ["netcdf"]
 link = ["netcdf", "netcdff", "hdf5", "hdf5_hl", "hdf5_fortran", "hdf5hl_fortran"]
+
+[install]
+library = true
+
+[[test]]
+name = "minimal"
+main = "test_minimal.f90"
+
+[[test]]
+name = "attributes"
+main = "test_attributes.f90"
+
+[[test]]
+name = "deflate_write"
+main = "test_deflate_write.f90"
+
+[[test]]
+name = "deflate_read"
+main = "test_deflate_read.f90"
+
+[[test]]
+name = "deflate_props"
+main = "test_deflate_props.f90"
+
+[[test]]
+name = "destructor"
+main = "test_destructor.f90"
+
+[[test]]
+name = "exist"
+main = "test_exist.f90"
+
+[[test]]
+name = "scalar"
+main = "test_scalar.f90"
+
+[[test]]
+name = "shape"
+main = "test_shape.f90"
+
+[[test]]
+name = "string"
+main = "test_string.f90"
+
+[[test]]
+name = "version"
+main = "test_version.f90"

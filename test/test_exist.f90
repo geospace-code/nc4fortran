@@ -8,7 +8,7 @@ implicit none (type, external)
 call test_is_netcdf()
 print *, 'OK: is_netcdf'
 
-call test_exist()
+call test_exist('exist.h5')
 print *, 'OK: exist'
 
 call test_multifiles()
@@ -30,9 +30,11 @@ if(is_netcdf('not.nc')) error stop 'text files are not NetCDF4'
 end subroutine test_is_netcdf
 
 
-subroutine test_exist()
+subroutine test_exist(fn)
+
+character(*), intent(in) :: fn
+
 type(netcdf_file) :: h
-character(*), parameter :: fn = 'exist.nc'
 
 call h%open(fn, action='w')
 call h%write('x', 42)
@@ -40,20 +42,16 @@ call h%close()
 if(.not.is_netcdf(fn)) error stop 'file does not exist'
 
 call h%open(fn, "r")
-if (.not.h%is_open) error stop 'file is open'
 if (.not. h%exist('x')) error stop 'x exists'
 
-if (h%exist('foo')) then
-  write(stderr,*) 'variable foo not exist in ', h%filename
-  error stop
-endif
+if (h%exist('A')) error stop 'variable A should not exist in ' // h%filename
 
 call h%close()
 
 if(h%is_open) error stop 'file is closed'
 
 if (.not. nc_exist(fn, 'x')) error stop 'x exists'
-if (nc_exist(fn, 'foo')) error stop 'foo not exist'
+if (nc_exist(fn, 'A')) error stop 'A not exist'
 
 end subroutine test_exist
 

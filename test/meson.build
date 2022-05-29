@@ -6,12 +6,17 @@ test('minimal', test_minimal,
   priority: 100,
   timeout: 10)
 
-foreach t : ['array', 'attributes', 'deflate', 'destructor', 'error', 'exist', 'fill', 'scalar', 'shape', 'string', 'version']
+foreach t : ['array', 'attributes',
+'deflate_write', 'deflate_read', 'deflate_props',
+'destructor', 'error', 'exist', 'fill', 'scalar', 'shape', 'string', 'version']
 
   e = executable('test_'+t, 'test_' + t + '.f90', dependencies: netcdf_interface, fortran_args: quiet)
-  if t == 'shape'
+  if t == ['shape', 'deflate_write'].contains(t)
     par = false
     pri = 50
+  elif ['deflate_read', 'deflate_props'].contains(t)
+    par = false
+    pri = -100
   else
     par = true
     pri = 0

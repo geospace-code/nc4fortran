@@ -32,10 +32,21 @@ logical :: is_open = .false.
 contains
 
 !> methods used directly without type/rank agnosticism
-procedure, public :: open => nc_open, close => nc_close, create => nc_create, &
-  shape => get_shape, ndims => get_ndims, write_attribute, read_attribute, flush=>nc_flush, &
-  exist=>nc_check_exist, exists=>nc_check_exist, &
-  is_chunked, is_contig, chunks=>get_chunk
+procedure, public :: open => nc_open
+procedure, public :: close => nc_close
+procedure, public :: create => nc_create
+procedure, public :: shape => get_shape
+procedure, public :: ndim => get_ndim
+procedure, public :: ndims => get_ndim
+procedure, public :: write_attribute
+procedure, public :: read_attribute
+procedure, public :: flush=>nc_flush
+procedure, public :: deflate => get_deflate
+procedure, public :: exist=>nc_check_exist
+procedure, public :: exists=>nc_check_exist
+procedure, public :: is_chunked
+procedure, public :: is_contig
+procedure, public :: chunks=>get_chunk
 
 !> generic procedures mapped over type / rank
 generic, public :: write => &
@@ -56,12 +67,13 @@ end type netcdf_file
 
 interface !< write.f90
 
-module subroutine nc_create(self, dset_name, dtype, dims, dim_names, fill_value, varid)
+module subroutine nc_create(self, dset_name, dtype, dims, dim_names, chunk_size, fill_value, varid)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dset_name
 integer, intent(in) :: dtype
 integer, intent(in) :: dims(:)
 character(*), intent(in), optional :: dim_names(:)
+integer, intent(in), optional :: chunk_size(:)
 class(*), intent(in), optional :: fill_value
 integer, intent(out), optional :: varid
 end subroutine
@@ -88,53 +100,60 @@ character(*), intent(in) :: dname
 class(*), intent(in) :: value
 end subroutine
 
-module subroutine nc_write_1d(self, dname, value, dims)
+module subroutine nc_write_1d(self, dname, value, dims, istart, iend, chunk_size)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:)
 character(*), intent(in), optional :: dims(1)
+integer, intent(in), dimension(1), optional :: istart, iend, chunk_size
 end subroutine
 
-module subroutine nc_write_2d(self, dname, value, dims)
+module subroutine nc_write_2d(self, dname, value, dims, istart, iend, chunk_size)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:)
 character(*), intent(in), optional :: dims(2)
+integer, intent(in), dimension(2), optional :: istart, iend, chunk_size
 end subroutine
 
-module subroutine nc_write_3d(self, dname, value, dims)
+module subroutine nc_write_3d(self, dname, value, dims, istart, iend, chunk_size)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:)
 character(*), intent(in), optional :: dims(3)
+integer, intent(in), dimension(3), optional :: istart, iend, chunk_size
 end subroutine
 
-module subroutine nc_write_4d(self, dname, value, dims)
+module subroutine nc_write_4d(self, dname, value, dims, istart, iend, chunk_size)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:)
 character(*), intent(in), optional :: dims(4)
+integer, intent(in), dimension(4), optional :: istart, iend, chunk_size
 end subroutine
 
-module subroutine nc_write_5d(self, dname, value, dims)
+module subroutine nc_write_5d(self, dname, value, dims, istart, iend, chunk_size)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:)
 character(*), intent(in), optional :: dims(5)
+integer, intent(in), dimension(5), optional :: istart, iend, chunk_size
 end subroutine
 
-module subroutine nc_write_6d(self, dname, value, dims)
+module subroutine nc_write_6d(self, dname, value, dims, istart, iend, chunk_size)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:)
 character(*), intent(in), optional :: dims(6)
+integer, intent(in), dimension(6), optional :: istart, iend, chunk_size
 end subroutine
 
-module subroutine nc_write_7d(self, dname, value, dims)
+module subroutine nc_write_7d(self, dname, value, dims, istart, iend, chunk_size)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:,:)
 character(*), intent(in), optional :: dims(7)
+integer, intent(in), dimension(7), optional :: istart, iend, chunk_size
 end subroutine
 
 end interface
@@ -147,10 +166,10 @@ class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
 integer, intent(out) :: chunk_size(:)
 end subroutine
-module integer function get_ndims(self, dname) result (drank)
+module integer function get_ndim(self, dname) result (drank)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname
-end function get_ndims
+end function get_ndim
 
 module subroutine get_shape(self, dname, dims, dimnames)
 class(netcdf_file), intent(in)  :: self
@@ -158,6 +177,11 @@ character(*), intent(in)         :: dname
 integer, intent(out), allocatable :: dims(:)
 character(NF90_MAX_NAME), intent(out), allocatable, optional :: dimnames(:)
 end subroutine
+
+module logical function get_deflate(self, dname)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dname
+end function
 
 module logical function nc_check_exist(self, dname) result(exists)
 class(netcdf_file), intent(in) :: self
