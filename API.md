@@ -1,65 +1,134 @@
-# nc4fortran Usage
+# nc4fortran API
+
+This document provides a listing of nc4fortran `public` scoped user-facing procedures and methods with a summary of their parameters.
 
 All examples assume:
 
 ```fortran
 use nc4fortran, only: netcdf_file
-type(netcdf_file) :: hf
+
+type(netcdf_file) :: h
 ```
 
-* gzip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value between 1 and 9.
-  Shuffle filter is automatically applied for better compression
-* string attributes may be applied to any variable at time of writing or later.
-
-Check NetCDF4 library version:
+Query NetCDF4 library version:
 
 ```fortran
-use nc4fortran, only: nc4version
+use nc4fortran, only : nc4version
 print *, nc4version()
 ```
 
-Create new NetCDF file, with variable "value1"
+## Open NetCDF4 file reference
+
+More than one NetCDF4 file can be open in a program, by declaring unique file handle (variable) like:
 
 ```fortran
-call hf%open('test.nc', action='w')
-
-call hf%write('value1', 123.)
-
-call hf%close()
+type(netcdf_file) :: h1, h2, h3
 ```
 
-Check if variable exists
-
 ```fortran
-logical :: exists
+call h%open(filename, action, comp_lvl)
+!! Opens hdf5 file
 
-exists = hf%exist('fooname')
+character(*), intent(in) :: filename
+character(*), intent(in), optional :: action  !< r, w, rw
+integer, intent(in), optional      :: comp_lvl  !< 0: no compression. 1-9: ZLIB compression, higher is more compressior
 ```
 
-Add/append variable "value1" to existing NetCDF file "test.nc"
-
-* if file `test.nc` exists, add a variable to it
-* if file `test.nc` does not exist, create it and add a variable to it.
+## Close NetCDF4 file reference
 
 ```fortran
-call hf%open('test.nc', action='rw')
-
-call hf%write('value1', 123.)
-
-call hf%close()
+call h%close()
+!! This must be called on each open file to flush buffers to disk
+!! data loss can occur if program terminates before this procedure
 ```
 
-Read scalar, 3-D array of unknown size
+To avoid memory leaks or corrupted files, always "close" files before STOPping the Fortran program.
+
+## Flush data to disk while file is open
 
 ```fortran
-call ncf%open('test.nc', action='r')
+call h%flush()
+```
 
-integer, allocatable :: dims(:)
-real, allocatable :: A(:,:,:)
+## Disk variable (dataset) inquiry
 
-call ncf%shape('foo', dims)
-allocate(A(dims(1), dims(2), dims(3)))
-call ncf%read('foo', A)
+To allocate variables before reading data, inquire about dataset characteristics with these procedures.
 
-call ncf%close()
+```fortran
+rank = h%ndim(dataset_name)
+
+character(*), intent(in) :: dataset_name
+```
+
+Get disk dataset shape (1D vector)
+
+```fortran
+call h%shape(dataset_name, dims)
+
+character(*), intent(in) :: dataset_name
+integer(HSIZE_T), intent(out), allocatable :: dims(:)
+```
+
+Does dataset "dname" exist in this HDF5 file?
+
+```fortran
+tf = h%exist(dname)
+
+character(*), intent(in) :: dname
+```
+
+Is dataset "dname" contiguous on disk?
+
+```fortran
+tf = h%is_contig(dname)
+
+character(*), intent(in) :: dname
+```
+
+These are more advanced inquiries into the memory layout of the dataset, for advanced users:
+
+```fortran
+call h%chunks(dname, chunk_size)
+
+character(*), intent(in) :: dname
+integer, intent(out) :: chunk_size(:)
+```
+
+## file write operations
+
+```fortran
+call h%write(dname,value, istart, iend, stride, chunk_size)
+!! write 0d..7d dataset
+character(*), intent(in) :: dname
+class(*), intent(in) :: value(:)  !< array to write
+integer, intent(in), optional :: chunk_size(rank(value))
+integer, intent(in), optional, dimension(:) :: istart, iend, stride  !< array slicing
+```
+
+Write dataset attribute (e.g. units or instrument)
+
+```fortran
+call h%writeattr(dname, attr, attrval)
+
+character(*), intent(in) :: dname, attr  !< dataset name, attribute name
+class(*), intent(in) :: attrval(:)  !< character, real, integer
+```
+
+## file read operations
+
+Read data from disk to memory
+
+```fortran
+call h%read(dname, value, istart, iend, stride)
+character(*), intent(in)         :: dname
+class(*), intent(out) :: value(:)  !< read array to this ALLOCATED variable
+integer, intent(in), optional, dimension(:) :: istart, iend, stride !< array slicing
+```
+
+Read dataset attribute into memory
+
+```fortran
+call h%readattr(dname, attr, attrval)
+character(*), intent(in) :: dname, attr  !< dataset name, attribute name
+class(*), intent(out) :: attrval(:)  !< character, real, integer
 ```
