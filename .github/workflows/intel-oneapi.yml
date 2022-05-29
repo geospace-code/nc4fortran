@@ -2,7 +2,6 @@ name: intel-oneapi
 
 env:
   CTEST_PARALLEL_LEVEL: 2
-  CMAKE_BUILD_TYPE: Release
   CMAKE_GENERATOR: Ninja
   CC: icx
   FC: ifx
@@ -48,8 +47,14 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    - name: Configure CMake
-      run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
+    - name: Configure HDF5 + NetCDF4
+      run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
+
+    - name: Build/install NetCDF4
+      run: cmake --build scripts/build --parallel
+
+    - name: Configure nc4fortran
+      run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DCMAKE_PREFIX_PATH=${{ runner.temp }}
 
     - name: print config log
       if: ${{ failure() }}
@@ -69,8 +74,8 @@ jobs:
       run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }}
+      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }}
     - name: build examples
-      run: cmake --build Examples/build
+      run: cmake --build example/build --parallel
     - name: Test examples
-      run: ctest --test-dir Examples/build -V
+      run: ctest --test-dir example/build -V
