@@ -20,7 +20,7 @@ foreach(t IN LISTS test_names)
   set_target_properties(test_${t} PROPERTIES LABELS unit)
   target_compile_options(test_${t} PRIVATE "$<$<Fortran_COMPILER_ID:GNU>:-Wno-compare-reals>")
 
-  if(${t} STREQUAL version)
+  if(${t} STREQUAL "version")
     add_test(NAME ${t} COMMAND test_${t} ${NetCDF_VERSION})
   else()
     add_test(NAME ${t} COMMAND test_${t})
