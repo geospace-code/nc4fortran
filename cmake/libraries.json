@@ -1,11 +1,11 @@
 {
 "netcdfC": {
   "url": "https://github.com/Unidata/netcdf-c.git",
-  "tag": "v4.8.1"
+  "tag": "v4.9.0"
 },
 "netcdfFortran": {
   "url": "https://github.com/Unidata/netcdf-fortran.git",
-  "tag": "v4.5.4"
+  "tag": "v4.6.0"
 },
 "zlib": {
   "url" : "https://github.com/zlib-ng/zlib-ng.git",

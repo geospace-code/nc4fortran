@@ -110,11 +110,16 @@ if(NOT NetCDF_Fortran_INCLUDE_DIR)
   return()
 endif()
 
-cmake_path(GET NetCDF_C_LIBRARY PARENT_PATH NetCDF_LIBDIR)
+if(CMAKE_VERSION VERSION_LESS 3.20)
+  get_filename_component(NetCDF_LIBDIR ${NetCDF_C_LIBRARY} DIRECTORY)
+else()
+  cmake_path(GET NetCDF_C_LIBRARY PARENT_PATH NetCDF_LIBDIR)
+endif()
 
 find_library(NetCDF_Fortran_LIBRARY
 NAMES netcdff
 HINTS ${NetCDF_LIBDIR}
+NO_DEFAULT_PATH
 DOC "NetCDF Fortran library"
 )
 
@@ -175,10 +180,8 @@ if(NetCDF_FOUND)
 
   if(NOT TARGET NetCDF::NetCDF_C)
     add_library(NetCDF::NetCDF_C INTERFACE IMPORTED)
-    set_target_properties(NetCDF::NetCDF_C PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES "${NetCDF_C_INCLUDE_DIR}"
-    INTERFACE_LINK_LIBRARIES "${NetCDF_C_LIBRARY}"
-    )
+    set_property(TARGET NetCDF::NetCDF_C PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${NetCDF_C_INCLUDE_DIR}")
+    set_property(TARGET NetCDF::NetCDF_C PROPERTY INTERFACE_LINK_LIBRARIES "${NetCDF_C_LIBRARY}")
 
     target_link_libraries(NetCDF::NetCDF_C INTERFACE
     $<$<BOOL:${ZLIB_FOUND}>:${ZLIB_LIBRARIES}>
@@ -193,10 +196,8 @@ if(NetCDF_FOUND)
     set(NetCDF_Fortran_LIBRARIES ${NetCDF_Fortran_LIBRARY})
     if(NOT TARGET NetCDF::NetCDF_Fortran)
       add_library(NetCDF::NetCDF_Fortran INTERFACE IMPORTED)
-      set_target_properties(NetCDF::NetCDF_Fortran PROPERTIES
-      INTERFACE_INCLUDE_DIRECTORIES "${NetCDF_Fortran_INCLUDE_DIR}"
-      INTERFACE_LINK_LIBRARIES "${NetCDF_Fortran_LIBRARY}"
-      )
+      set_property(TARGET NetCDF::NetCDF_Fortran PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${NetCDF_Fortran_INCLUDE_DIR}")
+      set_property(TARGET NetCDF::NetCDF_Fortran PROPERTY INTERFACE_LINK_LIBRARIES "${NetCDF_Fortran_LIBRARY}")
 
       target_link_libraries(NetCDF::NetCDF_Fortran INTERFACE
       $<$<BOOL:${ZLIB_FOUND}>:${ZLIB_LIBRARIES}>

@@ -23,15 +23,12 @@ jobs:
       matrix:
         shared: [true, false]
         img: [
-          {os: ubuntu-latest, fc: gfortran, cmd: sudo apt update && sudo apt install --no-install-recommends ninja-build libnetcdff-dev},
-          {os: macos-latest, fc: gfortran-11, cmd: brew install netcdf ninja }
+          {os: ubuntu-latest, cmd: sudo apt update && sudo apt install --no-install-recommends ninja-build libnetcdff-dev},
+          {os: macos-latest, cmd: brew install netcdf ninja && brew reinstall gcc }
         ]
 
-    env:
-      FC: ${{ matrix.img.fc }}
-
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: install system libs
       run: ${{ matrix.img.cmd }}
@@ -60,7 +57,7 @@ jobs:
     timeout-minutes: 15
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: install libs
       run: |
@@ -95,8 +92,8 @@ jobs:
     timeout-minutes: 10
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
       with:
         python-version: '3.x'
 
@@ -114,7 +111,7 @@ jobs:
     - name: Code coverage
       run: cmake --build --preset run-coverage
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: coverage-report-html
         path: build-coverage/coverage/
@@ -126,14 +123,14 @@ jobs:
     needs: base
     runs-on: macos-latest
     timeout-minutes: 30
-    env:
-      FC: gfortran-11
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: install libs
-      run: brew install hdf5
+      run: |
+        brew install hdf5
+        brew reinstall gcc
 
     - name: Configure NetCDF4
       run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}

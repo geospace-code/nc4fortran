@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20...3.24)
+cmake_minimum_required(VERSION 3.19...3.25)
 
 get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 if(NOT is_multi_config AND NOT (CMAKE_BUILD_TYPE OR DEFINED ENV{CMAKE_BUILD_TYPE}))
@@ -61,8 +61,8 @@ install(TARGETS nc4fortran EXPORT ${PROJECT_NAME}-targets)
 
 # additional Find*.cmake necessary
 install(FILES
-${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindHDF5.cmake
-${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindNetCDF.cmake
+${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindHDF5.cmake
+${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindNetCDF.cmake
 DESTINATION cmake
 )
 

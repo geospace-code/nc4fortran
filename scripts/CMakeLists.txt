@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.19...3.25)
 project(NetCDF_build
 LANGUAGES C Fortran
 )
@@ -9,12 +9,12 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   cmake -B build -DCMAKE_INSTALL_PREFIX=~/mylibs")
 endif()
 
-cmake_path(SET CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/Modules/)
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
 
 set(CMAKE_TLS_VERIFY on)
 
 # --- commence NetCDF build/install
-set_directory_properties(PROPERTIES EP_UPDATE_DISCONNECTED true)
+set_property(DIRECTORY PROPERTY EP_UPDATE_DISCONNECTED true)
 
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/libraries.json json)
 
