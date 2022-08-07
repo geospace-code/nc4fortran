@@ -1,18 +1,13 @@
-cmake_minimum_required(VERSION 3.19...3.25)
+cmake_minimum_required(VERSION 3.11...3.25)
 
 get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 if(NOT is_multi_config AND NOT (CMAKE_BUILD_TYPE OR DEFINED ENV{CMAKE_BUILD_TYPE}))
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Release default")
 endif()
 
-file(READ ${CMAKE_CURRENT_LIST_DIR}/codemeta.json _j)
-string(JSON PROJECT_VERSION GET ${_j} version)
-
 project(nc4fortran
 LANGUAGES C Fortran
-VERSION ${PROJECT_VERSION}
-DESCRIPTION "thin, light object-oriented NetCDF4 Fortran interface"
-HOMEPAGE_URL https://github.com/geospace-code/nc4fortran
+VERSION 1.7.0
 )
 
 include(CTest)
@@ -39,7 +34,13 @@ endif()
 
 # --- build
 
-add_library(nc4fortran)
+set(s ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+add_library(nc4fortran ${s}/interface.f90 ${s}/utils.f90
+${s}/read.f90 ${s}/reader.f90 ${s}/read_scalar.f90
+${s}/write.f90 ${s}/writer.f90 ${s}/write_scalar.f90
+${s}/attributes.f90
+)
 target_include_directories(nc4fortran PUBLIC
 $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
 $<INSTALL_INTERFACE:include>
@@ -55,9 +56,14 @@ VERSION ${PROJECT_VERSION}
 add_library(nc4fortran::nc4fortran INTERFACE IMPORTED GLOBAL)
 target_link_libraries(nc4fortran::nc4fortran INTERFACE nc4fortran)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/nc4fortran.mod TYPE INCLUDE)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/nc4fortran.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-install(TARGETS nc4fortran EXPORT ${PROJECT_NAME}-targets)
+install(TARGETS nc4fortran EXPORT ${PROJECT_NAME}-targets
+LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
 
 # additional Find*.cmake necessary
 install(FILES
@@ -66,8 +72,6 @@ ${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindNetCDF.cmake
 DESTINATION cmake
 )
 
-
-add_subdirectory(src)
 
 if(${PROJECT_NAME}_BUILD_TESTING)
   add_subdirectory(test)

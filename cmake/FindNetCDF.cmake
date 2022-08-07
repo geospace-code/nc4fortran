@@ -40,7 +40,8 @@ Search details:
 
 #]=======================================================================]
 
-include(CheckSourceCompiles)
+include(CheckCSourceCompiles)
+include(CheckFortranSourceCompiles)
 
 function(netcdf_c)
 
@@ -76,15 +77,16 @@ if(UNIX)
   list(APPEND CMAKE_REQUIRED_LIBRARIES m)
 endif()
 
-check_source_compiles(C
-"#include <netcdf.h>
+check_c_source_compiles(
+[=[
+#include <netcdf.h>
 #include <stdio.h>
 
 int main(void){
-printf(\"%s\", nc_inq_libvers());
+printf("%s", nc_inq_libvers());
 return 0;
 }
-"
+]=]
 NetCDF_C_links
 )
 
@@ -129,13 +131,15 @@ endif()
 
 set(CMAKE_REQUIRED_FLAGS)
 set(CMAKE_REQUIRED_INCLUDES ${NetCDF_Fortran_INCLUDE_DIR})
-list(PREPEND CMAKE_REQUIRED_LIBRARIES ${NetCDF_Fortran_LIBRARY})
+list(INSERT CMAKE_REQUIRED_LIBRARIES 0 ${NetCDF_Fortran_LIBRARY})
 
-check_source_compiles(Fortran "program a
+check_fortran_source_compiles(
+"program a
 use netcdf
 implicit none
 end program"
 NetCDF_Fortran_links
+SRC_EXT f90
 )
 
 if(NOT NetCDF_Fortran_links)

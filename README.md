@@ -4,11 +4,10 @@
 ![ci](https://github.com/geospace-code/nc4fortran/workflows/ci/badge.svg)
 [![ci_windows](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_windows.yml/badge.svg)](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_windows.yml)
 [![ci_fpm](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_fpm.yml/badge.svg)](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_fpm.yml)
-![ci_meson](https://github.com/geospace-code/nc4fortran/workflows/ci_meson/badge.svg)
 
 Simple, robust, thin, object-oriented NetCDF4 polymorphic read/write interface.
 For HDF5 see [h5fortran](https://github.com/geospace-code/h5fortran).
-Designed for easy use as a Meson "subproject" or CMake "ExternalProject" using **static** or **shared** linking.
+Designed for easy use as a CMake "ExternalProject" using **static** or **shared** linking.
 Uses Fortran 2008 `submodule` for clean template structure.
 nc4fortran abstracts away the messy parts of NetCDF4 so that you can read/write various types/ranks of data with a single command.
 In distinction from other high-level NetCDF4 interfaces, nc4fortran works to deduplicate code, using polymorphism wherever feasible, with an extensive test suite.
@@ -47,7 +46,7 @@ Requirements:
 
 Note that some precompiled NetCDF4 libraries include C / C++ without Fortran.
 
-Build this NetCDF OO Fortran interface with Meson or CMake.
+Build this NetCDF OO Fortran interface.
 The library `libnc4fortran.a` is built, link it into your program as usual.
 
 ### CMake
@@ -91,31 +90,4 @@ target_link_libraries(myProj nc4fortran::nc4fortran)
 fpm build
 fpm test
 fpm install
-```
-
-### Meson
-
-To build nc4fortran as a standalone project
-
-```sh
-meson build
-
-meson test -C build
-```
-
-To include nc4fortran as a Meson subproject, in the master project meson.build (that uses nc4fortran) have like:
-
-```meson
-nc4_proj = subproject('nc4fortran')
-nc4_interface = nc4_proj.get_variable('netcdf_interface')
-
-my_exe = executable('myexe', 'main.f90', dependencies: nc4_interface)
-```
-
-and have a file in the master project `subprojects/nc4fortran.wrap` containing:
-
-```ini
-[wrap-git]
-directory = nc4fortran
-url = https://github.com/geospace-code/nc4fortran.git
 ```
