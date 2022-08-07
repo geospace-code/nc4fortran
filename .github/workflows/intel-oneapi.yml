@@ -1,7 +1,6 @@
 name: intel-oneapi
 
 env:
-  CTEST_PARALLEL_LEVEL: 2
   CMAKE_GENERATOR: Ninja
   CC: icx
   FC: ifx
@@ -45,7 +44,7 @@ jobs:
         source /opt/intel/oneapi/setvars.sh
         printenv >> $GITHUB_ENV
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Configure HDF5 + NetCDF4
       run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}

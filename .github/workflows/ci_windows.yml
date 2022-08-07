@@ -1,8 +1,7 @@
 name: ci_windows
+
 env:
   CMAKE_GENERATOR: Ninja
-  CTEST_PARALLEL_LEVEL: 4
-  CMAKE_BUILD_TYPE: Release
 
 on:
   push:
@@ -11,9 +10,6 @@ on:
       - "**.cmake"
       - "**.f90"
       - ".github/workflows/ci_windows.yml"
-  pull_request:
-  release:
-    types: [published]
 
 
 jobs:
@@ -34,7 +30,7 @@ jobs:
     - name: Put MSYS2_MinGW64 on PATH
       run: echo "${{ runner.temp }}/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Configure NetCDF4
       run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}

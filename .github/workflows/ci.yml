@@ -1,8 +1,6 @@
 name: ci
 
 env:
-  CTEST_PARALLEL_LEVEL: 4
-  CMAKE_BUILD_TYPE: Release
   HOMEBREW_NO_INSTALL_CLEANUP: 1
 
 on:
