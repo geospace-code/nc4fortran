@@ -834,7 +834,7 @@ endif()
 if(NOT HDF5_ROOT AND CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
   # CentOS paths
   if(parallel IN_LIST HDF5_FIND_COMPONENTS)
-    list(INSERT hdf5_msuf gfortran/modules/openmpi 0 gfortran/modules/mpich)
+    list(INSERT hdf5_msuf 0 gfortran/modules/openmpi gfortran/modules/mpich)
   else()
     list(APPEND hdf5_msuf gfortran/modules)
   endif()
