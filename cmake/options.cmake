@@ -1,4 +1,4 @@
-message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION}  CMAKE ${CMAKE_VERSION}")
+message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION}  CMake ${CMAKE_VERSION}")
 
 option(ENABLE_COVERAGE "Code coverage tests")
 
@@ -6,7 +6,7 @@ set(CMAKE_TLS_VERIFY true)
 
 include(GNUInstallDirs)
 
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
 
 file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
 

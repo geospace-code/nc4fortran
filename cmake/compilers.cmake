@@ -24,7 +24,7 @@ endif()
 
 if(CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
 add_compile_options(
-"$<$<COMPILE_LANGUAGE:Fortran>:-warn;-heap-arrays>"
+"$<$<COMPILE_LANGUAGE:Fortran>:-warn>"
 "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug>>:-traceback;-check;-debug>"
 )
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
@@ -38,7 +38,7 @@ endif()
 
 # --- code coverage
 if(ENABLE_COVERAGE)
-include(CodeCoverage)
-append_coverage_compiler_flags()
-set(COVERAGE_EXCLUDES ${PROJECT_SOURCE_DIR}/tests)
+  include(${CMAKE_CURRENT_LIST_DIR}/Modules/CodeCoverage.cmake)
+  append_coverage_compiler_flags()
+  set(COVERAGE_EXCLUDES ${PROJECT_SOURCE_DIR}/test)
 endif()
