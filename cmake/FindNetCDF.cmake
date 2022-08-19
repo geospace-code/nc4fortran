@@ -105,6 +105,7 @@ function(netcdf_fortran)
 find_path(NetCDF_Fortran_INCLUDE_DIR
 NAMES netcdf.mod
 HINTS ${NetCDF_C_INCLUDE_DIR}
+NO_DEFAULT_PATH
 DOC "NetCDF Fortran Include"
 )
 
