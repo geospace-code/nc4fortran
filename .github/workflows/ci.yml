@@ -144,7 +144,7 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S example -B example/build -Dnc4fortran_ROOT=${{ runner.temp }}
+      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
     - name: build examples
       run: cmake --build example/build --parallel
     - name: Test examples

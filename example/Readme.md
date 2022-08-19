@@ -7,7 +7,7 @@ cmake -B build -DCMAKE_INSTALL_PREFIX=~/nc4fortran
 cmake --build build
 cmake --install build
 
-cmake -B Examples/build -S Examples -Dnc4fortran_ROOT=~/nc4fortran
+cmake -B Examples/build -S Examples -DCMAKE_PREFIX_PATH=~/nc4fortran
 ```
 
 ## Examples
