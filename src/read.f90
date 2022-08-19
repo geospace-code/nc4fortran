@@ -115,7 +115,7 @@ case (NF90_NOERR)
 case (NF90_EBADID)
   write(stderr,*) 'ERROR:nc4fortran:exist: is file opened?  ', self%filename
 case (NF90_ENOTVAR)
-  if (self%verbose) write(stderr,*) dname, ' does not exist in ', self%filename
+  if (self%debug) write(stderr,*) dname, ' does not exist in ', self%filename
 case default
   write(stderr,*) 'ERROR:nc4fortran:exist: unknown problem ', self%filename
 end select

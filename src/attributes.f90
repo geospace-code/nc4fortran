@@ -9,20 +9,18 @@ contains
 module procedure write_attribute
 integer :: varid, ier
 
-if(.not.self%is_open) error stop 'nc4fortran:write_attribute: file handle not open'
-
 ier = nf90_inq_varid(self%file_id, dname, varid)
 
 if(ier == nf90_noerr) then
-select type(value)
+select type(A)
 type is (character(*))
-   ier = nf90_put_att(self%file_id, varid, attrname, value)
+   ier = nf90_put_att(self%file_id, varid, attrname, A)
 type is (real(real32))
-  ier = nf90_put_att(self%file_id, varid, attrname, value)
+  ier = nf90_put_att(self%file_id, varid, attrname, A)
 type is (real(real64))
-  ier = nf90_put_att(self%file_id, varid, attrname, value)
+  ier = nf90_put_att(self%file_id, varid, attrname, A)
 type is (integer(int32))
-  ier = nf90_put_att(self%file_id, varid, attrname, value)
+  ier = nf90_put_att(self%file_id, varid, attrname, A)
 class default
   ier = NF90_EBADTYPE
 end select
@@ -36,20 +34,18 @@ end procedure write_attribute
 module procedure read_attribute
 integer :: varid, ier
 
-if(.not.self%is_open) error stop 'nc4fortran:read_attribute: file handle not open'
-
 ier = nf90_inq_varid(self%file_id, dname, varid)
 
 if(ier == nf90_noerr) then
-select type (value)
+select type (A)
 type is (character(*))
-  ier = nf90_get_att(self%file_id, varid, attrname, value)
+  ier = nf90_get_att(self%file_id, varid, attrname, A)
 type is (real(real32))
-  ier = nf90_get_att(self%file_id, varid, attrname, value)
+  ier = nf90_get_att(self%file_id, varid, attrname, A)
 type is (real(real64))
-  ier = nf90_get_att(self%file_id, varid, attrname, value)
+  ier = nf90_get_att(self%file_id, varid, attrname, A)
 type is (integer(int32))
-  ier = nf90_get_att(self%file_id, varid, attrname, value)
+  ier = nf90_get_att(self%file_id, varid, attrname, A)
 class default
   ier = NF90_EBADTYPE
 end select
