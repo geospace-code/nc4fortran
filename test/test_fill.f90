@@ -4,7 +4,7 @@ use, intrinsic:: iso_fortran_env, only : real32, real64, int32, int64
 use, intrinsic:: ieee_arithmetic, only : ieee_value, ieee_quiet_nan, ieee_is_finite
 
 use nc4fortran, only : netcdf_file
-use netcdf, only : NF90_FLOAT, NF90_DOUBLE, NF90_INT, NF90_INT64, NF90_CHAR
+use netcdf, only : NF90_FLOAT, NF90_DOUBLE, NF90_INT, NF90_INT64
 
 implicit none (type, external)
 

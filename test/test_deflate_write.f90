@@ -7,7 +7,7 @@ use nc4fortran, only: netcdf_file
 
 implicit none (type, external)
 
-character(*), parameter :: fn1='deflate1.nc', fn2='deflate2.nc', fn3='deflate3.nc'
+character(*), parameter :: fn1='deflate1.nc', fn2='deflate2.nc'
 integer, parameter :: N(2) = [50, 1000], &
 MIN_COMP = 2  !< lots of CPUs, smaller arrays => poorer compression
 !! don't use too big otherwise platform/version dependent autochunk fouls up test ~ 4MB

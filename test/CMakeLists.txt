@@ -1,5 +1,9 @@
 set_directory_properties(PROPERTIES LABELS nc4fortran)
 
+if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
+  add_compile_options("$<$<COMPILE_LANGUAGE:Fortran>:-Wno-compare-reals;-Wno-maybe-uninitialized>")
+endif()
+
 add_executable(test_minimal test_minimal.f90)
 target_link_libraries(test_minimal PRIVATE nc4fortran::nc4fortran)
 add_test(NAME minimal COMMAND test_minimal
