@@ -5,7 +5,8 @@ use nc4fortran, only : nc4version
 
 implicit none (type, external)
 
-character(24) :: vstr, v
+character(24) :: vstr
+character(:), allocatable :: v
 character(:), allocatable :: libver, compver
 integer :: i
 
