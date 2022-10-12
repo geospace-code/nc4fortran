@@ -22,7 +22,7 @@ self%filename = filename
 if (present(comp_lvl)) self%comp_lvl = comp_lvl
 if (present(debug)) self%debug = debug
 
-laction = 'rw'
+laction = 'r'
 if(present(action)) laction = action
 
 select case(laction)
