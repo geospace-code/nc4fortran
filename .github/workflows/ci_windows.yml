@@ -1,8 +1,5 @@
 name: ci_windows
 
-env:
-  CMAKE_GENERATOR: Ninja
-
 on:
   push:
     paths:
@@ -39,7 +36,12 @@ jobs:
       run: cmake --build scripts/build --parallel
 
     - name: configure nc4fortran
-      run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+      run: >-
+        cmake
+        -DCMAKE_COMPILE_WARNING_AS_ERROR:BOOL=ON
+        --preset multi
+        --install-prefix ${{ runner.temp }}
+        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
 
     - run: cmake --build --preset debug
     - run: ctest --preset debug

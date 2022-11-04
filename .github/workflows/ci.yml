@@ -31,7 +31,12 @@ jobs:
     - name: install system libs
       run: ${{ matrix.img.cmd }}
 
-    - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+    - run: >-
+        cmake
+        -DCMAKE_COMPILE_WARNING_AS_ERROR:BOOL=ON
+        --preset multi
+        -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
+        -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
     - run: cmake --build --preset debug
     - run: ctest --preset debug
