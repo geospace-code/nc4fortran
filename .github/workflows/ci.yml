@@ -10,6 +10,10 @@ on:
       - "**.cmake"
       - "**.f90"
       - ".github/workflows/ci.yml"
+      - "!cmake/netcdf.cmake"
+      - "!cmake/netcdf-c.cmake"
+      - "!cmake/hdf5.cmake"
+      - "!scripts/**"
 
 jobs:
 

@@ -13,7 +13,10 @@ on:
       - "**.cmake"
       - "**/CMakeLists.txt"
       - ".github/workflows/intel-oneapi.yml"
-
+      - "!cmake/netcdf.cmake"
+      - "!cmake/netcdf-c.cmake"
+      - "!cmake/hdf5.cmake"
+      - "!scripts/**"
 
 jobs:
 

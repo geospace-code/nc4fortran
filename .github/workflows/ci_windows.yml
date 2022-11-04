@@ -7,6 +7,10 @@ on:
       - "**.cmake"
       - "**.f90"
       - ".github/workflows/ci_windows.yml"
+      - "!cmake/netcdf.cmake"
+      - "!cmake/netcdf-c.cmake"
+      - "!cmake/hdf5.cmake"
+      - "!scripts/**"
 
 
 jobs:
