@@ -22,7 +22,6 @@ jobs:
         shared: [true, false]
         img: [
           {os: ubuntu-latest, cmd: sudo apt update && sudo apt install --no-install-recommends ninja-build libnetcdff-dev},
-          {os: macos-latest, cmd: brew install netcdf ninja && brew reinstall gcc }
         ]
 
     steps:
@@ -127,7 +126,6 @@ jobs:
 
 
   mac-build:
-    if: github.event_name == 'release'
     needs: base
     runs-on: macos-latest
     timeout-minutes: 30
@@ -137,7 +135,7 @@ jobs:
 
     - name: install libs
       run: |
-        brew install hdf5
+        brew install hdf5 netcdf
         brew reinstall gcc
 
     - name: Configure NetCDF4
