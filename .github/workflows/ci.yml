@@ -47,7 +47,12 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: >-
+        cmake
+        -S example
+        -B example/build
+        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+        -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - name: build examples
       run: cmake --build example/build
     - name: Test examples
