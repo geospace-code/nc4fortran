@@ -1,18 +1,18 @@
 {
-"netcdfC": {
-  "url": "https://github.com/Unidata/netcdf-c.git",
-  "tag": "v4.9.0"
-},
-"netcdfFortran": {
-  "url": "https://github.com/Unidata/netcdf-fortran.git",
-  "tag": "v4.6.0"
-},
-"zlib": {
-  "url" : "https://github.com/zlib-ng/zlib-ng.git",
-  "tag": "2.0.6"
-},
-"hdf5": {
-  "url": "https://github.com/HDFGroup/hdf5.git",
-  "tag": "hdf5-1_12_2"
-}
+  "netcdfC": {
+    "url": "https://github.com/Unidata/netcdf-c.git",
+    "tag": "v4.9.0"
+  },
+  "netcdfFortran": {
+    "url": "https://github.com/Unidata/netcdf-fortran.git",
+    "tag": "v4.6.0"
+  },
+  "zlib": {
+    "url" : "https://github.com/zlib-ng/zlib-ng.git",
+    "tag": "2.0.6"
+  },
+  "hdf5": {
+    "url": "https://github.com/HDFGroup/hdf5.git",
+    "tag": "hdf5-1_10_9"
+  }
 }
