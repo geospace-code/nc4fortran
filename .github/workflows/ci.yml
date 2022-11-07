@@ -36,9 +36,8 @@ jobs:
 
     - run: >-
         cmake
-        -DCMAKE_COMPILE_WARNING_AS_ERROR:BOOL=ON
         --preset multi
-        -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
+        --install-prefix ${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
     - run: cmake --build --preset debug
@@ -82,10 +81,14 @@ jobs:
       run: cmake --build scripts/build --parallel
 
     - name: configure nc4fortran
-      run: cmake -B build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+      run: >-
+        cmake
+        --preset default
+        --install-prefix ${{ runner.temp }}
+        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
 
-    - run: cmake --build build --parallel
-    - run: ctest --test-dir build --preset default
+    - run: cmake --build --preset default --parallel
+    - run: ctest --preset default
     - run: cmake --install build
 
     - name: configure examples
@@ -129,8 +132,7 @@ jobs:
 
 
 
-  mac-build:
-    needs: base
+  mac:
     runs-on: macos-latest
     timeout-minutes: 30
 
@@ -143,16 +145,20 @@ jobs:
         brew reinstall gcc
 
     - name: Configure NetCDF4
-      run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
+      run: cmake -S scripts -B scripts/build --install-prefix ${{ runner.temp }}
 
     - name: Build/install NetCDF4
       run: cmake --build scripts/build --parallel
 
     - name: configure nc4fortran
-      run: cmake -B build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+      run: >-
+        cmake
+        --preset default
+        --install-prefix ${{ runner.temp }}
+        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
 
-    - run: cmake --build build
-    - run: ctest --test-dir build --preset default
+    - run: cmake --build --preset default
+    - run: ctest --preset default
     - run: cmake --install build
 
     - name: configure examples
