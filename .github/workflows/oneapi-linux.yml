@@ -1,0 +1,106 @@
+name: oneapi-linux
+
+env:
+  CC: icx
+  FC: ifx
+  LINUX_BASEKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/18852/l_BaseKit_p_2022.3.0.8767_offline.sh
+  LINUX_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/18856/l_HPCKit_p_2022.3.0.8751_offline.sh
+  LINUX_CPP_COMPONENTS: intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
+  LINUX_FORTRAN_COMPONENTS: intel-oneapi-compiler-fortran
+# https://github.com/oneapi-src/oneapi-ci/blob/master/.github/workflows/build_all.yml
+
+
+on:
+  push:
+    paths:
+      - "**.f90"
+      - "**.F90"
+      - "**.cmake"
+      - "**/CMakeLists.txt"
+      - ".github/workflows/oneapi-linux.yml"
+      - "!cmake/netcdf.cmake"
+      - "!cmake/netcdf-c.cmake"
+      - "!cmake/hdf5.cmake"
+      - "!scripts/**"
+
+jobs:
+
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: cache install oneAPI
+      id: cache-install
+      uses: actions/cache@v3
+      with:
+        path: |
+          /opt/intel/oneapi
+        key: install-${{ env.LINUX_HPCKIT_URL }}-${{ env.LINUX_CPP_COMPONENTS }}-${{ env.LINUX_FORTRAN_COMPONENTS }}-compiler
+
+    - name: non-cache install oneAPI
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      timeout-minutes: 5
+      run: |
+        .github/workflows/oneapi_setup_apt_repo_linux.sh
+        sudo apt install ${{ env.LINUX_CPP_COMPONENTS }} ${{ env.LINUX_FORTRAN_COMPONENTS }}
+
+    - name: Setup Intel oneAPI environment
+      run: |
+        source /opt/intel/oneapi/setvars.sh
+        printenv >> $GITHUB_ENV
+
+    - name: install Ninja
+      run: sudo apt install ninja-build
+# install ninja needs to be own step as not cached by design
+
+    - name: Configure HDF5 + NetCDF4
+      run: cmake -S scripts -B scripts/build --install-prefix ${{ runner.temp }}
+
+    - name: Build/install NetCDF4
+      run: cmake --build scripts/build --parallel
+
+    - name: Configure nc4fortran
+      run: >-
+        cmake
+        --preset multi
+        --install-prefix ${{ runner.temp }}
+        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+
+    - name: print config log
+      if: ${{ failure() }}
+      run: cat build/CMakeFiles/CMakeError.log
+
+    - name: Release build
+      run: cmake --build --preset release
+
+    - name: Release unit test
+      run: ctest --preset release
+
+    - name: debug build
+      run: cmake --build --preset debug
+
+    - name: debug unit test
+      run: ctest --preset debug
+
+    - name: install package
+      run: cmake --install build
+
+    - name: configure examples
+      run: >-
+        cmake
+        -S example
+        -B example/build
+        -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }}
+
+    - name: build examples
+      run: cmake --build example/build --parallel
+
+    - name: Test examples
+      run: ctest --test-dir example/build -V
+
+    - name: exclude unused files from cache
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      run: .github/workflows/oneapi_cache_exclude_linux.sh
