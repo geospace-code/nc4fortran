@@ -105,7 +105,6 @@ function(netcdf_fortran)
 find_path(NetCDF_Fortran_INCLUDE_DIR
 NAMES netcdf.mod
 HINTS ${NetCDF_C_INCLUDE_DIR}
-NO_DEFAULT_PATH
 DOC "NetCDF Fortran Include"
 )
 
@@ -122,7 +121,6 @@ endif()
 find_library(NetCDF_Fortran_LIBRARY
 NAMES netcdff
 HINTS ${NetCDF_LIBDIR}
-NO_DEFAULT_PATH
 DOC "NetCDF Fortran library"
 )
 

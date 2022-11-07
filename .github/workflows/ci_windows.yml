@@ -40,7 +40,7 @@ jobs:
         -G Ninja
         -S scripts
         -B scripts/build
-        -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
+        --install-prefix ${{ runner.temp }}
 
     - name: Build/install NetCDF4
       run: cmake --build scripts/build --parallel
@@ -48,7 +48,6 @@ jobs:
     - name: configure nc4fortran
       run: >-
         cmake
-        -DCMAKE_COMPILE_WARNING_AS_ERROR:BOOL=ON
         --preset multi
         --install-prefix ${{ runner.temp }}
         -DCMAKE_PREFIX_PATH=${{ runner.temp }}
