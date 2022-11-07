@@ -46,7 +46,7 @@ class default
   ier = NF90_EBADTYPE
 end select
 
-if (check_error(ier, dname)) error stop 'nc4fortran:write: write ' // dname // ' in ' // self%filename
+if (check_error(ier, dname)) error stop 'ERROR:nc4fortran:write:  ' // dname // ' in ' // self%filename
 
 end procedure nc_write_scalar
 

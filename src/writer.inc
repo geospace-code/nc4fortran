@@ -14,7 +14,7 @@ else
   type is (integer(int64))
     dtype = NF90_INT64
   class default
-    ier = NF90_EBADTYPE
+    error stop "ERROR:nc4fortran:write: unknown type for " // dname // " in " // self%filename
   end select
 
   call nc_create(self, dname, dtype, dims=shape(A), dim_names=dims, chunk_size=chunk_size, varid=varid)
