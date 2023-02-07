@@ -1,7 +1,7 @@
 {
   "netcdfC": {
     "url": "https://github.com/Unidata/netcdf-c.git",
-    "tag": "v4.9.0"
+    "tag": "v4.9.1"
   },
   "netcdfFortran": {
     "url": "https://github.com/Unidata/netcdf-fortran.git",
