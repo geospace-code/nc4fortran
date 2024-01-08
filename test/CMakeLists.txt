@@ -1,8 +1,7 @@
 set_directory_properties(PROPERTIES LABELS nc4fortran)
 
-if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
-  add_compile_options("$<$<COMPILE_LANGUAGE:Fortran>:-Wno-compare-reals;-Wno-maybe-uninitialized>")
-endif()
+# avoid nuisance test build warnings
+add_compile_options("$<$<COMPILE_LANG_AND_ID:Fortran,GNU>:-Wno-compare-reals;-Wno-maybe-uninitialized>")
 
 add_executable(test_minimal test_minimal.f90)
 target_link_libraries(test_minimal PRIVATE nc4fortran::nc4fortran)
@@ -44,8 +43,18 @@ EXECUTABLE ${CMAKE_CTEST_COMMAND}
 endif()
 
 # --- Windows shared DLLs
-if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
-  set_property(TEST minimal ${test_names} PROPERTY
-  ENVIRONMENT_MODIFICATION "PATH=path_list_append:${NetCDF_Fortran_INCLUDE_DIRS}/../bin"
-  )
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
+  if(WIN32)
+    set_property(TEST minimal ${test_names} PROPERTY
+    ENVIRONMENT_MODIFICATION "PATH=path_list_append:${NetCDF_Fortran_INCLUDE_DIRS}/../bin"
+    )
+  elseif(APPLE)
+    set_property(TEST minimal ${test_names} PROPERTY
+    ENVIRONMENT_MODIFICATION "DYLD_LIBRARY_PATH=path_list_append:${NetCDF_Fortran_INCLUDE_DIRS}/../lib"
+    )
+  else()
+    set_property(TEST minimal ${test_names} PROPERTY
+    ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_append:${NetCDF_Fortran_INCLUDE_DIRS}/../lib"
+    )
+  endif()
 endif()
