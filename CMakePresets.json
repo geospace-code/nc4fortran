@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 6,
 
 "configurePresets": [
 {
@@ -15,7 +15,7 @@
   "generator": "Ninja Multi-Config"
 },
 {
-  "name": "coverage", "inherits": "default",
+  "name": "coverage",
   "binaryDir": "${sourceDir}/build-coverage",
   "displayName": "Code Coverage",
   "description": "Build with code coverage enabled.",
@@ -87,5 +87,58 @@
   "configurePreset": "multi",
   "configuration": "Debug"
 }
+],
+"workflowPresets": [
+  {
+    "name": "default",
+    "steps": [
+      {
+        "type": "configure",
+        "name": "default"
+      },
+      {
+        "type": "build",
+        "name": "default"
+      },
+      {
+        "type": "test",
+        "name": "default"
+      }
+    ]
+  },
+  {
+    "name": "debug",
+    "steps": [
+      {
+        "type": "configure",
+        "name": "multi"
+      },
+      {
+        "type": "build",
+        "name": "debug"
+      },
+      {
+        "type": "test",
+        "name": "debug"
+      }
+    ]
+  },
+  {
+    "name": "release",
+    "steps": [
+      {
+        "type": "configure",
+        "name": "multi"
+      },
+      {
+        "type": "build",
+        "name": "release"
+      },
+      {
+        "type": "test",
+        "name": "release"
+      }
+    ]
+  }
 ]
 }
