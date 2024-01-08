@@ -1,7 +1,7 @@
 name = "nc4fortran"
 description = "Lightweight object-oriented NetCDF4 interface"
 categories = "io"
-version = "1.7.0"
+version = "1.7.1"
 
 [build]
 external-modules = ["netcdf"]
