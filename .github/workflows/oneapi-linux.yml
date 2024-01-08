@@ -3,12 +3,8 @@ name: oneapi-linux
 env:
   CC: icx
   FC: ifx
-  LINUX_BASEKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/18852/l_BaseKit_p_2022.3.0.8767_offline.sh
-  LINUX_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/18856/l_HPCKit_p_2022.3.0.8751_offline.sh
-  LINUX_CPP_COMPONENTS: intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
-  LINUX_FORTRAN_COMPONENTS: intel-oneapi-compiler-fortran
 # https://github.com/oneapi-src/oneapi-ci/blob/master/.github/workflows/build_all.yml
-
+  CTEST_NO_TESTS_ACTION: error
 
 on:
   push:
@@ -30,7 +26,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: cache install oneAPI
       id: cache-install
@@ -38,14 +34,14 @@ jobs:
       with:
         path: |
           /opt/intel/oneapi
-        key: install-${{ env.LINUX_HPCKIT_URL }}-${{ env.LINUX_CPP_COMPONENTS }}-${{ env.LINUX_FORTRAN_COMPONENTS }}-compiler
+        key: install-oneapi-compiler
 
     - name: non-cache install oneAPI
       if: steps.cache-install.outputs.cache-hit != 'true'
       timeout-minutes: 5
       run: |
         .github/workflows/oneapi_setup_apt_repo_linux.sh
-        sudo apt install ${{ env.LINUX_CPP_COMPONENTS }} ${{ env.LINUX_FORTRAN_COMPONENTS }}
+        sudo apt install intel-oneapi-compiler-dpcpp-cpp intel-oneapi-compiler-fortran
 
     - name: Setup Intel oneAPI environment
       run: |
@@ -56,12 +52,6 @@ jobs:
       run: sudo apt install ninja-build
 # install ninja needs to be own step as not cached by design
 
-    - name: Configure HDF5 + NetCDF4
-      run: cmake -S scripts -B scripts/build --install-prefix ${{ runner.temp }}
-
-    - name: Build/install NetCDF4
-      run: cmake --build scripts/build --parallel
-
     - name: Configure nc4fortran
       run: >-
         cmake
@@ -71,19 +61,13 @@ jobs:
 
     - name: print config log
       if: ${{ failure() }}
-      run: cat build/CMakeFiles/CMakeError.log
+      run: cat build/CMakeFiles/CMakeConfigureLog.yaml
 
-    - name: Release build
-      run: cmake --build --preset release
+    - name: Debug workflow
+      run: cmake --workflow --preset debug
 
-    - name: Release unit test
-      run: ctest --preset release
-
-    - name: debug build
-      run: cmake --build --preset debug
-
-    - name: debug unit test
-      run: ctest --preset debug
+    - name: Release workflow
+      run: cmake --workflow --preset release
 
     - name: install package
       run: cmake --install build
@@ -95,11 +79,9 @@ jobs:
         -B example/build
         -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }}
 
-    - name: build examples
-      run: cmake --build example/build --parallel
-
-    - name: Test examples
-      run: ctest --test-dir example/build -V
+# BUILD_SHARED_LIBS=false since as with any C++ / Fortran program with Intel compiler,
+# need to have GCC environment carefully set
+# so that underlying libstdc++ is compatible.
 
     - name: exclude unused files from cache
       if: steps.cache-install.outputs.cache-hit != 'true'
