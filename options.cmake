@@ -12,7 +12,7 @@ option(CMAKE_TLS_VERIFY "Verify TLS certificates when downloading libraries" ON)
 if(nc4fortran_IS_TOP_LEVEL AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   # will not take effect without FORCE
   # CMAKE_BINARY_DIR in case it's used from FetchContent
-  set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/local CACHE PATH "Install top-level directory" FORCE)
+  set(CMAKE_INSTALL_PREFIX ${PROJECT_BINARY_DIR}/local CACHE PATH "Install top-level directory" FORCE)
 endif()
 
 set_property(DIRECTORY PROPERTY EP_UPDATE_DISCONNECTED true)
