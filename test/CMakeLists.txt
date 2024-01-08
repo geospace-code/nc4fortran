@@ -42,7 +42,7 @@ EXECUTABLE ${CMAKE_CTEST_COMMAND}
 )
 endif()
 
-# --- Windows shared DLLs
+# --- NetCDF shared lib paths needed
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
   if(WIN32)
     set_property(TEST minimal ${test_names} PROPERTY

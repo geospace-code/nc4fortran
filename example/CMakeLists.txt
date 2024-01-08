@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11...3.25)
+cmake_minimum_required(VERSION 3.15...3.28)
 
 project(nc4fortranExample
 LANGUAGES C Fortran
@@ -25,3 +25,23 @@ target_link_libraries(example2 nc4fortran::nc4fortran)
 add_test(NAME nc4fortran:Example2 COMMAND example2
 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
+
+# --- NetCDF shared lib paths needed
+get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
+get_property(incdir TARGET nc4fortran::nc4fortran PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
+
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
+  if(WIN32)
+    set_property(TEST ${test_names} PROPERTY
+    ENVIRONMENT_MODIFICATION "PATH=path_list_append:${incdir}/../bin"
+    )
+  elseif(APPLE)
+    set_property(TEST ${test_names} PROPERTY
+    ENVIRONMENT_MODIFICATION "DYLD_LIBRARY_PATH=path_list_append:${incdir}/../lib"
+    )
+  else()
+    set_property(TEST ${test_names} PROPERTY
+    ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_append:${incdir}/../lib"
+    )
+  endif()
+endif()
