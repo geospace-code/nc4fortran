@@ -60,8 +60,8 @@ Targets
 #]=======================================================================]
 
 include(CheckSymbolExists)
-include(CheckCSourceCompiles)
-include(CheckFortranSourceCompiles)
+include(CheckSourceCompiles)
+
 
 function(get_flags exec outvar)
 
@@ -118,6 +118,7 @@ NAMES H5pubconf.h H5pubconf-64.h
 HINTS ${HDF5_C_INCLUDE_DIR}
 NO_DEFAULT_PATH
 )
+message(VERBOSE "HDF5 config: ${h5_conf}")
 
 if(NOT h5_conf)
   set(HDF5_C_FOUND false)
@@ -145,23 +146,19 @@ endif()
 # get version
 # from CMake/Modules/FindHDF5.cmake
 file(STRINGS ${h5_conf} _def
-REGEX "^[ \t]*#[ \t]*define[ \t]+H5_VERSION[ \t]+" )
-if("${_def}" MATCHES
-"H5_VERSION[ \t]+\"([0-9]+\\.[0-9]+\\.[0-9]+)(-patch([0-9]+))?\"" )
-  set(HDF5_VERSION "${CMAKE_MATCH_1}" )
-  if(CMAKE_MATCH_3)
-    set(HDF5_VERSION ${HDF5_VERSION}.${CMAKE_MATCH_3})
-  endif()
+ REGEX "^[ \t]*#[ \t]*define[ \t]+H5_VERSION[ \t]+"
+)
+message(DEBUG "HDF5 version define: ${_def}")
+
+if("${_def}" MATCHES "H5_VERSION[ \t]+\"([0-9]+\\.[0-9]+\\.[0-9]+)")
+  set(HDF5_VERSION "${CMAKE_MATCH_1}")
 endif()
+message(DEBUG "HDF5 version match 0, 1: ${CMAKE_MATCH_0}   ${CMAKE_MATCH_1}")
 
 # avoid picking up incompatible zlib over the desired zlib
-if(CMAKE_VERSION VERSION_LESS 3.20)
-  get_filename_component(zlib_dir ${HDF5_C_INCLUDE_DIR} DIRECTORY)
-else()
-  cmake_path(GET HDF5_C_INCLUDE_DIR PARENT_PATH zlib_dir)
-endif()
 if(NOT ZLIB_ROOT)
-  set(ZLIB_ROOT "${HDF5_ROOT};${zlib_dir}")
+  get_filename_component(ZLIB_ROOT ${HDF5_C_INCLUDE_DIR} DIRECTORY)
+  list(APPEND ZLIB_ROOT ${HDF5_ROOT})
 endif()
 
 
@@ -504,6 +501,7 @@ if(HDF5_ROOT)
   NO_DEFAULT_PATH
   HINTS ${HDF5_ROOT}
   PATH_SUFFIXES ${hdf5_binsuf}
+  DOC "HDF5 Fortran compiler script"
   )
 else()
   find_program(HDF5_Fortran_COMPILER_EXECUTABLE
@@ -511,6 +509,7 @@ else()
   NAMES_PER_DIR
   PATHS ${hdf5_binpref}
   PATH_SUFFIXES ${hdf5_binsuf}
+  DOC "HDF5 Fortran compiler script"
   )
 endif()
 
@@ -559,6 +558,7 @@ if(HDF5_ROOT)
   NO_DEFAULT_PATH
   HINTS ${HDF5_ROOT}
   PATH_SUFFIXES ${hdf5_binsuf}
+  DOC "HDF5 C++ compiler script"
   )
 else()
   find_program(HDF5_CXX_COMPILER_EXECUTABLE
@@ -566,6 +566,7 @@ else()
   NAMES_PER_DIR
   PATHS ${hdf5_binpref}
   PATH_SUFFIXES ${hdf5_binsuf}
+  DOC "HDF5 C++ compiler script"
   )
 endif()
 
@@ -608,6 +609,7 @@ if(HDF5_ROOT)
   NO_DEFAULT_PATH
   HINTS ${HDF5_ROOT}
   PATH_SUFFIXES ${hdf5_binsuf}
+  DOC "HDF5 C compiler script"
   )
 else()
   find_program(HDF5_C_COMPILER_EXECUTABLE
@@ -615,6 +617,7 @@ else()
   NAMES_PER_DIR
   PATHS ${hdf5_binpref}
   PATH_SUFFIXES ${hdf5_binsuf}
+  DOC "HDF5 C compiler script"
   )
 endif()
 
@@ -692,7 +695,7 @@ else()
   ]=])
 endif(HDF5_parallel_FOUND)
 
-check_c_source_compiles("${src}" HDF5_C_links)
+check_source_compiles(C "${src}" HDF5_C_links)
 
 endfunction(check_c_links)
 
@@ -733,7 +736,7 @@ else()
   end program")
 endif()
 
-check_fortran_source_compiles(${src} HDF5_Fortran_links SRC_EXT f90)
+check_source_compiles(Fortran ${src} HDF5_Fortran_links)
 
 endfunction(check_fortran_links)
 
@@ -782,14 +785,6 @@ if(NOT HDF5_ROOT)
   endif()
 endif()
 
-# Conda causes numerous problems with finding HDF5, so exclude from search
-if(DEFINED ENV{CONDA_PREFIX})
-  set(h5_ignore_path
-    $ENV{CONDA_PREFIX}/bin $ENV{CONDA_PREFIX}/lib $ENV{CONDA_PREFIX}/include
-    $ENV{CONDA_PREFIX}/Library/bin $ENV{CONDA_PREFIX}/Library/lib $ENV{CONDA_PREFIX}/Library/include
-  )
-  list(APPEND CMAKE_IGNORE_PATH ${h5_ignore_path})
-endif()
 
 # --- library suffixes
 
@@ -876,11 +871,6 @@ check_hdf5_link()
 
 set(CMAKE_REQUIRED_LIBRARIES)
 set(CMAKE_REQUIRED_INCLUDES)
-
-# pop off ignored paths so rest of script can find Python
-if(DEFINED CMAKE_IGNORE_PATH)
-  list(REMOVE_ITEM CMAKE_IGNORE_PATH "${h5_ignore_path}")
-endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(HDF5

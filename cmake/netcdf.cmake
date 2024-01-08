@@ -5,6 +5,8 @@ include(GNUInstallDirs)
 # due to limitations of NetCDF-C and NetCDF-Fortran, as per their docs,
 # we MUST use shared libraries or they don't archive/link properly.
 
+file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
+
 find_package(HDF5 COMPONENTS C Fortran)
 if(HDF5_FOUND)
   add_custom_target(HDF5)
@@ -49,6 +51,14 @@ set(netcdf_fortran_cmake_args
 -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
 )
 
+if(WIN32)
+  set(NetCDF_Fortran_LIBRARIES ${CMAKE_INSTALL_FULL_BINDIR}/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_SHARED_LIBRARY_SUFFIX})
+else()
+  set(NetCDF_Fortran_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_SHARED_LIBRARY_SUFFIX})
+endif()
+
+set(NetCDF_Fortran_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR})
+
 string(JSON netcdfFortran_url GET ${json} netcdfFortran url)
 string(JSON netcdfFortran_tag GET ${json} netcdfFortran tag)
 
@@ -57,10 +67,29 @@ GIT_REPOSITORY ${netcdfFortran_url}
 GIT_TAG ${netcdfFortran_tag}
 GIT_SHALLOW true
 CONFIGURE_HANDLED_BY_BUILD ON
-INACTIVITY_TIMEOUT 60
 CMAKE_ARGS ${netcdf_fortran_cmake_args}
 CMAKE_CACHE_ARGS -DCMAKE_REQUIRED_LIBRARIES:STRING=${CMAKE_REQUIRED_LIBRARIES}
+BUILD_BYPRODUCTS ${NetCDF_Fortran_LIBRARIES}
 DEPENDS NETCDF_C
+USES_TERMINAL_DOWNLOAD true
+USES_TERMINAL_UPDATE true
+USES_TERMINAL_PATCH true
+USES_TERMINAL_CONFIGURE true
+USES_TERMINAL_BUILD true
+USES_TERMINAL_INSTALL true
+USES_TERMINAL_TEST true
 )
 # BUILD_SHARED_LIBS=on for netcdf-fortran symbol finding bug
 # netCDEF_LIBRARIES and netCDF_INCLUDE_DIR from netcdf-fortran/CMakeLists.txt
+
+# --- imported target
+
+file(MAKE_DIRECTORY ${NetCDF_Fortran_INCLUDE_DIRS})
+# avoid race condition
+
+# this GLOBAL is required to be visible via other project's FetchContent
+add_library(NetCDF::NetCDF_Fortran INTERFACE IMPORTED GLOBAL)
+target_include_directories(NetCDF::NetCDF_Fortran INTERFACE "${NetCDF_Fortran_INCLUDE_DIRS}")
+target_link_libraries(NetCDF::NetCDF_Fortran INTERFACE "${NetCDF_Fortran_LIBRARIES}")
+
+add_dependencies(NetCDF::NetCDF_Fortran NETCDF_FORTRAN)
