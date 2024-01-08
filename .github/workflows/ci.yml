@@ -67,6 +67,8 @@ jobs:
       run: ctest --test-dir example/build -V
 
   build:
+    needs: base
+
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
 
