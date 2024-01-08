@@ -56,7 +56,7 @@ jobs:
       run: cat build/CMakeFiles/CMakeConfigureLog.yaml
 
     - name: install package
-      run: cmake --install build -
+      run: cmake --install build
 
     - name: configure examples
       run: >-
