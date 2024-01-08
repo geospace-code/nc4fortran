@@ -25,18 +25,17 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         shared: [true, false]
-        build: [true, false]
 
     steps:
     - uses: actions/checkout@v4
 
     - name: install NetCDF system libs
-      if: ${{ !matrix.build && runner.os == 'Linux' }}
+      if: runner.os == 'Linux'
       run: sudo apt install --no-install-recommends ninja-build libnetcdff-dev
 
     - name: install NetCDF system libs
-      if: ${{ !matrix.build && runner.os == 'macOS' }}
-      run: brew install netcdf
+      if: runner.os == 'macOS'
+      run: brew install ninja netcdf
 
     - run: >-
         cmake
@@ -59,6 +58,32 @@ jobs:
         -B example/build
         -DCMAKE_PREFIX_PATH=${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+    - name: build examples
+      run: cmake --build example/build
+    - name: Test examples
+      run: ctest --test-dir example/build -V
+
+  build:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - run: cmake --workflow --preset default
+
+    - run: cmake --install build --prefix ${{ runner.temp }}
+
+    - name: configure examples
+      run: >-
+        cmake
+        -S example
+        -B example/build
+        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
     - name: build examples
       run: cmake --build example/build
     - name: Test examples
@@ -90,7 +115,7 @@ jobs:
     - name: Code coverage
       run: cmake --build --preset run-coverage
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: coverage-report-html
         path: build-coverage/coverage/
