@@ -18,21 +18,25 @@ on:
 jobs:
 
   base:
-    runs-on: ${{ matrix.img.os }}
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
 
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest]
         shared: [true, false]
-        img: [
-          {os: ubuntu-latest, cmd: sudo apt update && sudo apt install --no-install-recommends ninja-build libnetcdff-dev},
-        ]
+        build: [true, false]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: install system libs
-      run: ${{ matrix.img.cmd }}
+    - name: install NetCDF system libs
+      if: ${{ !matrix.build }} && runner.os == 'Linux'
+      run: sudo apt install --no-install-recommends ninja-build libnetcdff-dev
+
+    - name: install HDF5 system libs
+      if: ${{ !matrix.build }} && runner.os == 'macOS'
+      run: brew install netcdf
 
     - run: >-
         cmake
@@ -60,45 +64,6 @@ jobs:
     - name: Test examples
       run: ctest --test-dir example/build -V
 
-
-  linux-build:
-    needs: base
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: install libs
-      run: |
-        sudo apt update
-        sudo apt install --no-install-recommends libhdf5-dev
-
-    - name: Configure NetCDF4
-      run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
-
-    - name: Build/install NetCDF4
-      run: cmake --build scripts/build --parallel
-
-    - name: configure nc4fortran
-      run: >-
-        cmake
-        --preset default
-        --install-prefix ${{ runner.temp }}
-        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
-
-    - run: cmake --build --preset default --parallel
-    - run: ctest --preset default
-    - run: cmake --install build
-
-    - name: configure examples
-      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
-    - name: build examples
-      run: cmake --build example/build --parallel
-    - name: Test examples
-      run: ctest --test-dir example/build -V
-
-
   linux-coverage:
     if: github.event_name == 'release'
     needs: base
@@ -106,7 +71,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: actions/setup-python@v4
       with:
         python-version: '3.x'
@@ -129,41 +94,3 @@ jobs:
       with:
         name: coverage-report-html
         path: build-coverage/coverage/
-
-
-
-  mac:
-    runs-on: macos-latest
-    timeout-minutes: 30
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: install libs
-      run: |
-        brew install hdf5 netcdf
-        brew reinstall gcc
-
-    - name: Configure NetCDF4
-      run: cmake -S scripts -B scripts/build --install-prefix ${{ runner.temp }}
-
-    - name: Build/install NetCDF4
-      run: cmake --build scripts/build --parallel
-
-    - name: configure nc4fortran
-      run: >-
-        cmake
-        --preset default
-        --install-prefix ${{ runner.temp }}
-        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
-
-    - run: cmake --build --preset default
-    - run: ctest --preset default
-    - run: cmake --install build
-
-    - name: configure examples
-      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
-    - name: build examples
-      run: cmake --build example/build --parallel
-    - name: Test examples
-      run: ctest --test-dir example/build -V
