@@ -48,29 +48,15 @@ jobs:
         source /opt/intel/oneapi/setvars.sh
         printenv >> $GITHUB_ENV
 
-    - name: install Ninja
-      run: sudo apt install ninja-build
-# install ninja needs to be own step as not cached by design
-
     - name: Configure nc4fortran
-      run: >-
-        cmake
-        --preset multi
-        --install-prefix ${{ runner.temp }}
-        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+      run: cmake --workflow --preset default
 
     - name: print config log
       if: ${{ failure() }}
       run: cat build/CMakeFiles/CMakeConfigureLog.yaml
 
-    - name: Debug workflow
-      run: cmake --workflow --preset debug
-
-    - name: Release workflow
-      run: cmake --workflow --preset release
-
     - name: install package
-      run: cmake --install build
+      run: cmake --install build --prefix ${{ runner.temp }}
 
     - name: configure examples
       run: >-
