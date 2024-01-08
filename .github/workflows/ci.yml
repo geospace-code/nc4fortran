@@ -31,11 +31,11 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: install NetCDF system libs
-      if: ${{ !matrix.build }} && runner.os == 'Linux'
+      if: ${{ !matrix.build && runner.os == 'Linux' }}
       run: sudo apt install --no-install-recommends ninja-build libnetcdff-dev
 
-    - name: install HDF5 system libs
-      if: ${{ !matrix.build }} && runner.os == 'macOS'
+    - name: install NetCDF system libs
+      if: ${{ !matrix.build && runner.os == 'macOS' }}
       run: brew install netcdf
 
     - run: >-
