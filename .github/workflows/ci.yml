@@ -43,7 +43,6 @@ jobs:
     - run: >-
         cmake
         --preset multi
-        --install-prefix ${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
     - run: cmake --build --preset debug
@@ -59,8 +58,9 @@ jobs:
         cmake
         -S example
         -B example/build
-        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+        -DCMAKE_PREFIX_PATH=${{ github.workspace }}/build/local
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+
     - name: build examples
       run: cmake --build example/build
     - name: Test examples
@@ -84,14 +84,16 @@ jobs:
 
     - run: cmake --workflow --preset default
 
-    - run: cmake --install build --prefix ${{ runner.temp }}
+    - run: cmake --install build
 
     - name: configure examples
       run: >-
         cmake
         -S example
         -B example/build
-        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+        -DCMAKE_PREFIX_PATH=${{ github.workspace }}/build/local
+
+
     - name: build examples
       run: cmake --build example/build
     - name: Test examples

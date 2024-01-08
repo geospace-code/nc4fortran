@@ -56,14 +56,14 @@ jobs:
       run: cat build/CMakeFiles/CMakeConfigureLog.yaml
 
     - name: install package
-      run: cmake --install build --prefix ${{ runner.temp }}
+      run: cmake --install build -
 
     - name: configure examples
       run: >-
         cmake
         -S example
         -B example/build
-        -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }}
+        -DCMAKE_PREFIX_PATH:PATH=${{ github.workspace }}/build/local
 
 # BUILD_SHARED_LIBS=false since as with any C++ / Fortran program with Intel compiler,
 # need to have GCC environment carefully set
