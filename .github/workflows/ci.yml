@@ -2,6 +2,7 @@ name: ci
 
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
 
 on:
   push:
@@ -81,6 +82,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: install HDF5
+      if: runner.os == 'macOS'
+      run: brew install hdf5
 
     - run: cmake --workflow --preset default
 
