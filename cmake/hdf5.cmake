@@ -15,14 +15,15 @@ endif()
 
 set(HDF5_LIBRARIES)
 foreach(_name IN ITEMS hdf5_hl_fortran hdf5_hl_f90cstub hdf5_fortran hdf5_f90cstub hdf5_hl hdf5)
+  # need ${CMAKE_INSTALL_PREFIX}/lib as HDF5 doesn't use GNUInstallDirs
   if(BUILD_SHARED_LIBS)
     if(WIN32)
-      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_FULL_BINDIR}/lib${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
+      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/lib${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
     else()
-      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/lib${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
+      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/lib${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
     endif()
   else()
-    list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/lib${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
+    list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/lib${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
   endif()
 endforeach()
 
@@ -56,7 +57,7 @@ set(hdf5_cmake_args
 -DHDF5_BUILD_CPP_LIB:BOOL=false
 -DBUILD_TESTING:BOOL=false
 -DHDF5_BUILD_EXAMPLES:BOOL=false
--DHDF5_BUILD_TOOLS:BOOL=false
+-DHDF5_BUILD_TOOLS:BOOL=$<NOT:$<BOOL:${hdf5_parallel}>>
 -DHDF5_ENABLE_PARALLEL:BOOL=$<BOOL:${hdf5_parallel}>
 -DHDF5_BUILD_PARALLEL_TOOLS:BOOL=false
 )
@@ -70,14 +71,9 @@ if(MPI_ROOT)
 endif()
 
 string(JSON hdf5_url GET ${json} hdf5 url)
-if(NOT hdf5_tag)
-  string(JSON hdf5_tag GET ${json} hdf5 tag)
-endif()
 
 ExternalProject_Add(HDF5
-GIT_REPOSITORY ${hdf5_url}
-GIT_TAG ${hdf5_tag}
-GIT_SHALLOW true
+URL ${hdf5_url}
 CMAKE_ARGS ${hdf5_cmake_args}
 BUILD_BYPRODUCTS ${HDF5_LIBRARIES}
 DEPENDS ZLIB
@@ -96,7 +92,7 @@ USES_TERMINAL_TEST true
 file(MAKE_DIRECTORY ${HDF5_INCLUDE_DIRS})
 # avoid race condition
 
-# this GLOBAL is required to be visible via other project's FetchContent of h5fortran
+# this GLOBAL is required to be visible to parent projects
 add_library(HDF5::HDF5 INTERFACE IMPORTED GLOBAL)
 target_include_directories(HDF5::HDF5 INTERFACE "${HDF5_INCLUDE_DIRS}")
 target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
