@@ -60,12 +60,9 @@ endif()
 set(NetCDF_Fortran_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR})
 
 string(JSON netcdfFortran_url GET ${json} netcdfFortran url)
-string(JSON netcdfFortran_tag GET ${json} netcdfFortran tag)
 
 ExternalProject_Add(NETCDF_FORTRAN
-GIT_REPOSITORY ${netcdfFortran_url}
-GIT_TAG ${netcdfFortran_tag}
-GIT_SHALLOW true
+URL ${netcdfFortran_url}
 CONFIGURE_HANDLED_BY_BUILD ON
 CMAKE_ARGS ${netcdf_fortran_cmake_args}
 CMAKE_CACHE_ARGS -DCMAKE_REQUIRED_LIBRARIES:STRING=${CMAKE_REQUIRED_LIBRARIES}

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19...3.28)
+cmake_minimum_required(VERSION 3.19...3.29)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "In-source builds are not allowed. Do like:

@@ -20,6 +20,7 @@ set(netcdf_c_cmake_args
 -DENABLE_BYTERANGE:BOOL=OFF
 -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
 -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+-DZLIB_LIBRARY:FILEPATH=${ZLIB_LIBRARIES}
 )
 # BUILD_SHARED_LIBS=on for netcdf-fortran symbol finding bug
 
@@ -32,12 +33,10 @@ endif()
 set(NetCDF_C_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR})
 
 string(JSON netcdfC_url GET ${json} netcdfC url)
-string(JSON netcdfC_tag GET ${json} netcdfC tag)
+
 
 ExternalProject_Add(NETCDF_C
-GIT_REPOSITORY ${netcdfC_url}
-GIT_TAG ${netcdfC_tag}
-GIT_SHALLOW true
+URL ${netcdfC_url}
 CONFIGURE_HANDLED_BY_BUILD TRUE
 CMAKE_ARGS ${netcdf_c_cmake_args}
 BUILD_BYPRODUCTS ${NetCDF_C_LIBRARIES}
