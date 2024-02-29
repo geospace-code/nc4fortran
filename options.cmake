@@ -1,11 +1,11 @@
 message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION} CMake ${CMAKE_VERSION} Toolchain ${CMAKE_TOOLCHAIN_FILE}")
 
-option(ENABLE_COVERAGE "Code coverage tests")
+option(${PROJECT_NAME}_COVERAGE "Code coverage tests")
 option(tidy "Run clang-tidy on the code")
 option(find "find NetCDF libraries" ON)
 
 
-option(${PROJECT_NAME}_BUILD_TESTING "Build tests" ON)
+option(${PROJECT_NAME}_BUILD_TESTING "Build tests" ${PROJECT_IS_TOP_LEVEL})
 option(CMAKE_TLS_VERIFY "Verify TLS certificates when downloading libraries" ON)
 
 

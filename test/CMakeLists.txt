@@ -35,7 +35,7 @@ set_property(TEST deflate_props deflate_read PROPERTY FIXTURES_REQUIRED deflate_
 set_property(TEST deflate_props deflate_read PROPERTY REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/deflate1.nc)
 
 
-if(ENABLE_COVERAGE)
+if(${PROJECT_NAME}_COVERAGE)
 setup_target_for_coverage_gcovr_html(
 NAME coverage
 EXECUTABLE ${CMAKE_CTEST_COMMAND}

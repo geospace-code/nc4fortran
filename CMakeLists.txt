@@ -32,14 +32,14 @@ if(NOT NetCDF_FOUND)
 endif()
 
 # --- code coverage
-if(ENABLE_COVERAGE)
+if(${PROJECT_NAME}_COVERAGE)
   include(cmake/Modules/CodeCoverage.cmake)
   append_coverage_compiler_flags()
   set(COVERAGE_EXCLUDES ${PROJECT_SOURCE_DIR}/test)
 endif()
 
 # --- clang-tidy
-if(tidy)
+if(tidy AND PROJECT_IS_TOP_LEVEL)
   find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
   set(CMAKE_C_CLANG_TIDY ${CLANG_TIDY_EXE})
 endif()
