@@ -7,11 +7,14 @@ on:
       - "**.cmake"
       - "**.f90"
       - ".github/workflows/ci_windows.yml"
-      - "!cmake/netcdf.cmake"
-      - "!cmake/netcdf-c.cmake"
-      - "!cmake/hdf5.cmake"
+      - "cmake/netcdf.cmake"
+      - "cmake/netcdf-c.cmake"
+      - "cmake/hdf5.cmake"
       - "!scripts/**"
 
+env:
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
+  CTEST_PARALLEL_LEVEL: 4
 
 jobs:
 
@@ -24,12 +27,11 @@ jobs:
       with:
         update: true
         install: >-
-          mingw-w64-x86_64-ninja
           mingw-w64-x86_64-gcc-fortran
           mingw-w64-x86_64-hdf5
 
     - name: Put MSYS2_MinGW64 on PATH
-      run: echo "${{ runner.temp }}/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      run: echo "${{ runner.temp }}/msys64/mingw64/bin/" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - uses: actions/checkout@v4
 
@@ -37,8 +39,14 @@ jobs:
     # - name: Debug workflow
     #   run: cmake --workflow --preset debug
 
-    - name: Release workflow
-      run: cmake --workflow --preset release
+    - name: config
+      run: cmake -G "MinGW Makefiles" -DHDF5_ROOT=${{ runner.temp }}/msys64/mingw64/ -DCMAKE_BUILD_TYPE=Release --preset default
+
+    - name: build
+      run: cmake --build --preset default
+
+    - name: test
+      run: ctest --preset default
 
 #    - run: cmake --install build
 
