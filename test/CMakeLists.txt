@@ -46,15 +46,15 @@ endif()
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
   if(WIN32)
     set_property(TEST minimal ${test_names} PROPERTY
-    ENVIRONMENT_MODIFICATION "PATH=path_list_append:${NetCDF_Fortran_INCLUDE_DIRS}/../bin"
+    ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${NetCDF_Fortran_INCLUDE_DIRS}/../bin"
     )
   elseif(APPLE)
     set_property(TEST minimal ${test_names} PROPERTY
-    ENVIRONMENT_MODIFICATION "DYLD_LIBRARY_PATH=path_list_append:${NetCDF_Fortran_INCLUDE_DIRS}/../lib"
+    ENVIRONMENT_MODIFICATION "DYLD_LIBRARY_PATH=path_list_prepend:${NetCDF_Fortran_INCLUDE_DIRS}/../lib"
     )
   else()
     set_property(TEST minimal ${test_names} PROPERTY
-    ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_append:${NetCDF_Fortran_INCLUDE_DIRS}/../lib"
+    ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_prepend:${NetCDF_Fortran_INCLUDE_DIRS}/../lib"
     )
   endif()
 endif()
