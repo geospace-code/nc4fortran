@@ -34,7 +34,7 @@ jobs:
 
     - name: cache install oneAPI
       id: cache-install
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           /opt/intel/oneapi
