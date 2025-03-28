@@ -34,16 +34,6 @@ endif()
 
 # --- NetCDF-Fortran
 
-# NetCDF-Fortran needs these for its checks of NetCDF-C, but doesn't set them.
-find_package(ZLIB)
-find_package(Threads)
-
-set(CMAKE_REQUIRED_LIBRARIES
-${ZLIB_LIBRARIES}
-${CMAKE_THREAD_LIBS_INIT}
-${CMAKE_DL_LIBS}
-)
-
 set(netcdf_fortran_cmake_args
 -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
 -DCMAKE_PREFIX_PATH:PATH=${CMAKE_INSTALL_PREFIX}
@@ -73,7 +63,6 @@ ExternalProject_Add(NETCDF_FORTRAN
 URL ${netcdfFortran_url}
 CONFIGURE_HANDLED_BY_BUILD ON
 CMAKE_ARGS ${netcdf_fortran_cmake_args}
-CMAKE_CACHE_ARGS -DCMAKE_REQUIRED_LIBRARIES:STRING=${CMAKE_REQUIRED_LIBRARIES}
 BUILD_BYPRODUCTS ${NetCDF_Fortran_LIBRARIES}
 DEPENDS NETCDF_C
 USES_TERMINAL_DOWNLOAD true
