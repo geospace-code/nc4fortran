@@ -67,6 +67,12 @@ cmake -DNetCDF_ROOT=/path/to/netcdff -B build
 
 or set environment variable `NetCDF_ROOT=/path/to/netcdff`
 
+To not find existing netCDF (force build of netCDF from source) add option:
+
+```sh
+cmake -Dfind_netcdf=off -Bbuild
+```
+
 To use nc4fortran as a CMake ExternalProject do like:
 
 ```cmake

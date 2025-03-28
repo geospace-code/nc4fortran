@@ -11,7 +11,9 @@ if(NOT DEFINED HDF5_ROOT AND DEFINED ENV{HDF5_ROOT})
   set(HDF5_ROOT $ENV{HDF5_ROOT})
 endif()
 
-find_package(HDF5 COMPONENTS C Fortran)
+if(find_hdf5)
+  find_package(HDF5 COMPONENTS C Fortran)
+endif()
 if(HDF5_FOUND)
   add_custom_target(HDF5)
 else()
@@ -20,7 +22,9 @@ endif()
 
 # --- NetCDF-C
 
-find_package(NetCDF COMPONENTS C)
+if(find_netcdf)
+  find_package(NetCDF COMPONENTS C)
+endif()
 if(NetCDF_C_FOUND)
   add_custom_target(NETCDF_C)
 else()

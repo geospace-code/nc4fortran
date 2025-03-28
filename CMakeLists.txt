@@ -24,7 +24,7 @@ include(cmake/compilers.cmake)
 
 file(GENERATE OUTPUT .gitignore CONTENT "*")
 
-if(find)
+if(find_netcdf)
   find_package(NetCDF COMPONENTS C Fortran)
 endif()
 if(NOT NetCDF_FOUND AND NOT TARGET NetCDF::NetCDF_Fortran)
