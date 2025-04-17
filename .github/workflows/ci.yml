@@ -36,11 +36,11 @@ jobs:
 
     - name: install NetCDF system libs
       if: runner.os == 'Linux'
-      run: sudo apt install --no-install-recommends ninja-build libnetcdff-dev
+      run: sudo apt install --no-install-recommends libnetcdff-dev
 
     - name: install NetCDF system libs
       if: runner.os == 'macOS'
-      run: brew install ninja netcdf-fortran
+      run: brew install netcdf-fortran
 
     - run: >-
         cmake
