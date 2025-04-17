@@ -50,7 +50,7 @@ jobs:
         printenv >> $GITHUB_ENV
 
     - name: Configure nc4fortran
-      run: cmake --workflow --preset default
+      run: cmake --workflow default
 
     - name: print config log
       if: ${{ failure() }}

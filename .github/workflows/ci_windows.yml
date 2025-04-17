@@ -41,7 +41,7 @@ jobs:
 
     # undefined reference to `ncpsharedlibfree'
     # - name: Debug workflow
-    #   run: cmake --workflow --preset debug
+    #   run: cmake --workflow debug
 
     - name: config
       run: cmake -G "MinGW Makefiles" --preset default
