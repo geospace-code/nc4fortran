@@ -16,6 +16,12 @@ on:
       - "**.f90"
       - ".github/workflows/ci.yml"
       - "!scripts/**"
+  workflow_dispatch:
+
+# avoid wasted runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
 
@@ -28,7 +34,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-24.04, macos-latest]
+        os: [ubuntu-latest, macos-latest]
         shared: [true, false]
 
     steps:
@@ -79,7 +85,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-24.04, macos-latest]
+        os: [ubuntu-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v4

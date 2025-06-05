@@ -19,6 +19,13 @@ on:
       - "**/CMakeLists.txt"
       - ".github/workflows/oneapi-linux.yml"
       - "!scripts/**"
+  workflow_dispatch:
+
+# avoid wasted runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 jobs:
 
