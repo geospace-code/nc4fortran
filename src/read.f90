@@ -69,7 +69,6 @@ module procedure get_shape
 
 integer :: ier, varid, i, N
 integer, allocatable :: dimids(:)
-character(NF90_MAX_NAME), allocatable :: tempnames(:)
 
 N = self%ndim(dname)
 
@@ -81,21 +80,16 @@ if(check_error(ier, dname)) error stop 'ERROR:nc4fortran:get_shape: could not ge
 ier = nf90_inquire_variable(self%file_id, varid, dimids = dimids)
 if(check_error(ier, dname)) error stop 'ERROR:nc4fortran:get_shape: could not get dimension IDs for: ' // dname
 
-if (present(dimnames)) allocate(tempnames(N))
+if (present(dimnames)) allocate(dimnames(N))
 
 do i = 1,N
   if(present(dimnames)) then
-    ier = nf90_inquire_dimension(self%file_id, dimid=dimids(i), name=tempnames(i), len=dims(i))
+    ier = nf90_inquire_dimension(self%file_id, dimid=dimids(i), name=dimnames(i), len=dims(i))
   else
     ier = nf90_inquire_dimension(self%file_id, dimid=dimids(i), len=dims(i))
   endif
   if(ier/=NF90_NOERR) error stop 'ERROR:nc4fortran:get_shape: querying dimension size'
 enddo
-
-if (present(dimnames)) then
-  allocate(dimnames(N))
-  dimnames = tempnames
-endif
 
 end procedure get_shape
 
