@@ -51,8 +51,7 @@ jobs:
       if: runner.os == 'macOS'
       run: brew install netcdf-fortran
 
-    - run: cmake --workflow debug
-    - run: cmake --workflow release
+    - run: cmake --workflow reldebug
 
     - run: cmake --install build
 
