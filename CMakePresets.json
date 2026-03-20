@@ -1,55 +1,85 @@
 {
   "version": 6,
 
-"configurePresets": [
+  "configurePresets": [
 {
   "name": "default",
-  "binaryDir": "${sourceDir}/build",
+  "binaryDir": "build",
   "cacheVariables": {
-    "CMAKE_COMPILE_WARNING_AS_ERROR": true
+    "nc4fortran_warning_as_error": true,
+    "nc4fortran_BUILD_TESTING": true,
+    "CMAKE_BUILD_TYPE": "Release"
+  }
+},
+{ "name": "debug", "inherits": "default",
+  "binaryDir": "build-debug",
+  "cacheVariables": {
+    "CMAKE_BUILD_TYPE": "Debug"
   }
 },
 {
-  "name": "multi", "inherits": "default",
-  "displayName": "Ninja Multi-Config",
-  "generator": "Ninja Multi-Config"
+  "name": "reldebug", "inherits": "default",
+  "binaryDir": "build-reldebug",
+  "displayName": "release with debug info",
+  "cacheVariables": {
+    "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+  }
+},
+{ "name": "shared", "inherits": "reldebug",
+  "binaryDir": "build-shared",
+  "displayName": "build shared libraries",
+  "cacheVariables": {
+    "BUILD_SHARED_LIBS": true,
+    "nc4fortran_ENABLE_RPATH": true,
+    "nc4fortran_find": false
+  }
+},
+{
+  "name": "nofind", "inherits": "reldebug",
+  "binaryDir": "build-nofind",
+  "displayName": "don't find HDF5 or Zlib",
+  "cacheVariables": {
+    "nc4fortran_find": false
+  }
 },
 {
   "name": "coverage",
-  "binaryDir": "${sourceDir}/build-coverage",
+  "binaryDir": "build-coverage",
   "displayName": "Code Coverage",
   "description": "Build with code coverage enabled.",
   "cacheVariables": {
     "CMAKE_BUILD_TYPE": "Debug",
-    "nc4fortran_COVERAGE": true
+    "nc4fortran_coverage": true
   }
 }
 ],
 "buildPresets": [
+  { "name": "default", "configurePreset": "default", "jobs": 0 },
+  { "name": "nofind",  "configurePreset": "nofind", "inherits": "default" },
+  { "name": "shared",  "configurePreset": "shared", "inherits": "default" },
   {
-    "name": "default",
-    "configurePreset": "default"
+    "name": "explain",
+    "configurePreset": "default",
+    "nativeToolOptions": ["-d", "explain"]
   },
   {
-    "name": "release",
-    "configurePreset": "multi",
-    "configuration": "Release"
+    "name": "keep",
+    "configurePreset": "default",
+    "nativeToolOptions": ["-d", "keeprsp", "-d", "keepdepfile"]
   },
+  {
+    "name": "stats",
+    "configurePreset": "default",
+    "nativeToolOptions": ["-d", "stats"]
+  },
+  { "name": "release","configurePreset": "default" },
   {
     "name": "reldebug",
-    "configurePreset": "multi",
-    "configuration": "RelWithDebInfo",
+    "configurePreset": "reldebug",
     "displayName": "Release with Debug Info"
   },
-  {
-    "name": "debug",
-    "configurePreset": "multi",
-    "configuration": "Debug"
-  },
-  {
-    "name": "coverage",
-    "configurePreset": "coverage"
-  },
+  { "name": "debug", "configurePreset": "debug" },
+  { "name": "coverage", "configurePreset": "coverage" },
   {
     "name": "run-coverage",
     "configurePreset": "coverage",
@@ -68,76 +98,59 @@
     "noTestsAction": "error",
     "scheduleRandom": true,
     "stopOnFailure": false,
+    "jobs": 0,
     "timeout": 60
   }
 },
-{
-  "name": "release", "inherits": "default",
-  "configurePreset": "multi",
-  "configuration": "Release"
-},
+{ "name": "nofind", "configurePreset": "nofind", "inherits": "default" },
+{ "name": "shared", "configurePreset": "shared", "inherits": "default" },
+{ "name": "release", "inherits": "default" },
 {
   "name": "reldebug", "inherits": "default",
-  "configurePreset": "multi",
-  "configuration": "RelWithDebInfo",
+  "configurePreset": "reldebug",
   "displayName": "Release with Debug Info"
 },
-{
-  "name": "debug", "inherits": "default",
-  "configurePreset": "multi",
-  "configuration": "Debug"
-}
+{ "name": "debug", "inherits": "default", "configurePreset": "debug" }
 ],
 "workflowPresets": [
   {
     "name": "default",
     "steps": [
-      {
-        "type": "configure",
-        "name": "default"
-      },
-      {
-        "type": "build",
-        "name": "default"
-      },
-      {
-        "type": "test",
-        "name": "default"
-      }
+      { "type": "configure", "name": "default" },
+      { "type": "build", "name": "default" },
+      { "type": "test", "name": "default" }
     ]
   },
   {
     "name": "debug",
     "steps": [
-      {
-        "type": "configure",
-        "name": "multi"
-      },
-      {
-        "type": "build",
-        "name": "debug"
-      },
-      {
-        "type": "test",
-        "name": "debug"
-      }
+      { "type": "configure", "name": "debug" },
+      { "type": "build", "name": "debug" },
+      { "type": "test", "name": "debug" }
     ]
   },
   {
     "name": "release",
     "steps": [
-      {
-        "type": "configure",
-        "name": "multi"
-      },
-      {
-        "type": "build",
-        "name": "release"
-      },
-      {
-        "type": "test",
-        "name": "release"
-      }
+      { "type": "configure", "name": "default" },
+      { "type": "build", "name": "release" },
+      { "type": "test", "name": "release" }
+    ]
+  },
+  {
+    "name": "shared",
+    "steps": [
+      { "type": "configure", "name": "shared" },
+      { "type": "build", "name": "shared" },
+      { "type": "test", "name": "shared" }
+    ]
+  },
+  {
+    "name": "nofind",
+    "steps": [
+      { "type": "configure", "name": "nofind" },
+      { "type": "build", "name": "nofind" },
+      { "type": "test", "name": "nofind" }
     ]
   }
 ]

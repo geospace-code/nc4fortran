@@ -1,24 +1,28 @@
 name: ci_windows
 
+env:
+  CMAKE_GENERATOR: Ninja
+
 on:
   push:
     paths:
+      - "**.c"
+      - "**.cpp"
+      - "**.f90"
+      - "**.F90"
       - "**/CMakeLists.txt"
       - "**.cmake"
-      - "**.f90"
       - ".github/workflows/ci_windows.yml"
+      - "!memcheck.cmake"
+      - "!coverage.cmake"
       - "!scripts/**"
-
-env:
-  CMAKE_BUILD_PARALLEL_LEVEL: 4
-  CTEST_PARALLEL_LEVEL: 0
-  CTEST_NO_TESTS_ACTION: error
   workflow_dispatch:
 
 # avoid wasted runs
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
 
 jobs:
 
@@ -41,33 +45,25 @@ jobs:
     - name: prefix path
       run: |
         echo "CMAKE_INSTALL_PREFIX=$HOME/libs" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-        echo "CMAKE_PREFIX_PATH=$HOME/libs" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        echo "nc4fortran_ROOT=$HOME/libs" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        echo "CMAKE_PREFIX_PATH=${{ steps.msys2.outputs.msys2-location }}/ucrt64/" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
-    # undefined reference to `ncpsharedlibfree'
-    # - name: Debug workflow
-    #   run: cmake --workflow debug
+    - name: CMake workflow
+      run: cmake --workflow default
 
-    - name: config
-      run: cmake -G "MinGW Makefiles" --preset default
-      env:
-        HDF5_ROOT: ${{ steps.msys2.outputs.msys2-location }}/ucrt64/
-        NetCDF_ROOT: ${{ steps.msys2.outputs.msys2-location }}/ucrt64/
+    - name: Upload log failure
+      if: failure()
+      uses: actions/upload-artifact@v7
+      with:
+        archive: false
+        name: ${{ runner.os }}-CMakeConfigureLog.yaml
+        path: build/CMakeFiles/CMakeConfigureLog.yaml
 
-    - name: build
-      run: cmake --build --preset default
+    - name: install package
+      run: cmake --install build
 
-    - name: test
-      run: ctest --preset default
-
-#    - run: cmake --install build
-
-# NetCDF-C packaging issue with HDF5--ignores CMAKE_MODULE_PATH and uses broken factory FindHDF5
-# and can't seem to override
-    # - name: configure examples
-    #   run: cmake -S example -B example/build
-    # - name: build Examples
-    #   run: cmake --build example/build
-    # - name: Test Examples
-    #   run: ctest --test-dir example/build -V
+    - name: example workflow
+      working-directory: example
+      run: cmake --workflow default

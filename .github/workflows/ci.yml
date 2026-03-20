@@ -2,11 +2,9 @@ name: ci
 
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
-  CMAKE_BUILD_PARALLEL_LEVEL: 4
-  CTEST_PARALLEL_LEVEL: 0
-  CTEST_NO_TESTS_ACTION: error
   CMAKE_INSTALL_PREFIX: ~/libs
   CMAKE_PREFIX_PATH: ~/libs
+  CMAKE_GENERATOR: Ninja
 
 on:
   push:
@@ -35,48 +33,35 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        shared: [true, false]
 
     steps:
-    - uses: actions/checkout@v4
 
-    - name: install NetCDF system libs
+    - &checkout
+      uses: actions/checkout@v6
+
+    - &ncdf-linux
+      name: install NetCDF (Linux)
       if: runner.os == 'Linux'
-      run: sudo apt install --no-install-recommends libnetcdff-dev
+      run: |
+        sudo apt update
+        sudo apt install --no-install-recommends libnetcdff-dev
 
-    - name: install NetCDF system libs
+    - &ncdf-macos
+      name: install NetCDF (macOS)
       if: runner.os == 'macOS'
       run: brew install netcdf-fortran
 
-    - run: >-
-        cmake
-        --preset multi
-        -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
-
-    - run: cmake --build --preset debug
-    - run: ctest --preset debug
-
-    - run: cmake --build --preset release
-    - run: ctest --preset release
+    - run: cmake --workflow debug
+    - run: cmake --workflow release
 
     - run: cmake --install build
 
-    - name: configure examples
-      run: >-
-        cmake
-        -S example
-        -B example/build
-        -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+    - &example
+      name: Example workflow
+      working-directory: example
+      run: cmake --workflow default
 
-    - name: build examples
-      run: cmake --build example/build
-
-    - name: Test examples
-      run: ctest --test-dir example/build -V
-
-  build:
-    needs: base
-
+  shared:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
 
@@ -88,7 +73,36 @@ jobs:
         os: [ubuntu-latest, macos-latest]
 
     steps:
-    - uses: actions/checkout@v4
+
+    - *checkout
+
+    - *ncdf-linux
+
+    - *ncdf-macos
+
+    - run: cmake --workflow shared
+
+    - run: cmake --install build
+
+    - *example
+
+
+  build:
+    needs: base
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+
+    env:
+      CC: gcc-14
+      FC: gfortran-14
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+    - *checkout
 
     - name: install HDF5 (macOS)
       if: runner.os == 'macOS'
@@ -96,36 +110,26 @@ jobs:
 
     - name: install HDF5 (Linux)
       if: runner.os == 'Linux'
-      run: sudo apt install --no-install-recommends libhdf5-dev
-
-    - name: GCC Linux
-      if: runner.os == 'Linux'
       run: |
-        echo "CC=gcc-14" >> $GITHUB_ENV
+        sudo apt update
+        sudo apt install --no-install-recommends libhdf5-dev
 
     - run: cmake --workflow default
 
     - run: cmake --install build
 
-    - name: configure examples
-      run: cmake -S example -B example/build
-
-    - name: build examples
-      run: cmake --build example/build
-
-    - name: Test examples
-      run: ctest --test-dir example/build -V
+    - *example
 
 
   linux-coverage:
-    if: github.event_name == 'release'
+    if: false
     needs: base
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+    - *checkout
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.x'
 
@@ -137,13 +141,9 @@ jobs:
     - name: install Gcovr
       run: pip install gcovr
 
-    - run: cmake --preset coverage
-    - run: cmake --build --preset coverage
+    - run: cmake --workflow coverage
 
-    - name: Code coverage
-      run: cmake --build --preset run-coverage
-
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         name: coverage-report-html
         path: build-coverage/coverage/

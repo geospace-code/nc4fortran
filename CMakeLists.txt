@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19...3.30)
+cmake_minimum_required(VERSION 3.21...4.3)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "In-source builds are not allowed. Do like:
@@ -32,14 +32,14 @@ if(NOT NetCDF_FOUND AND NOT TARGET NetCDF::NetCDF_Fortran)
 endif()
 
 # --- code coverage
-if(nc4fortran_COVERAGE AND nc4fortran_IS_TOP_LEVEL)
+if(nc4fortran_coverage AND nc4fortran_IS_TOP_LEVEL)
   include(cmake/Modules/CodeCoverage.cmake)
   append_coverage_compiler_flags()
   set(COVERAGE_EXCLUDES ${PROJECT_SOURCE_DIR}/test)
 endif()
 
 # --- clang-tidy
-if(tidy AND nc4fortran_IS_TOP_LEVEL)
+if(nc4fortran_tidy AND nc4fortran_IS_TOP_LEVEL)
   find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
   set(CMAKE_C_CLANG_TIDY ${CLANG_TIDY_EXE})
 endif()
@@ -57,6 +57,16 @@ Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include
 LABELS core
 VERSION ${PROJECT_VERSION}
 )
+
+if(nc4fortran_warning_as_error)
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
+    set_property(TARGET nc4fortran PROPERTY COMPILE_WARNING_AS_ERROR true)
+  endif()
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.0)
+    set_property(TARGET nc4fortran PROPERTY LINK_WARNING_AS_ERROR true)
+  endif()
+endif()
+
 
 add_subdirectory(src)
 
