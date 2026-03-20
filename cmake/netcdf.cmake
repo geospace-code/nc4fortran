@@ -81,8 +81,7 @@ USES_TERMINAL_TEST true
 file(MAKE_DIRECTORY ${NetCDF_Fortran_INCLUDE_DIRS})
 # avoid race condition
 
-# this GLOBAL is required to be visible via other project's FetchContent
-add_library(NetCDF::NetCDF_Fortran INTERFACE IMPORTED GLOBAL)
+add_library(NetCDF::NetCDF_Fortran INTERFACE IMPORTED)
 target_include_directories(NetCDF::NetCDF_Fortran INTERFACE "${NetCDF_Fortran_INCLUDE_DIRS}")
 target_link_libraries(NetCDF::NetCDF_Fortran INTERFACE "${NetCDF_Fortran_LIBRARIES}")
 

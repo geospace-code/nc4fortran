@@ -1,4 +1,4 @@
-set(NetCDF_C_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include)
+set(NetCDF_C_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR})
 
 set(netcdf_c_cmake_args
 -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
@@ -55,8 +55,7 @@ USES_TERMINAL_TEST true
 file(MAKE_DIRECTORY ${NetCDF_C_INCLUDE_DIRS})
 # avoid race condition
 
-# this GLOBAL is required to be visible via other project's FetchContent
-add_library(NetCDF::NetCDF_C INTERFACE IMPORTED GLOBAL)
+add_library(NetCDF::NetCDF_C INTERFACE IMPORTED)
 target_include_directories(NetCDF::NetCDF_C INTERFACE "${NetCDF_C_INCLUDE_DIRS}")
 target_link_libraries(NetCDF::NetCDF_C INTERFACE "${NetCDF_C_LIBRARIES}")
 

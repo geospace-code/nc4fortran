@@ -63,8 +63,7 @@ DEPENDS HDF5::HDF5
 file(MAKE_DIRECTORY ${NetCDF_C_INCLUDE_DIRS})
 # avoid race condition
 
-# this GLOBAL is required to be visible via other project's FetchContent
-add_library(NetCDF::NetCDF_C INTERFACE IMPORTED GLOBAL)
+add_library(NetCDF::NetCDF_C INTERFACE IMPORTED)
 target_include_directories(NetCDF::NetCDF_C INTERFACE ${NetCDF_C_INCLUDE_DIRS})
 target_link_libraries(NetCDF::NetCDF_C INTERFACE ${NetCDF_C_LIBRARIES})
 
@@ -75,7 +74,7 @@ target_link_libraries(NetCDF::NetCDF_C INTERFACE HDF5::HDF5)
 
 # --- NetCDF-Fortran
 
-cmake_path(SET NetCDF_Fortran_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include)
+cmake_path(SET NetCDF_Fortran_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR})
 
 set(netcdf_fortran_cmake_args
 -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
@@ -109,8 +108,7 @@ DEPENDS NETCDF_C
 
 # --- imported target
 
-# this GLOBAL is required to be visible via other project's FetchContent
-add_library(NetCDF::NetCDF_Fortran INTERFACE IMPORTED GLOBAL)
+add_library(NetCDF::NetCDF_Fortran INTERFACE IMPORTED)
 target_include_directories(NetCDF::NetCDF_Fortran INTERFACE ${NetCDF_Fortran_INCLUDE_DIRS})
 target_link_libraries(NetCDF::NetCDF_Fortran INTERFACE ${NetCDF_Fortran_LIBRARIES} NetCDF::NetCDF_C)
 
