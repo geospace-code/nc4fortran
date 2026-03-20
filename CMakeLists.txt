@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21...4.3)
+cmake_minimum_required(VERSION 3.22...4.3)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "In-source builds are not allowed. Do like:
@@ -16,6 +16,8 @@ VERSION 1.7.2
 )
 
 enable_testing()
+
+include(GNUInstallDirs)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -48,12 +50,13 @@ endif()
 
 add_library(nc4fortran)
 target_include_directories(nc4fortran PUBLIC
-$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
-$<INSTALL_INTERFACE:include>
+$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}>
+$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
+target_compile_options(nc4fortran PRIVATE ${nc4fortran_fflags})
 target_link_libraries(nc4fortran PUBLIC NetCDF::NetCDF_Fortran)
 set_target_properties(nc4fortran PROPERTIES
-Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include
+Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}
 LABELS core
 VERSION ${PROJECT_VERSION}
 )
@@ -70,11 +73,9 @@ endif()
 
 add_subdirectory(src)
 
-# GLOBAL needed for FetchContent use
-add_library(nc4fortran::nc4fortran INTERFACE IMPORTED GLOBAL)
-target_link_libraries(nc4fortran::nc4fortran INTERFACE nc4fortran)
+add_library(nc4fortran::nc4fortran ALIAS nc4fortran)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/nc4fortran.mod TYPE INCLUDE)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}/nc4fortran.mod TYPE INCLUDE)
 
 install(TARGETS nc4fortran EXPORT nc4fortran-targets)
 
