@@ -45,8 +45,7 @@ jobs:
     - name: prefix path
       run: |
         echo "CMAKE_INSTALL_PREFIX=$HOME/libs" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-        echo "nc4fortran_ROOT=$HOME/libs" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-        echo "CMAKE_PREFIX_PATH=${{ steps.msys2.outputs.msys2-location }}/ucrt64/" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        echo "CMAKE_PREFIX_PATH=$HOME/libs;${{ steps.msys2.outputs.msys2-location }}/ucrt64/" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
     - uses: actions/checkout@v6
 

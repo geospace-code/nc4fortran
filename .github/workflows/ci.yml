@@ -81,7 +81,7 @@ jobs:
 
     - run: cmake --workflow shared
 
-    - run: cmake --install build
+    - run: cmake --install build-shared
 
     - *example
 
