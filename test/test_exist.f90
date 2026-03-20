@@ -22,10 +22,10 @@ integer :: i
 if(is_netcdf('apidfjpj-8j9ejfpq984jfp89q39SHf.nc')) error stop 'test_exist: non-existent file declared netcdf'
 
 open(newunit=i, file='not_netcdf.nc', action='write', status='replace')
-write(i,*) 'I am not a NetCDF4 file.'
+write(i,*) 'I am not a netCDF4 file.'
 close(i)
 
-if(is_netcdf('not.nc')) error stop 'text files are not NetCDF4'
+if(is_netcdf('not.nc')) error stop 'text files are not netCDF4'
 
 end subroutine test_is_netcdf
 

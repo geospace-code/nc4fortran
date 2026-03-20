@@ -32,7 +32,7 @@ set(zlib_cmake_args
 -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
 -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
 )
-# NetCDF 4.9/4.6 needs fPIC
+# netCDF 4.9/4.6 needs fPIC
 
 ExternalProject_Add(ZLIB
 URL ${zlib_url}

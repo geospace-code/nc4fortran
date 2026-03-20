@@ -41,10 +41,10 @@ include(cmake/compilers.cmake)
 
 file(GENERATE OUTPUT .gitignore CONTENT "*")
 
-if(find_netcdf)
-  find_package(NetCDF COMPONENTS C Fortran)
+if(nc4fortran_find_netcdf)
+  find_package(netCDF COMPONENTS C Fortran)
 endif()
-if(NOT NetCDF_FOUND AND NOT TARGET NetCDF::NetCDF_Fortran)
+if(NOT TARGET netCDF::netcdff)
   include(cmake/netcdf.cmake)
 endif()
 
@@ -64,12 +64,15 @@ endif()
 # --- build
 
 add_library(nc4fortran)
+
 target_include_directories(nc4fortran PUBLIC
 $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}>
 $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 target_compile_options(nc4fortran PRIVATE ${nc4fortran_fflags})
-target_link_libraries(nc4fortran PUBLIC NetCDF::NetCDF_Fortran)
+
+target_link_libraries(nc4fortran PUBLIC netCDF::netcdff)
+
 set_target_properties(nc4fortran PROPERTIES
 Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}
 LABELS core
@@ -97,7 +100,7 @@ install(TARGETS nc4fortran EXPORT nc4fortran-targets)
 # additional Find*.cmake necessary
 install(FILES
 ${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindHDF5.cmake
-${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindNetCDF.cmake
+${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindnetCDF.cmake
 DESTINATION cmake
 )
 

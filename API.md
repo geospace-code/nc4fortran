@@ -10,16 +10,16 @@ use nc4fortran, only: netcdf_file
 type(netcdf_file) :: h
 ```
 
-Query NetCDF4 library version:
+Query netCDF4 library version:
 
 ```fortran
 use nc4fortran, only : nc4version
 print *, nc4version()
 ```
 
-## Open NetCDF4 file reference
+## Open netCDF4 file reference
 
-More than one NetCDF4 file can be open in a program, by declaring unique file handle (variable) like:
+More than one netCDF4 file can be open in a program, by declaring unique file handle (variable) like:
 
 ```fortran
 type(netcdf_file) :: h1, h2, h3
@@ -34,7 +34,7 @@ character(*), intent(in), optional :: action  !< r, w, rw
 integer, intent(in), optional      :: comp_lvl  !< 0: no compression. 1-9: ZLIB compression, higher is more compressior
 ```
 
-## Close NetCDF4 file reference
+## Close netCDF4 file reference
 
 ```fortran
 call h%close()

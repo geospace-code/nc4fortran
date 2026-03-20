@@ -14,8 +14,8 @@ if (check_error(ier, dname)) error stop 'ERROR:nc4fortran:read inquire_id ' // d
 
 select type (A)
 type is (character(*))
-  !! NetCDF4 requires knowing the exact character length as if it were an array without fill values
-  !! HDF5 is not this strict; having a longer string variable than disk variable is OK in HDF5, but not NetCDF4
+  !! netCDF4 requires knowing the exact character length as if it were an array without fill values
+  !! HDF5 is not this strict; having a longer string variable than disk variable is OK in HDF5, but not netCDF4
   ier = nf90_inquire_variable(self%file_id, varid, dimids = dimids)
   if(check_error(ier, dname)) error stop 'ERROR:nc4fortran:read_scalar: could not get dimension IDs for: ' // dname
 

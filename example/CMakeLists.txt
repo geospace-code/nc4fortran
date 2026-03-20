@@ -26,7 +26,7 @@ add_test(NAME nc4fortran:Example2 COMMAND example2
 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-# --- NetCDF shared lib paths needed
+# --- netCDF shared lib paths needed
 get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
 get_property(incdir TARGET nc4fortran::nc4fortran PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
 

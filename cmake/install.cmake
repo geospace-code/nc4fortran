@@ -23,9 +23,13 @@ ${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}ConfigVersion.cmake
 DESTINATION cmake
 )
 
-if(CMAKE_VERSION VERSION_GREATER_EQUAL "4.3")
-  install(PACKAGE_INFO ${PROJECT_NAME} EXPORT ${PROJECT_NAME}-targets)
-endif()
+# don't do this, it makes error
+# Target "nc4fortran" references imported target "netCDF::netcdff" which does not come from any known package
+# have to figure out correct way to export netCDF targets, maybe with EXPORT_FIND_PACKAGE_NAME but that's experimental
+
+# if(CMAKE_VERSION VERSION_GREATER_EQUAL "4.3")
+#   install(PACKAGE_INFO ${PROJECT_NAME} EXPORT ${PROJECT_NAME}-targets)
+# endif()
 
 # --- CPack
 

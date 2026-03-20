@@ -1,5 +1,5 @@
 program test_version
-!! tests that NetCDF4 library version is available
+!! tests that netCDF4 library version is available
 
 use nc4fortran, only : nc4version
 

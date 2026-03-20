@@ -1,5 +1,5 @@
 name = "nc4fortran"
-description = "Lightweight object-oriented NetCDF4 interface"
+description = "Lightweight object-oriented netCDF4 interface"
 categories = "io"
 version = "1.7.1"
 

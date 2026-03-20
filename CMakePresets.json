@@ -39,7 +39,7 @@
 {
   "name": "nofind", "inherits": "reldebug",
   "binaryDir": "build",
-  "displayName": "don't find  NetCDF",
+  "displayName": "don't find  netCDF",
   "cacheVariables": {
     "nc4fortran_find_netcdf": false
   }

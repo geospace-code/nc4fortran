@@ -19,7 +19,7 @@ foreach(t IN LISTS test_names)
   target_link_libraries(test_${t} PRIVATE nc4fortran::nc4fortran)
 
   if(${t} STREQUAL "version")
-    add_test(NAME ${t} COMMAND test_${t} ${NetCDF_VERSION})
+    add_test(NAME ${t} COMMAND test_${t} ${netCDF_VERSION})
   else()
     add_test(NAME ${t} COMMAND test_${t})
   endif()
@@ -42,17 +42,17 @@ EXECUTABLE ${CMAKE_CTEST_COMMAND}
 )
 endif()
 
-# --- NetCDF shared lib paths needed
+# --- netCDF shared lib paths needed
 if(WIN32)
   set_property(TEST minimal ${test_names} PROPERTY
-  ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${NetCDF_Fortran_INCLUDE_DIRS}/../bin"
+  ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${netCDF_Fortran_INCLUDE_DIRS}/../bin"
   )
 elseif(APPLE)
   set_property(TEST minimal ${test_names} PROPERTY
-  ENVIRONMENT_MODIFICATION "DYLD_LIBRARY_PATH=path_list_prepend:${NetCDF_Fortran_INCLUDE_DIRS}/../lib"
+  ENVIRONMENT_MODIFICATION "DYLD_LIBRARY_PATH=path_list_prepend:${netCDF_Fortran_INCLUDE_DIRS}/../lib"
   )
 else()
   set_property(TEST minimal ${test_names} PROPERTY
-  ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_prepend:${NetCDF_Fortran_INCLUDE_DIRS}/../lib"
+  ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_prepend:${netCDF_Fortran_INCLUDE_DIRS}/../lib"
   )
 endif()

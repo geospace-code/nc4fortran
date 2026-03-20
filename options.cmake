@@ -4,7 +4,7 @@ option(nc4fortran_coverage "Code coverage tests")
 option(nc4fortran_tidy "Run clang-tidy on the code")
 
 option(nc4fortran_find_hdf5 "find HDF5 libraries" ON)
-option(nc4fortran_find_netcdf "find NetCDF libraries" ON)
+option(nc4fortran_find_netcdf "find netCDF libraries" ON)
 
 option(nc4fortran_BUILD_TESTING "Build tests" ${nc4fortran_IS_TOP_LEVEL})
 

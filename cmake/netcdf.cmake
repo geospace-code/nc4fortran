@@ -1,8 +1,8 @@
 include(ExternalProject)
 include(GNUInstallDirs)
 
-# need HDF5, NetCDF-C and NetCDF-Fortran
-# due to limitations of NetCDF-C and NetCDF-Fortran, as per their docs,
+# need HDF5, netCDF-C and netCDF-Fortran
+# due to limitations of netCDF-C and netCDF-Fortran, as per their docs,
 # we MUST use shared libraries or they don't archive/link properly.
 
 file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
@@ -20,25 +20,25 @@ else()
   include(${CMAKE_CURRENT_LIST_DIR}/hdf5.cmake)
 endif()
 
-# --- NetCDF-C
+# --- netCDF-C
 
 if(nc4fortran_find_netcdf)
-  find_package(NetCDF COMPONENTS C)
+  find_package(netCDF COMPONENTS C)
 endif()
-if(NetCDF_C_FOUND)
+if(TARGET netCDF::netcdf)
   add_custom_target(NETCDF_C)
 else()
   include(${CMAKE_CURRENT_LIST_DIR}/netcdf-c.cmake)
 endif()
 
 
-# --- NetCDF-Fortran
+# --- netCDF-Fortran
 
 set(netcdf_fortran_cmake_args
 -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
 -DCMAKE_PREFIX_PATH:PATH=${CMAKE_INSTALL_PREFIX}
--DnetCDF_LIBRARIES:FILEPATH=${NetCDF_C_LIBRARIES}
--DnetCDF_INCLUDE_DIR:PATH=${NetCDF_C_INCLUDE_DIRS}
+-DNetCDF_LIBRARIES:FILEPATH=${netCDF_C_LIBRARIES}
+-DNetCDF_INCLUDE_DIR:PATH=${netCDF_C_INCLUDE_DIRS}
 -DCMAKE_BUILD_TYPE:STRING=Release
 -DBUILD_SHARED_LIBS:BOOL=ON
 -DNETCDF_ENABLE_TESTS:BOOL=OFF
@@ -50,12 +50,12 @@ set(netcdf_fortran_cmake_args
 )
 
 if(WIN32)
-  set(NetCDF_Fortran_LIBRARIES ${CMAKE_INSTALL_FULL_BINDIR}/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_SHARED_LIBRARY_SUFFIX})
+  set(netCDF_Fortran_LIBRARIES ${CMAKE_INSTALL_FULL_BINDIR}/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_SHARED_LIBRARY_SUFFIX})
 else()
-  set(NetCDF_Fortran_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_SHARED_LIBRARY_SUFFIX})
+  set(netCDF_Fortran_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_SHARED_LIBRARY_SUFFIX})
 endif()
 
-set(NetCDF_Fortran_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR})
+set(netCDF_Fortran_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR})
 
 string(JSON netcdfFortran_url GET ${json} netcdfFortran url)
 
@@ -63,7 +63,7 @@ ExternalProject_Add(NETCDF_FORTRAN
 URL ${netcdfFortran_url}
 CONFIGURE_HANDLED_BY_BUILD ON
 CMAKE_ARGS ${netcdf_fortran_cmake_args}
-BUILD_BYPRODUCTS ${NetCDF_Fortran_LIBRARIES}
+BUILD_BYPRODUCTS ${netCDF_Fortran_LIBRARIES}
 DEPENDS NETCDF_C
 USES_TERMINAL_DOWNLOAD true
 USES_TERMINAL_UPDATE true
@@ -78,11 +78,13 @@ USES_TERMINAL_TEST true
 
 # --- imported target
 
-file(MAKE_DIRECTORY ${NetCDF_Fortran_INCLUDE_DIRS})
+file(MAKE_DIRECTORY ${netCDF_Fortran_INCLUDE_DIRS})
 # avoid race condition
 
-add_library(NetCDF::NetCDF_Fortran INTERFACE IMPORTED)
-target_include_directories(NetCDF::NetCDF_Fortran INTERFACE "${NetCDF_Fortran_INCLUDE_DIRS}")
-target_link_libraries(NetCDF::NetCDF_Fortran INTERFACE "${NetCDF_Fortran_LIBRARIES}")
+add_library(netCDF::netcdff INTERFACE IMPORTED)
+target_include_directories(netCDF::netcdff INTERFACE "${netCDF_Fortran_INCLUDE_DIRS}")
+target_link_libraries(netCDF::netcdff INTERFACE "${netCDF_Fortran_LIBRARIES}")
 
-add_dependencies(NetCDF::NetCDF_Fortran NETCDF_FORTRAN)
+#set_property(TARGET netCDF::netcdff PROPERTY EXPORT_FIND_PACKAGE_NAME netCDF)
+
+add_dependencies(netCDF::netcdff NETCDF_FORTRAN)

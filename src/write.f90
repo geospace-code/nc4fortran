@@ -77,9 +77,9 @@ type is (integer(int64))
     error stop 'ERROR:nc4fortran:write def fill datatype does not match ' // trim(dset_name)
   endif
 type is (character(*))
-  error stop "ERROR:nc4fortran:write def " // trim(dset_name) // ": NetCDF4 character variables cannot have fill values"
+  error stop "ERROR:nc4fortran:write def " // trim(dset_name) // ": netCDF4 character variables cannot have fill values"
 class default
-  error stop "ERROR:nc4fortran:write def " // trim(dset_name) // ": NetCDF4 datatype not supported"
+  error stop "ERROR:nc4fortran:write def " // trim(dset_name) // ": netCDF4 datatype not supported"
 end select
 if (check_error(ier, "")) error stop 'ERROR:nc4fortran:write fill_value ' // trim(dset_name)
 

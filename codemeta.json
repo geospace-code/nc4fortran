@@ -8,7 +8,7 @@
     "issueTracker": "https://github.com/geospace-code/nc4fortran/issues",
     "name": "nc4fortran",
     "identifier": "10.5281/zenodo.3757221",
-    "description": "Lightweight object-oriented NetCDF4 Fortran interface",
+    "description": "Lightweight object-oriented netCDF4 Fortran interface",
     "applicationCategory": "file I/O",
     "developmentStatus": "active",
     "funder": {

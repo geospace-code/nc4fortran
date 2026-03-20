@@ -1,5 +1,5 @@
 module nc4fortran
-!! NetCDF4 object-oriented polymorphic interface
+!! netCDF4 object-oriented polymorphic interface
 use, intrinsic :: iso_c_binding, only : c_ptr, c_loc
 use, intrinsic :: iso_fortran_env, only : real32, real64, int32, int64, stderr=>error_unit
 
@@ -276,7 +276,7 @@ end interface
 interface !< utils.f90
 
 module subroutine nc_open(self, filename, action, comp_lvl, debug)
-!! Opens NetCDF file
+!! Opens netCDF file
 
 class(netcdf_file), intent(inout) :: self
 character(*), intent(in) :: filename
@@ -295,7 +295,7 @@ class(netcdf_file), intent(inout) :: self
 end subroutine
 
 module function nc4version()
-!! get NetCDF4 library version
+!! get netCDF4 library version
 character(:), allocatable :: nc4version
 end function
 
@@ -310,7 +310,7 @@ character(*), intent(in) :: dname
 end function
 
 module logical function is_netcdf(filename)
-!! is this file NetCDF4?
+!! is this file netCDF4?
 character(*), intent(in) :: filename
 end function
 

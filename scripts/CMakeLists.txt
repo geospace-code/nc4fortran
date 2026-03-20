@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19...3.25)
-project(NetCDF_build
+project(netCDF_build
 LANGUAGES C Fortran
 )
 
@@ -16,11 +16,11 @@ endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
 
-# --- commence NetCDF build/install
+# --- commence netCDF build/install
 set_property(DIRECTORY PROPERTY EP_UPDATE_DISCONNECTED true)
 
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/libraries.json json)
 
-message(STATUS "Build / install NetCDF to ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "Build / install netCDF to ${CMAKE_INSTALL_PREFIX}")
 
 include(${PROJECT_SOURCE_DIR}/../cmake/netcdf.cmake)

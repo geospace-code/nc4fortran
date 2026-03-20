@@ -1,5 +1,5 @@
 submodule (nc4fortran:write) writer
-!! Note: for HDF5-based NetCDF4 file, nf90_enddef is implicit by nf90_put_var
+!! Note: for HDF5-based netCDF4 file, nf90_enddef is implicit by nf90_put_var
 
 implicit none (type, external)
 

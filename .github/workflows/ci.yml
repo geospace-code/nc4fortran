@@ -40,14 +40,14 @@ jobs:
       uses: actions/checkout@v6
 
     - &ncdf-linux
-      name: install NetCDF (Linux)
+      name: install netCDF (Linux)
       if: runner.os == 'Linux'
       run: |
         sudo apt update
         sudo apt install --no-install-recommends libnetcdff-dev
 
     - &ncdf-macos
-      name: install NetCDF (macOS)
+      name: install netCDF (macOS)
       if: runner.os == 'macOS'
       run: brew install netcdf-fortran
 

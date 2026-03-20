@@ -1,16 +1,16 @@
-# Object-oriented Fortran NetCDF4 interface
+# Object-oriented Fortran netCDF4 interface
 
 [![DOI](https://zenodo.org/badge/229812591.svg)](https://zenodo.org/badge/latestdoi/229812591)
 [![ci](https://github.com/geospace-code/nc4fortran/actions/workflows/ci.yml/badge.svg)](https://github.com/geospace-code/nc4fortran/actions/workflows/ci.yml)
 [![ci_windows](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_windows.yml/badge.svg)](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_windows.yml)
 [![ci_fpm](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_fpm.yml/badge.svg)](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_fpm.yml)
 
-Simple, robust, thin, object-oriented NetCDF4 polymorphic read/write interface.
+Simple, robust, thin, object-oriented netCDF4 polymorphic read/write interface.
 For HDF5 see [h5fortran](https://github.com/geospace-code/h5fortran).
 Designed for easy use as a CMake "ExternalProject" using **static** or **shared** linking.
 Uses Fortran 2008 `submodule` for clean template structure.
-nc4fortran abstracts away the messy parts of NetCDF4 so that you can read/write various types/ranks of data with a single command.
-In distinction from other high-level NetCDF4 interfaces, nc4fortran works to deduplicate code, using polymorphism wherever feasible, with an extensive test suite.
+nc4fortran abstracts away the messy parts of netCDF4 so that you can read/write various types/ranks of data with a single command.
+In distinction from other high-level netCDF4 interfaces, nc4fortran works to deduplicate code, using polymorphism wherever feasible, with an extensive test suite.
 
 Polymorphic API with read/write for types int32, int64, real32, real64 with rank:
 
@@ -23,9 +23,9 @@ Also:
 * read/write character, int, float, double attributes
 
 Datatypes are coerced as per standard Fortran rules.
-For example, reading a float NetCDF4 variable into an integer Fortran variable:  42.3 => 42
+For example, reading a float netCDF4 variable into an integer Fortran variable:  42.3 => 42
 
-Tested on systems with NetCDF4 including:
+Tested on systems with netCDF4 including:
 
 * MacOS
 * Linux
@@ -38,15 +38,15 @@ See [API](./API.md) for usage.
 Requirements:
 
 * modern Fortran compiler: examples: GCC &ge; 7 or Intel oneAPI &ge; 2021
-* NetCDF4 Fortran library
+* netCDF4 Fortran library
   * Mac / Homebrew: `brew install gcc netcdf`
   * Linux: `apt install gfortran libnetcdf-dev libnetcdff-dev`
   * Windows Subsystem for Linux: `apt install gfortran libnetcdf-dev libnetcdff-dev`
   * Windows Cygwin `libnetcdf-fortran-devel`
 
-Note that some precompiled NetCDF4 libraries include C / C++ without Fortran.
+Note that some precompiled netCDF4 libraries include C / C++ without Fortran.
 
-Build this NetCDF OO Fortran interface.
+Build this netCDF OO Fortran interface.
 The library `libnc4fortran.a` is built, link it into your program as usual.
 
 ### CMake
@@ -59,18 +59,18 @@ cmake --build build
 ctest --test-dir build
 ```
 
-To specify a particular NetCDF library, use
+To specify a particular netCDF library, use
 
 ```sh
-cmake -DNetCDF_ROOT=/path/to/netcdff -B build
+cmake -DnetCDF_ROOT=/path/to/netcdff -B build
 ```
 
-or set environment variable `NetCDF_ROOT=/path/to/netcdff`
+or set environment variable `netCDF_ROOT=/path/to/netcdff`
 
 To not find existing netCDF (force build of netCDF from source) add option:
 
 ```sh
-cmake -Dfind_netcdf=off -Bbuild
+cmake -Dnc4fortran_find_netcdf=off -Bbuild
 ```
 
 To use nc4fortran as a CMake ExternalProject do like:

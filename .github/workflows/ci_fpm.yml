@@ -23,7 +23,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: install NetCDF4
+    - name: install netCDF4
       run: |
         sudo apt update
         sudo apt install --no-install-recommends libnetcdff-dev
