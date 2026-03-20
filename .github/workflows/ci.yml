@@ -113,7 +113,7 @@ jobs:
         sudo apt update
         sudo apt install --no-install-recommends libhdf5-dev
 
-    - run: cmake --workflow default
+    - run: cmake --workflow nofind
 
     - run: cmake --install build
 

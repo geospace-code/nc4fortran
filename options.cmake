@@ -8,6 +8,8 @@ option(nc4fortran_find_netcdf "find NetCDF libraries" ON)
 
 option(nc4fortran_BUILD_TESTING "Build tests" ${nc4fortran_IS_TOP_LEVEL})
 
+option(nc4fortran_IGNORE_CONDA_LIBRARIES "Ignore libraries in CONDA_PREFIX when finding dependencies" ON)
+
 set_property(DIRECTORY PROPERTY EP_UPDATE_DISCONNECTED true)
 
 # Necessary for shared library with Visual Studio / Windows oneAPI
