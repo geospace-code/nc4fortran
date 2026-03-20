@@ -92,10 +92,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
 
-    env:
-      CC: gcc-14
-      FC: gfortran-14
-
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -105,7 +101,9 @@ jobs:
 
     - name: install HDF5 (macOS)
       if: runner.os == 'macOS'
-      run: brew install hdf5
+      run: |
+        brew install hdf5
+        echo "FC=gfortran-15" >> $GITHUB_ENV
 
     - name: install HDF5 (Linux)
       if: runner.os == 'Linux'
