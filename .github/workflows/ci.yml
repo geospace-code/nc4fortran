@@ -69,8 +69,8 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
-
+        os: [ubuntu-latest]
+# macOS struggles with netCDF builds
     steps:
 
     - *checkout
@@ -94,7 +94,8 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
+# macOS struggles with NetCDF builds
 
     steps:
     - *checkout
@@ -103,7 +104,8 @@ jobs:
       if: runner.os == 'macOS'
       run: |
         brew install hdf5
-        echo "CC=gcc-15 FC=gfortran-15" >> $GITHUB_ENV
+        echo "CC=gcc-15" >> $GITHUB_ENV
+        echo "FC=gfortran-15" >> $GITHUB_ENV
 # doesn't work with AppleClang + Gfortran with shared builds
 
     - name: install HDF5 (Linux)
