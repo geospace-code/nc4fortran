@@ -103,7 +103,8 @@ jobs:
       if: runner.os == 'macOS'
       run: |
         brew install hdf5
-        echo "FC=gfortran-15" >> $GITHUB_ENV
+        echo "CC=gcc-15 FC=gfortran-15" >> $GITHUB_ENV
+# doesn't work with AppleClang + Gfortran with shared builds
 
     - name: install HDF5 (Linux)
       if: runner.os == 'Linux'
