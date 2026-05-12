@@ -96,7 +96,6 @@ install(TARGETS nc4fortran EXPORT nc4fortran-targets)
 
 # additional Find*.cmake necessary
 install(FILES
-${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindHDF5.cmake
 ${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindNetCDF.cmake
 DESTINATION cmake
 )

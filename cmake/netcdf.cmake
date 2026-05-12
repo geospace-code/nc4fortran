@@ -7,19 +7,6 @@ include(GNUInstallDirs)
 
 file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
 
-if(NOT DEFINED HDF5_ROOT AND DEFINED ENV{HDF5_ROOT})
-  set(HDF5_ROOT $ENV{HDF5_ROOT})
-endif()
-
-if(nc4fortran_find_hdf5)
-  find_package(HDF5 COMPONENTS C Fortran)
-endif()
-if(HDF5_FOUND)
-  add_custom_target(HDF5)
-else()
-  include(${CMAKE_CURRENT_LIST_DIR}/hdf5.cmake)
-endif()
-
 # --- NetCDF-C
 
 if(nc4fortran_find_netcdf)
@@ -46,8 +33,10 @@ set(netcdf_fortran_cmake_args
 -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
 -DCMAKE_Fortran_COMPILER:FILEPATH=${CMAKE_Fortran_COMPILER}
 -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
--DHDF5_ROOT:PATH=${HDF5_ROOT}
 )
+if(DEFINED HDF5_ROOT)
+  list(APPEND netcdf_fortran_cmake_args -DHDF5_ROOT:PATH=${HDF5_ROOT})
+endif()
 
 if(WIN32)
   set(NetCDF_Fortran_LIBRARIES ${CMAKE_INSTALL_FULL_BINDIR}/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_SHARED_LIBRARY_SUFFIX})
