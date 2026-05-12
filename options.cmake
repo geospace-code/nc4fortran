@@ -3,8 +3,6 @@ message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION} CMake ${CMAKE_VERSION} Toolch
 option(nc4fortran_coverage "Code coverage tests")
 option(nc4fortran_tidy "Run clang-tidy on the code")
 
-option(nc4fortran_find_netcdf "find NetCDF libraries" ON)
-
 option(nc4fortran_BUILD_TESTING "Build tests" ${nc4fortran_IS_TOP_LEVEL})
 
 option(nc4fortran_IGNORE_CONDA_LIBRARIES "Ignore libraries in CONDA_PREFIX when finding dependencies" ON)

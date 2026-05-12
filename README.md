@@ -7,7 +7,7 @@
 
 Simple, robust, thin, object-oriented NetCDF4 polymorphic read/write interface.
 For HDF5 see [h5fortran](https://github.com/geospace-code/h5fortran).
-Designed for easy use as a CMake "ExternalProject" using **static** or **shared** linking.
+Designed for easy use as a CMake "FetchContent" using **static** or **shared** linking.
 Uses Fortran 2008 `submodule` for clean template structure.
 nc4fortran abstracts away the messy parts of NetCDF4 so that you can read/write various types/ranks of data with a single command.
 In distinction from other high-level NetCDF4 interfaces, nc4fortran works to deduplicate code, using polymorphism wherever feasible, with an extensive test suite.
@@ -73,7 +73,7 @@ To not find existing netCDF (force build of netCDF from source) add option:
 cmake -Dfind_netcdf=off -Bbuild
 ```
 
-To use nc4fortran as a CMake ExternalProject do like:
+To use nc4fortran as a CMake FetchContent do like:
 
 ```cmake
 include(FetchContent)

@@ -56,16 +56,23 @@ endif()
 find_library(NetCDF_C_LIBRARY
 NAMES netcdf
 DOC "NetCDF C library"
+VALIDATOR netcdf_c_check
 )
 
-if(NOT NetCDF_C_LIBRARY)
-  return()
+if(NetCDF_C_LIBRARY)
+  set(NetCDF_C_FOUND true PARENT_SCOPE)
+  set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} PARENT_SCOPE)
 endif()
+
+endfunction(netcdf_c)
+
+
+function(netcdf_c_check _result path)
 
 set(CMAKE_REQUIRED_FLAGS)
 set(CMAKE_REQUIRED_INCLUDES ${NetCDF_C_INCLUDE_DIR})
 
-set(CMAKE_REQUIRED_LIBRARIES ${NetCDF_C_LIBRARY})
+set(CMAKE_REQUIRED_LIBRARIES ${path})
 if(ZLIB_FOUND)
   list(APPEND CMAKE_REQUIRED_LIBRARIES ${ZLIB_LIBRARIES})
 endif()
@@ -79,24 +86,22 @@ endif()
 check_source_compiles(C
 [=[
 #include <netcdf.h>
-#include <stdio.h>
 
 int main(void){
-printf("%s", nc_inq_libvers());
+const char* v = nc_inq_libvers();
 return 0;
 }
 ]=]
 NetCDF_C_links
 )
 
-if(NOT NetCDF_C_links)
-  return()
+set(${_result} ${NetCDF_C_links} PARENT_SCOPE)
+
+if(NetCDF_C_links)
+  set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} PARENT_SCOPE)
 endif()
 
-set(NetCDF_C_FOUND true PARENT_SCOPE)
-set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} PARENT_SCOPE)
-
-endfunction(netcdf_c)
+endfunction()
 
 
 function(netcdf_fortran)
@@ -111,25 +116,27 @@ if(NOT NetCDF_Fortran_INCLUDE_DIR)
   return()
 endif()
 
-if(CMAKE_VERSION VERSION_LESS 3.20)
-  get_filename_component(NetCDF_LIBDIR ${NetCDF_C_LIBRARY} DIRECTORY)
-else()
-  cmake_path(GET NetCDF_C_LIBRARY PARENT_PATH NetCDF_LIBDIR)
-endif()
+cmake_path(GET NetCDF_C_LIBRARY PARENT_PATH NetCDF_LIBDIR)
 
 find_library(NetCDF_Fortran_LIBRARY
 NAMES netcdff
 HINTS ${NetCDF_LIBDIR}
 DOC "NetCDF Fortran library"
+VALIDATOR netcdf_check
 )
 
-if(NOT NetCDF_Fortran_LIBRARY)
-  return()
+if(NetCDF_Fortran_LIBRARY)
+  set(NetCDF_Fortran_FOUND true PARENT_SCOPE)
 endif()
+
+endfunction()
+
+
+function(netcdf_fortran_check _result path)
 
 set(CMAKE_REQUIRED_FLAGS)
 set(CMAKE_REQUIRED_INCLUDES ${NetCDF_Fortran_INCLUDE_DIR})
-list(INSERT CMAKE_REQUIRED_LIBRARIES 0 ${NetCDF_Fortran_LIBRARY})
+list(INSERT CMAKE_REQUIRED_LIBRARIES 0 ${path})
 
 check_source_compiles(Fortran
 "program a
@@ -139,13 +146,9 @@ end program"
 NetCDF_Fortran_links
 )
 
-if(NOT NetCDF_Fortran_links)
-  return()
-endif()
+set(${_result} ${NetCDF_Fortran_links} PARENT_SCOPE)
 
-set(NetCDF_Fortran_FOUND true PARENT_SCOPE)
-
-endfunction(netcdf_fortran)
+endfunction()
 
 #============================================================
 # main program

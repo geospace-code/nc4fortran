@@ -41,12 +41,7 @@ include(cmake/compilers.cmake)
 
 file(GENERATE OUTPUT .gitignore CONTENT "*")
 
-if(find_netcdf)
-  find_package(NetCDF COMPONENTS C Fortran)
-endif()
-if(NOT NetCDF_FOUND AND NOT TARGET NetCDF::NetCDF_Fortran)
-  include(cmake/netcdf.cmake)
-endif()
+include(cmake/netcdf.cmake)
 
 # --- code coverage
 if(nc4fortran_coverage AND nc4fortran_IS_TOP_LEVEL)
