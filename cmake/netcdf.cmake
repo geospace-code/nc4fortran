@@ -57,7 +57,7 @@ endif()
 
 set(NetCDF_Fortran_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR})
 
-string(JSON netcdfFortran_url GET ${json} netcdfFortran url)
+string(JSON netcdfFortran_url GET ${json} netcdfFortran)
 
 ExternalProject_Add(NETCDF_FORTRAN
 URL ${netcdfFortran_url}

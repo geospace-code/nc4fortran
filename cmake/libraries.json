@@ -1,14 +1,5 @@
 {
-  "netcdfC": {
-    "url": "https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.10.0.tar.gz"
-  },
-  "netcdfFortran": {
-    "url": "https://github.com/Unidata/netcdf-fortran/archive/refs/tags/v4.6.2.tar.gz"
-  },
-  "zlib": {
-    "url" : "https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.3.3.tar.gz"
-  },
-  "hdf5": {
-    "url": "https://github.com/HDFGroup/hdf5/archive/refs/tags/2.1.0.tar.gz"
-  }
+  "netcdfC": "https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.10.0.tar.gz",
+  "netcdfFortran": "https://github.com/Unidata/netcdf-fortran/archive/refs/tags/v4.6.2.tar.gz",
+  "hdf5": "https://github.com/HDFGroup/hdf5/archive/refs/tags/2.1.1.tar.gz"
 }

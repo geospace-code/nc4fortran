@@ -4,7 +4,9 @@
   "configurePresets": [
 {
   "name": "default",
+  "generator": "Ninja",
   "binaryDir": "build",
+  "installDir": "${fileDir}/build/local",
   "cacheVariables": {
     "nc4fortran_warning_as_error": true,
     "nc4fortran_BUILD_TESTING": true,
@@ -14,21 +16,18 @@
   }
 },
 { "name": "debug", "inherits": "default",
-  "binaryDir": "build-debug",
   "cacheVariables": {
     "CMAKE_BUILD_TYPE": "Debug"
   }
 },
 {
   "name": "reldebug", "inherits": "default",
-  "binaryDir": "build",
   "displayName": "release with debug info",
   "cacheVariables": {
     "CMAKE_BUILD_TYPE": "RelWithDebInfo"
   }
 },
 { "name": "shared", "inherits": "reldebug",
-  "binaryDir": "build-shared",
   "displayName": "build shared libraries",
   "cacheVariables": {
     "BUILD_SHARED_LIBS": true,
@@ -38,7 +37,6 @@
 },
 {
   "name": "nofind", "inherits": "reldebug",
-  "binaryDir": "build",
   "displayName": "don't find  NetCDF",
   "cacheVariables": {
     "nc4fortran_find_netcdf": false
@@ -46,7 +44,7 @@
 },
 {
   "name": "coverage",
-  "binaryDir": "build-coverage",
+  "binaryDir": "build-${presetName}",
   "displayName": "Code Coverage",
   "description": "Build with code coverage enabled.",
   "cacheVariables": {
@@ -56,7 +54,7 @@
 }
 ],
 "buildPresets": [
-  { "name": "default", "configurePreset": "default", "jobs": 0 },
+  { "name": "default", "configurePreset": "default" },
   { "name": "nofind",  "configurePreset": "nofind", "inherits": "default" },
   { "name": "shared",  "configurePreset": "shared", "inherits": "default" },
   {
@@ -100,7 +98,7 @@
     "noTestsAction": "error",
     "scheduleRandom": true,
     "stopOnFailure": false,
-    "jobs": 0,
+    "jobs": 4,
     "timeout": 60
   }
 },
