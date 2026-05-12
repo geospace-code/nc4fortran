@@ -21,7 +21,7 @@ jobs:
 
     - uses: fortran-lang/setup-fpm@v9
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        fpm-version: current
 
     - name: install NetCDF4
       run: |

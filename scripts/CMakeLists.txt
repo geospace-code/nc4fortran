@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19...3.25)
+cmake_minimum_required(VERSION 3.25...3.30)
 project(NetCDF_build
 LANGUAGES C Fortran
 )
@@ -13,8 +13,6 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.29)
 else()
   file(TOUCH ${CMAKE_INSTALL_PREFIX}/.cmake_writable "")
 endif()
-
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
 
 # --- commence NetCDF build/install
 set_property(DIRECTORY PROPERTY EP_UPDATE_DISCONNECTED true)

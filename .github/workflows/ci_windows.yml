@@ -1,8 +1,5 @@
 name: ci_windows
 
-env:
-  CMAKE_GENERATOR: Ninja
-
 on:
   push:
     paths:
@@ -50,10 +47,7 @@ jobs:
     - uses: actions/checkout@v6
 
     - name: CMake workflow
-      run: cmake --preset reldebug
-
-    - name: CMake build
-      run: cmake --build --preset reldebug
+      run: cmake --workflow build
 
 # for some reason on CI only, the array test hangs. Maybe a shared library issue as is a common pitfal on Github Actions for years with MSYS2.
 
@@ -61,7 +55,6 @@ jobs:
       if: failure()
       uses: actions/upload-artifact@v7
       with:
-        archive: false
         name: ${{ runner.os }}-CMakeConfigureLog.yaml
         path: build/CMakeFiles/CMakeConfigureLog.yaml
 

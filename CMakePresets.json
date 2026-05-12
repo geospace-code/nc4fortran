@@ -71,7 +71,6 @@
     "configurePreset": "default",
     "nativeToolOptions": ["-d", "stats"]
   },
-  { "name": "release","configurePreset": "default" },
   {
     "name": "reldebug",
     "configurePreset": "reldebug",
@@ -103,7 +102,6 @@
 },
 { "name": "nofind", "configurePreset": "nofind", "inherits": "default" },
 { "name": "shared", "configurePreset": "shared", "inherits": "default" },
-{ "name": "release", "inherits": "default" },
 {
   "name": "reldebug", "inherits": "default",
   "configurePreset": "reldebug",
@@ -121,6 +119,13 @@
     ]
   },
   {
+    "name": "build",
+    "steps": [
+      { "type": "configure", "name": "default" },
+      { "type": "build", "name": "default" }
+    ]
+  },
+  {
     "name": "debug",
     "steps": [
       { "type": "configure", "name": "debug" },
@@ -134,14 +139,6 @@
       { "type": "configure", "name": "reldebug" },
       { "type": "build", "name": "reldebug" },
       { "type": "test", "name": "reldebug" }
-    ]
-  },
-  {
-    "name": "release",
-    "steps": [
-      { "type": "configure", "name": "default" },
-      { "type": "build", "name": "release" },
-      { "type": "test", "name": "release" }
     ]
   },
   {
