@@ -19,7 +19,7 @@ jobs:
 
     steps:
 
-    - uses: fortran-lang/setup-fpm@v9
+    - uses: fortran-lang/setup-fpm@v10
       with:
         fpm-version: current
 
