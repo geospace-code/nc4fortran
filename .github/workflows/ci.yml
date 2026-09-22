@@ -34,7 +34,7 @@ jobs:
     steps:
 
     - &checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - &ncdf-linux
       name: install NetCDF (Linux)
@@ -60,9 +60,6 @@ jobs:
   shared:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
-
-    env:
-      FC: gfortran-14
 
     strategy:
       matrix:
